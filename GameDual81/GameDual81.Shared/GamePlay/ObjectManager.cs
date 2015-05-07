@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GameDual81.LevelGenerator;
 
 namespace ThielynGame.GamePlay
 {
@@ -33,11 +34,15 @@ namespace ThielynGame.GamePlay
             this.player = player;
         }
 
-        public void StartLevel(int width, int height, int difficulty) 
+        public void StartLevel(int levelSize, int difficulty) 
         {
-            Level level = new Level();
-            level.GenerateLevel(width, height, difficulty, "derp");
-            level.ActivateLevel(this);
+            // overwrite masterlist everytime a new level is to be created
+            masterlist = new List<GameObject>();
+
+            LevelGeneratorObject lg = new LevelGeneratorObject(levelSize);
+
+            // inject masterlist to levelgenerator to get all the objects
+            lg.getLevelInfo(masterlist);
         }
 
         public void Load() 
@@ -135,6 +140,7 @@ namespace ThielynGame.GamePlay
             Camera.FocusCameraOnPlayer(masterlist ,player);
         }
 
+        // draw all gameobjects
         public void Draw(SpriteBatch S, TextureLoader T) 
         {
             foreach (GameObject G in updateAndrenderList) 
@@ -144,22 +150,12 @@ namespace ThielynGame.GamePlay
             player.Draw(S,T);
         }
 
+        // use this to add new objects during gameplay
         public void AddGameObject(GameObject G) 
         {
             // we cant add to masterlist in the middle of update
             // since masterlist will be overwritten at end of loop
             NewObjectsWaitList.Add(G);
         }
-
-        public void AddlevelTerrain(List<Platform> terrainList) 
-        {
-            masterlist.AddRange(terrainList);
-        }
-
-        public void clearManager() 
-        {
-            masterlist = new List<GameObject>();
-        }
-
     }
 }

@@ -26,14 +26,14 @@ namespace ThielynGame.GamePlay
         public Vector2 Speed { get { return speed; } }
         public string TextureSet { set { TextureFileName = value; } }
 
-        public Platform(Rectangle positionAndSize, TilePosition tileposition) 
+        public Platform(Rectangle positionAndSize) 
         {
             actualSize = new Rectangle(0,0,positionAndSize.Width, positionAndSize.Height);
             position.X = positionAndSize.X;
             position.Y = positionAndSize.Y;
 
             // TODO, only for testing purposes
-            TextureFileName = "terrain_stone_simple";
+            TextureFileName = "terrain_stone";
 
             // TODO
             /*
@@ -47,7 +47,7 @@ namespace ThielynGame.GamePlay
         }
 
         public Platform(Rectangle positionAndSize, string tilesetName, bool isMoving, bool verticalMove, float speed, int travelDistance)  :
-            this (positionAndSize, TilePosition.Custom)
+            this (positionAndSize)
         {
             this.verticalMove = verticalMove;
             this.travelDistance = travelDistance;

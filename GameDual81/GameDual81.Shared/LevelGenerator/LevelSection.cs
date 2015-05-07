@@ -8,16 +8,9 @@ using System.Threading.Tasks;
 
 namespace ThielynGame.LevelGenerator
 {
-    // different categorys can be used to prevent or force a certain positioning in level randomization
-    public enum LevelSectionLocation { Bottom, Middle, Top, Left, Right }
-
     // this struct represent a premade section for a level. Levels consist of numerous random level sections
     class LevelSection
     {
-        public bool TopOpen;
-        public bool BottomOpen;
-        public bool SideBlocked;
-
         // a section contains information about the terrainpieces
         public List<Platform> sectionTerrain = new List<Platform>();
         // every section has certain spawn points where enemies or items can spawn

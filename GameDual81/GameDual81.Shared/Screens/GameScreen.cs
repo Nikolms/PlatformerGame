@@ -55,24 +55,14 @@ namespace ThielynGame.Screens
             Troll T2 = new Troll(new Vector2(2000, 100));
             Troll T3 = new Troll(new Vector2(1600, 100));
 
-            ObjectManager O1 = new ObjectManager();
-            ObjectManager O2 = new ObjectManager();
-            ObjectManager O3 = new ObjectManager();
-            ObjectManager O4 = new ObjectManager();
-
-            O1.AddGameObject(T);
-            //O1.AddGameObject(T1);
-            //O1.AddGameObject(T2);
-            //O1.AddGameObject(T3);
+            objectManager.AddGameObject(T);
         }
 
         public void StartANewLevel() 
         {
             //increase levelCounter everytime new level is started
             levelCounter++;
-
-            objectManager.clearManager();
-            objectManager.StartLevel(10,2, levelCounter);
+            objectManager.StartLevel(10, levelCounter);
         }
 
 
@@ -113,7 +103,6 @@ namespace ThielynGame.Screens
 
         public override void ExitScreen()
         {
-            objectManager.clearManager();
             content.Unload();
         }
     }

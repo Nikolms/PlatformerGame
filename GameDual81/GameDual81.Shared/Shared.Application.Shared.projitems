@@ -41,8 +41,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Platform.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Player.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GameSettings.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)LevelGenerator\Level.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)LevelGenerator\LevelFileReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LevelGenerator\LevelGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LevelGenerator\LevelSection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Menu\CharacterPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Menu\MainMenuPage.cs" />
