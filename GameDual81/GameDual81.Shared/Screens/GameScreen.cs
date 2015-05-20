@@ -18,7 +18,10 @@ namespace ThielynGame.Screens
 
     class GameScreen : Screen
     {
-        static ContentManager content;
+        // a separate flag to keep track of levelgeneration and other
+        // tasks that happen without screen switch
+        bool isBusy;
+
         Texture2D levelBackGround_close, levelBackGround_mid, levelBackGround_deep;
         ObjectManager objectManager;
         TextureLoader GamePlayTextures;
@@ -29,8 +32,10 @@ namespace ThielynGame.Screens
         // increases everytime a level is completed
         int levelCounter;
 
-        public GameScreen() 
+        public GameScreen(Game1 game1) : base(game1)
         {
+            isLoading = true;
+
             player = new Player(new Vector2(100,100));
             // Initialize all the "services"
             levelGUI = new LevelGUI(player);
@@ -48,6 +53,7 @@ namespace ThielynGame.Screens
 
             // TODO should not be in constructor maybe
             StartANewLevel();
+            Load();
 
             // TODO these objects are for testing, implement level contructors for modular endless levels
             Troll T = new Troll(new Vector2(600, 100));
@@ -58,52 +64,71 @@ namespace ThielynGame.Screens
             objectManager.AddGameObject(T);
         }
 
-        public void StartANewLevel() 
+        async void StartANewLevel() 
         {
+            // set the busy flag so that loading screen is displayed
+            isBusy = true;
+
             //increase levelCounter everytime new level is started
             levelCounter++;
             objectManager.StartLevel(10, levelCounter);
+
+            // wait for a while to prevent loading screen from flashing to fast
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            // release flag when level has been created
+            isBusy = false;
         }
 
-
-        public static void Initialize(ContentManager CM) 
-        {
-            content = CM;
-        }
-
-        public override void Load()
+        async void Load()
         {
             levelBackGround_close = content.Load<Texture2D>("cave_close_background");
             levelBackGround_mid = content.Load<Texture2D>("cave_mid_background");
             levelBackGround_deep = content.Load<Texture2D>("cave_deep_background");
+
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            isLoading = false;
         }
 
         public override void HandleInput(InputHandler input)
         {
             levelGUI.checkButtonClicks(input.InputLocations);
             levelGUI.PlayerNonVisualInput(input);
+
+            if (input.ExitGame_Input) 
+                ExitScreen();
         }
 
         public override void Update(TimeSpan time)
         {
+            // do not update game world while loading or creating new level
+            if (!isBusy && !isLoading)
             objectManager.Update(time);
         }
 
         public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch s)
         {
-            s.Draw(levelBackGround_deep, MyRectangle.AdjustSizeCustomRectangle(0,0,1280,768), Color.White);
-            s.Draw(levelBackGround_mid, MyRectangle.AdjustSizeCustomRectangle(0, 0, 1280, 768), Color.White);
-            s.Draw(levelBackGround_close, MyRectangle.AdjustSizeCustomRectangle(0, 0, 1280, 768), Color.White);
+            if (isBusy || isLoading) s.Draw(CommonAssets.LoadingBackGround, Vector2.Zero, Color.White);
 
-            objectManager.Draw(s, GamePlayTextures);
+            else
+            {
 
-            // UI should be drawn last so that it is always visible
-            levelGUI.Draw(s, GamePlayTextures);
+                s.Draw(levelBackGround_deep, MyRectangle.AdjustSizeCustomRectangle(0, 0, 1280, 768), Color.White);
+                s.Draw(levelBackGround_mid, MyRectangle.AdjustSizeCustomRectangle(0, 0, 1280, 768), Color.White);
+                s.Draw(levelBackGround_close, MyRectangle.AdjustSizeCustomRectangle(0, 0, 1280, 768), Color.White);
+
+                objectManager.Draw(s, GamePlayTextures);
+
+                // UI should be drawn last so that it is always visible
+                levelGUI.Draw(s, GamePlayTextures);
+            }
         }
 
         public override void ExitScreen()
         {
             content.Unload();
+            ContainingClass.GoToMenuScreen();
         }
     }
 }

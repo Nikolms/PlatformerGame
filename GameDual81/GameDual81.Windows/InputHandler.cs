@@ -27,6 +27,8 @@ namespace ThielynGame
         public bool Skill_3_Input { get; protected set; }
         public bool Skill_4_Input { get; protected set; }
 
+        public bool ExitGame_Input { get; protected set; }
+
         public void Update() 
         {
             ///////////////////////////////////////////////
@@ -38,6 +40,8 @@ namespace ThielynGame
             jumpInput = false;
             MeleeAttackInput = false;
             RangedAttackInput = false;
+
+            ExitGame_Input = false;
 
             // check keyboard and mouse
             KeyboardState keyBoardState = Keyboard.GetState();
@@ -76,6 +80,11 @@ namespace ThielynGame
             if (keyBoardState.IsKeyDown(Keys.W) && previousKeyboardState.IsKeyUp(Keys.W))
             {
                 jumpInput = true;
+            }
+            // Exit GameScreen if ESC is pressed
+            if (keyBoardState.IsKeyDown(Keys.Escape) && previousKeyboardState.IsKeyUp(Keys.Escape)) 
+            {
+                ExitGame_Input = true;
             }
                 
             previousKeyboardState = keyBoardState;

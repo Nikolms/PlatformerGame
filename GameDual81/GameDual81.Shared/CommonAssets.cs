@@ -11,6 +11,8 @@ namespace ThielynGame
     // in a wide variety of the application
     class CommonAssets
     {
+        public static Texture2D LoadingBackGround { get; set; }
+
         public static SpriteFont menuFont { get; set; }
         public static Texture2D menuButtonBackground { get; set; }
     }

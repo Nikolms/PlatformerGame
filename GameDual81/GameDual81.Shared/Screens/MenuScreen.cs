@@ -14,40 +14,39 @@ namespace ThielynGame.Screens
 
     class MenuScreen : Screen
     {
-        public bool hasLoaded { get; set; }
         public Game1 parent { get;  set; }
 
         MenuState pageState;
-
-        public static ContentManager content { get; private set; }
+        
 
         Texture2D backGroundImage;
         Page currentPage;
 
-        public MenuScreen() 
+        public MenuScreen(Game1 game1) : base(game1) 
         {
             // register this instance as container for all menupages
             Page.containingScreen = this;
+            isLoading = true;
+
+            Task task = new Task(Load);
+            task.Start();
         }
 
-        public static void Initialize(ContentManager CM)
-        {
-            content = CM;
-        }
-
-        public override void Load()
+        async void Load()
         {
             backGroundImage = content.Load<Texture2D>("menubackground");
             // set the start page as mainmenu
             currentPage = new MainMenuPage();
 
-            hasLoaded = true;
+            await Task.Delay(TimeSpan.FromSeconds(1));
+            this.isLoading = false;
         }
 
         public override void HandleInput(InputHandler input)
         {
             //this screen sends the input to currentpage in order to iterate all
             //available buttons
+            if (!isLoading)
             currentPage.checkButtonClick(input.InputLocations);
         }
 
@@ -58,11 +57,18 @@ namespace ThielynGame.Screens
 
         public override void Draw(SpriteBatch s)
         {
-            // draw the background 
-            s.Draw(backGroundImage, MyRectangle.AdjustSizeCustomRectangle(0,0,1280,768), Color.White);
+            // if screen is loading just draw the loading screen
+            if (isLoading) s.Draw(CommonAssets.LoadingBackGround, Vector2.Zero, Color.White);
 
-            //draw the currentpage on top of the background
-            currentPage.Draw(s);
+            // if not loading draw all the normal stuff
+            else
+            {
+                // draw the background 
+                s.Draw(backGroundImage, MyRectangle.AdjustSizeCustomRectangle(0, 0, 1280, 768), Color.White);
+
+                //draw the currentpage on top of the background
+                currentPage.Draw(s);
+            }
         }
 
         public override void ExitScreen()

@@ -95,6 +95,8 @@ namespace ThielynGame.GamePlay
                 player.DoJump(null);
             if (input.MeleeAttackInput)
                 player.DoMeleeAttack(null);
+            if (input.ExitGame_Input)
+                ;
 
         }
 

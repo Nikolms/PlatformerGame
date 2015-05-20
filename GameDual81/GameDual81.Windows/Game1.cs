@@ -8,6 +8,7 @@ using System.Diagnostics;
 using ThielynGame.Menu;
 using Microsoft.Xna.Framework.Input;
 using System;
+using Windows.UI.Xaml;
 
 namespace ThielynGame
 {
@@ -49,13 +50,6 @@ namespace ThielynGame
         {
             // TODO: Add your initialization logic here
 
-            // initialize separate contentmanagers for menu and gamescreen
-            MenuScreen.Initialize(new ContentManager(this.Services, "Content"));
-            GameScreen.Initialize(new ContentManager(this.Services, "Content"));
-
-            // register this instance of game1 class
-            Screen.setHost = this;
-
             // calculate screenmultiplier
             screenMultiplierHeight = (float)GraphicsDevice.Viewport.Height /1080;
             screenMultiplierWidth = ((float)GraphicsDevice.Viewport.Width + 1)/ 1920;
@@ -79,10 +73,11 @@ namespace ThielynGame
             // TODO: use this.Content to load your game content here
             CommonAssets.menuButtonBackground = Content.Load<Texture2D>("menubuttonbackground");
             CommonAssets.menuFont = Content.Load<SpriteFont>("menufont");
+            CommonAssets.LoadingBackGround = Content.Load<Texture2D>("loadingbackground");
 
             // Create a menuscreen as the entryscreen when game launches
-            currentScreen = new MenuScreen();
-            currentScreen.Load();
+            //currentScreen = new MenuScreen(this);
+            GoToMenuScreen();
         }
 
         /// <summary>
@@ -128,18 +123,22 @@ namespace ThielynGame
         }
 
 
-        public void StartGameScreen(MenuButton B)
+        public void GoToGameScreen(MenuButton B)
         {
-            Screen nextScreen = new GameScreen();
-            LoadingScreen loading = new LoadingScreen(Content.Load<Texture2D>("loadingbackground"), nextScreen, currentScreen);
-            currentScreen = loading;
-            currentScreen.Load();
+            GameScreen game = new GameScreen(this);
+            currentScreen = game;
         }
-        public void GoToMenu() { }
 
-        public void FinishScreenTransition(Screen nextScreen) 
+        public void GoToMenuScreen() 
         {
-            currentScreen = nextScreen;
+            MenuScreen menu = new MenuScreen(this);
+            currentScreen = menu;
         }
+
+        public void ExitApplication(MenuButton G) 
+        {
+            Application.Current.Exit();
+        }
+
     }
 }

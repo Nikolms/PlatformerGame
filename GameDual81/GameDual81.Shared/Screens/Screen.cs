@@ -14,16 +14,18 @@ namespace ThielynGame.Screens
     public abstract class Screen
     {
         // set this to true is screen is done loading
-        public bool hasLoaded { get; protected set; }
+        public bool isLoading { get; protected set; }
 
-        protected static Game1 _host;
-        public static Game1 setHost { set { _host = value; } }
-        // only an instance has public accessor to host instance
-        public Game1 host { get { return _host; } }
+        protected ContentManager content;
 
 
-        // method for loading assets
-          public abstract void Load();
+        public Game1 ContainingClass { get; protected set; }
+
+        public Screen(Game1 game1) 
+        {
+            content = new ContentManager(game1.Services,"Content");
+            ContainingClass = game1;
+        }
 
         // all screens should handle input
           public abstract void HandleInput(InputHandler inputhandler);

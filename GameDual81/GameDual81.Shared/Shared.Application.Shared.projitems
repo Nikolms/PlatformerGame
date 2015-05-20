@@ -33,6 +33,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\CollisionControl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Enemy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Troll.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\ExitPoint.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\GameObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\ICollisionObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\MeleeAreaEffect.cs" />
@@ -43,14 +44,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)GameSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LevelGenerator\LevelGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LevelGenerator\LevelSection.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Menu\CharacterPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Menu\MainMenuPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Menu\MenuButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Menu\OptionsPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Menu\Page.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MyRectangle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Screens\GameScreen.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Screens\LoadingScreen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Screens\MenuScreen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Screens\Screen.cs" />
   </ItemGroup>
