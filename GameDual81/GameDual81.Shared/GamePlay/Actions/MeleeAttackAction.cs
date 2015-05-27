@@ -49,7 +49,7 @@ namespace ThielynGame.GamePlay.Actions
                 actor.Alignment, 
                 AttackSize, actor);
 
-            ObjectManager O = new ObjectManager();
+            LevelManager O = new LevelManager();
             O.AddGameObject(AE);
         }
 

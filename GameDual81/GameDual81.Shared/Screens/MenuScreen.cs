@@ -42,17 +42,11 @@ namespace ThielynGame.Screens
             this.isLoading = false;
         }
 
-        public override void HandleInput(InputHandler input)
+        public override void Update(TimeSpan time, InputHandler input)
         {
-            //this screen sends the input to currentpage in order to iterate all
-            //available buttons
-            if (!isLoading)
+            if (isLoading) return;
+
             currentPage.checkButtonClick(input.InputLocations);
-        }
-
-        public override void Update(TimeSpan time)
-        {
-
         }
 
         public override void Draw(SpriteBatch s)
