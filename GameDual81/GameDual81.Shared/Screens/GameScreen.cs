@@ -20,7 +20,7 @@ namespace ThielynGame.Screens
     {
         // a separate flag to keep track of levelgeneration and other
         // tasks that happen without screen switch
-        bool isBusy;
+        public bool IsBusy { get; set; }
 
         Texture2D levelBackGround_close, levelBackGround_mid, levelBackGround_deep;
         ObjectManager objectManager;
@@ -67,7 +67,7 @@ namespace ThielynGame.Screens
         async void StartANewLevel() 
         {
             // set the busy flag so that loading screen is displayed
-            isBusy = true;
+            IsBusy = true;
 
             //increase levelCounter everytime new level is started
             levelCounter++;
@@ -77,7 +77,7 @@ namespace ThielynGame.Screens
             await Task.Delay(TimeSpan.FromSeconds(1));
 
             // release flag when level has been created
-            isBusy = false;
+            IsBusy = false;
         }
 
         async void Load()
@@ -103,13 +103,13 @@ namespace ThielynGame.Screens
         public override void Update(TimeSpan time)
         {
             // do not update game world while loading or creating new level
-            if (!isBusy && !isLoading)
+            if (!IsBusy && !isLoading)
             objectManager.Update(time);
         }
 
         public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch s)
         {
-            if (isBusy || isLoading) s.Draw(CommonAssets.LoadingBackGround, Vector2.Zero, Color.White);
+            if (IsBusy || isLoading) s.Draw(CommonAssets.LoadingBackGround, Vector2.Zero, Color.White);
 
             else
             {

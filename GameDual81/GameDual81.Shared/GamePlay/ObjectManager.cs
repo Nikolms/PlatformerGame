@@ -12,9 +12,13 @@ using GameDual81.LevelGenerator;
 namespace ThielynGame.GamePlay
 {
     class ObjectManager
-    {  
+    {
+        public bool isBusy { get; private set; }
+        int currentLevelCounter = 0;
+
         // stores all the gameobjects currently in the game
         static List <GameObject> masterlist = null;
+
 
         // this list is needed so that we can add gameobjects mid update loop
         // and not lose them before next frame when masterlist is overwritten
@@ -22,8 +26,9 @@ namespace ThielynGame.GamePlay
 
         List<GameObject> updateAndrenderList;
 
-        // we need to keep track of player separately too
+        // we need to keep separate track of some key objects
         Player player;
+        ExitPoint exitPoint;
 
         public ObjectManager() { }
         public ObjectManager(Player player) 
@@ -34,15 +39,14 @@ namespace ThielynGame.GamePlay
             this.player = player;
         }
 
-        public void StartLevel(int levelSize, int difficulty) 
+        // this function initializes the levelgenerator class and reads its info into masterlist
+        // this function is to be used in multithread, and it sets a flag when complete
+        async void generateNewLevel() 
         {
-            // overwrite masterlist everytime a new level is to be created
-            masterlist = new List<GameObject>();
-
-            LevelGeneratorObject lg = new LevelGeneratorObject(levelSize);
-
-            // inject masterlist to levelgenerator to get all the objects
+            LevelGeneratorObject lg = new LevelGeneratorObject(10);
             lg.getLevelInfo(masterlist);
+
+            isBusy = false;
         }
 
         public void Load() 
