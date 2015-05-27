@@ -11,14 +11,14 @@ using GameDual81.LevelGenerator;
 
 namespace ThielynGame.GamePlay
 {
-    class ObjectManager
+    class LevelManager
     {
-        public bool isBusy { get; private set; }
-        int currentLevelCounter = 0;
+        // this flag is checked to know loading screen needs to display
+        public bool IsCreatingLevel { get; private set; }
+
 
         // stores all the gameobjects currently in the game
         static List <GameObject> masterlist = null;
-
 
         // this list is needed so that we can add gameobjects mid update loop
         // and not lose them before next frame when masterlist is overwritten
@@ -26,31 +26,40 @@ namespace ThielynGame.GamePlay
 
         List<GameObject> updateAndrenderList;
 
-        // we need to keep separate track of some key objects
+        // we need to keep track of player separately too
         Player player;
-        ExitPoint exitPoint;
+        ExitPoint levelExit;
 
-        public ObjectManager() { }
-        public ObjectManager(Player player) 
+        // keep track of current level
+        int levelCounter = 0;
+
+        public void Initialize(Player player) 
         {
-            if (masterlist == null)
-                masterlist = new List<GameObject>();
-
+            levelCounter = 0;
+            masterlist = new List<GameObject>();
             this.player = player;
+            
+            StartNewLevel();
         }
 
-        // this function initializes the levelgenerator class and reads its info into masterlist
-        // this function is to be used in multithread, and it sets a flag when complete
-        async void generateNewLevel() 
+        public void StartNewLevel() 
         {
-            LevelGeneratorObject lg = new LevelGeneratorObject(10);
-            lg.getLevelInfo(masterlist);
+            // overwrite masterlist everytime a new level is to be created
+            masterlist = new List<GameObject>();
+            NewObjectsWaitList = new List<GameObject>();
 
-            isBusy = false;
+            Task t = new Task(CreateNewLevel);
+            t.Start();
         }
 
-        public void Load() 
+        async void CreateNewLevel() 
         {
+            IsCreatingLevel = true;
+            levelCounter ++;
+            LevelGeneratorObject G = new LevelGeneratorObject(10);
+            G.getLevelInfo(masterlist);
+
+            IsCreatingLevel = false;
         }
 
         //all game objects are updated in this method

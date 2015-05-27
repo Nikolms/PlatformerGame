@@ -18,30 +18,26 @@ namespace ThielynGame.Screens
 
     class GameScreen : Screen
     {
-        // a separate flag to keep track of levelgeneration and other
-        // tasks that happen without screen switch
-        public bool IsBusy { get; set; }
 
         Texture2D levelBackGround_close, levelBackGround_mid, levelBackGround_deep;
-        ObjectManager objectManager;
+        LevelManager objectManager;
         TextureLoader GamePlayTextures;
         LevelGUI levelGUI;
-        Player player;
-
-        // this keeps track of current level.
-        // increases everytime a level is completed
-        int levelCounter;
 
         public GameScreen(Game1 game1) : base(game1)
         {
             isLoading = true;
 
-            player = new Player(new Vector2(100,100));
-            // Initialize all the "services"
-            levelGUI = new LevelGUI(player);
+            // create the player instance that is used by GUI
+            // and levelmanager
+            Player player = new Player(Vector2.Zero);
 
             // create objectManager to hold and perform updates on gameobjects
-            objectManager = new ObjectManager(player);
+            objectManager = new LevelManager();
+            objectManager.Initialize(player);
+
+            // create the GUI
+            levelGUI = new LevelGUI(player);
 
             // create the helper class to load textures from
             GamePlayTextures = new TextureLoader(content);
@@ -49,35 +45,8 @@ namespace ThielynGame.Screens
             // create the animationlists
             AnimationLists.Initialize();
 
-            levelCounter = 0;
-
-            // TODO should not be in constructor maybe
-            StartANewLevel();
-            Load();
-
-            // TODO these objects are for testing, implement level contructors for modular endless levels
-            Troll T = new Troll(new Vector2(600, 100));
-            Troll T1 = new Troll(new Vector2(1200, 100));
-            Troll T2 = new Troll(new Vector2(2000, 100));
-            Troll T3 = new Troll(new Vector2(1600, 100));
-
-            objectManager.AddGameObject(T);
-        }
-
-        async void StartANewLevel() 
-        {
-            // set the busy flag so that loading screen is displayed
-            IsBusy = true;
-
-            //increase levelCounter everytime new level is started
-            levelCounter++;
-            objectManager.StartLevel(10, levelCounter);
-
-            // wait for a while to prevent loading screen from flashing to fast
-            await Task.Delay(TimeSpan.FromSeconds(1));
-
-            // release flag when level has been created
-            IsBusy = false;
+            Task T = new Task(Load);
+            T.Start();
         }
 
         async void Load()
@@ -91,25 +60,27 @@ namespace ThielynGame.Screens
             isLoading = false;
         }
 
-        public override void HandleInput(InputHandler input)
+        public override void Update(TimeSpan time, InputHandler input)
         {
+            // check following flags if gameworld is ready for updates
+            // if still loading abort function
+            if (isLoading) return;
+            if (objectManager.IsCreatingLevel) return;
+
+            // read input information
             levelGUI.checkButtonClicks(input.InputLocations);
             levelGUI.PlayerNonVisualInput(input);
 
-            if (input.ExitGame_Input) 
+            if (input.ExitGame_Input)
                 ExitScreen();
-        }
 
-        public override void Update(TimeSpan time)
-        {
-            // do not update game world while loading or creating new level
-            if (!IsBusy && !isLoading)
+            // update all game objects
             objectManager.Update(time);
         }
 
         public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch s)
         {
-            if (IsBusy || isLoading) s.Draw(CommonAssets.LoadingBackGround, Vector2.Zero, Color.White);
+            if (objectManager.IsCreatingLevel || isLoading) s.Draw(CommonAssets.LoadingBackGround, Vector2.Zero, Color.White);
 
             else
             {

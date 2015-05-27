@@ -38,7 +38,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\ICollisionObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\MeleeAreaEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\MovableObject.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\ObjectManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\LevelManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Platform.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Player.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GameSettings.cs" />

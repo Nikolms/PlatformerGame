@@ -96,12 +96,12 @@ namespace ThielynGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // TODO: Add your update logic here
-            // start by checking update
+            
+            // check for any input values
             inputHandler.Update();
-            currentScreen.HandleInput(inputHandler);
-            // once input is resolved, update all time based elements
-            currentScreen.Update(gameTime.ElapsedGameTime);
+
+            // update current screen
+            currentScreen.Update(gameTime.ElapsedGameTime, inputHandler);
 
             base.Update(gameTime);
         }

@@ -27,11 +27,8 @@ namespace ThielynGame.Screens
             ContainingClass = game1;
         }
 
-        // all screens should handle input
-          public abstract void HandleInput(InputHandler inputhandler);
-
         // all screens need an update logic
-          public abstract void Update(TimeSpan time);
+          public abstract void Update(TimeSpan time, InputHandler inputhandler);
 
         // all screen need a draw logic
           public abstract void Draw(SpriteBatch s);
