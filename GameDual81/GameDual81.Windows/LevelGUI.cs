@@ -45,10 +45,15 @@ namespace ThielynGame.GamePlay
         Player player;
 
         List<GameButton> UIbuttons;
+        Rectangle healthBar;
+
+
 
         public LevelGUI(Player player) 
         {
             this.player = player;
+
+            healthBar = new Rectangle(10,10, 0, 60);
 
             UIbuttons = new List<GameButton>();
 
@@ -74,6 +79,8 @@ namespace ThielynGame.GamePlay
 
         }
 
+
+
         public void checkButtonClicks(List<Vector2> inputLocations) 
         {
             foreach (Vector2 input in inputLocations)
@@ -84,6 +91,8 @@ namespace ThielynGame.GamePlay
                 }
             }
         }
+
+
 
         public void PlayerNonVisualInput(InputHandler input)
         {
@@ -100,8 +109,14 @@ namespace ThielynGame.GamePlay
 
         }
 
+
+
         public void Draw(SpriteBatch S, TextureLoader T) 
         {
+            healthBar.Width = player.CurrentHealth * 3;
+
+            S.Draw(T.GetTexture("TODO"), MyRectangle.AdjustExistingRectangle(healthBar), Color.White);
+                
             foreach (GameButton B in UIbuttons) 
             {
                 B.Draw(S,T);

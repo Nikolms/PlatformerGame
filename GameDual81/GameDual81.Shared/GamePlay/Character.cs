@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ThielynGame.GamePlay.Actions;
+using System.Diagnostics;
 
 namespace ThielynGame.GamePlay
 {
@@ -14,7 +15,7 @@ namespace ThielynGame.GamePlay
     //base class for player and enemies
      public abstract class Character : MovableObject
     {
-        protected Direction previousFacing;
+        protected FacingDirection previousFacing;
         protected CharacterState characterState, previousState;
 
         public string characterType { get; protected set; }
@@ -22,8 +23,13 @@ namespace ThielynGame.GamePlay
         protected Animation animation;
         protected BaseAction currentAction;
 
-        protected int maxHealth, currentHealth,
+        protected bool hasTakenDamage;
+        protected float hurtTimer;
+
+        protected int maxHealth,
             armor, level;
+
+        public int CurrentHealth { get; protected set; }
         protected Rectangle MeleeReach;
 
         public float AttackSpeed { get; protected set; }
@@ -39,11 +45,16 @@ namespace ThielynGame.GamePlay
          // calling base constructor
         protected void setParameters () 
         {
-            currentHealth = maxHealth;
+            CurrentHealth = maxHealth;
         }
 
         public override void Update(TimeSpan time)
         {
+            hurtTimer -= time.Milliseconds;
+
+            if (hurtTimer <= 0)
+                hasTakenDamage = false;
+
             if (currentAction != null) 
             {
                 // performs update on action, and also sets it to null if it returns true
@@ -112,8 +123,8 @@ namespace ThielynGame.GamePlay
              
         }
 
-         // creates an animation for the character based on what state character is in
-         protected virtual void setStateAnimation() 
+        // creates an animation for the character based on what state character is in
+        protected virtual void setStateAnimation() 
          {
              AnimationLists A = new AnimationLists();
              List<FrameObject> framelist = new List<FrameObject>();
@@ -124,9 +135,9 @@ namespace ThielynGame.GamePlay
                      // we create a new animation only if previous was not run and facing has not changed
                      if (previousState != CharacterState.Run || facing != previousFacing)
                      {
-                         if (facing == Direction.Left)
+                         if (facing == FacingDirection.Left)
                              framelist = A.getAnimation(characterType + "_run_left");
-                         if (facing == Direction.Right)
+                         if (facing == FacingDirection.Right)
                              framelist = A.getAnimation(characterType + "_run_right");
 
                          animation = new Animation(framelist, true);
@@ -155,6 +166,38 @@ namespace ThielynGame.GamePlay
              }
          }
 
+
+         // functions to handle being hit by attacks and similar
+         // damage reduction from armor happens in this function
+        public void HitByAttack(int damage)
+        {
+            // if character is still recovering from recent damage, ignore this damage
+            if (hasTakenDamage) return;
+
+            // switch the invincibility on after receiving damage
+            hasTakenDamage = true;
+            hurtTimer = 150;
+
+            float reduction = ((float)armor / 100) * damage;
+            int actualDamage = damage - (int)reduction;
+
+            //Debug.WriteLine("DamageDealt:  "+damage+"\nDamageTaken:  " + actualDamage + "\n\n");
+
+            CurrentHealth -= actualDamage;
+            if (CurrentHealth <= 0)
+                IsDead = true;
+        }
+         // call this function if the attack had a knockback effect
+        public void KnockBack(AllDirections knockDirection, int knockingStrength) 
+        {
+            if (knockDirection == AllDirections.Down) velocity.Y =  knockingStrength;
+            if (knockDirection == AllDirections.Left) velocity.X = knockingStrength * -1;
+            if (knockDirection == AllDirections.Right) velocity.X = knockingStrength;
+            if (knockDirection == AllDirections.Up) velocity.Y = knockingStrength * -1;
+        }
+
+
+         // accelerates character towards left
          public virtual void DoMovementLeft()
          {
              if (touchesGround && velocity.X > 0) velocity.X = 0;
@@ -165,9 +208,9 @@ namespace ThielynGame.GamePlay
 
              // change facing on move command always
              previousFacing = facing;
-             facing = Direction.Left;
+             facing = FacingDirection.Left;
          }
-         //accelerates player towards right
+         //accelerates character towards right
          public virtual void DoMovementRight()
          {
              if (touchesGround && velocity.X < 0) velocity.X = 0;
@@ -176,15 +219,9 @@ namespace ThielynGame.GamePlay
                  velocity.X += acceleration;
 
              previousFacing = facing;
-             facing = Direction.Right;
+             facing = FacingDirection.Right;
          }
 
-         public void HitByAttack(int damage)
-         {
-             currentHealth -= damage;
-             if (currentHealth <= 0) 
-                 IsDead = true;
-         }
 
          public virtual void DoMeleeAttack(GameButton G)
          {

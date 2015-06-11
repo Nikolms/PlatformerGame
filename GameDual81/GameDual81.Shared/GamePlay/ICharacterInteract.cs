@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ThielynGame.GamePlay
 {
-    interface ICollisionObject
+    interface ICharacterInteract
     {
         void CheckCollisionWithCharacter(Character C);
     }

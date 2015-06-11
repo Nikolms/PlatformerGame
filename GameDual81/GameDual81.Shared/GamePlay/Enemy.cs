@@ -27,7 +27,7 @@ namespace ThielynGame.GamePlay
         public Enemy(Vector2 startPosition) : base(startPosition) 
         {
             // default facing for all monsters
-            facing = Direction.Left;
+            facing = FacingDirection.Left;
             alignment = ObjectAlignment.Enemy;
         }
 
@@ -87,7 +87,7 @@ namespace ThielynGame.GamePlay
                 case AIstate.Patrol:
 
                     // Do movement in the direction watching
-                    if (facing == Direction.Left)
+                    if (facing == FacingDirection.Left)
                     {
                         if (IsNextStepSafe() && !collidedAlongXAxis)
                             DoMovementLeft();
@@ -97,7 +97,7 @@ namespace ThielynGame.GamePlay
                         
                     }
                     else
-                    if (facing == Direction.Right)
+                    if (facing == FacingDirection.Right)
                     {
                         if (IsNextStepSafe() && !collidedAlongXAxis)
                             DoMovementRight();
@@ -111,9 +111,9 @@ namespace ThielynGame.GamePlay
                     ///////////////
                 case AIstate.Guard:
                     if (playerLocation.X < BoundingBox.Center.X)
-                        facing = Direction.Left;
+                        facing = FacingDirection.Left;
                     if (playerLocation.X > BoundingBox.Center.X)
-                        facing = Direction.Right;
+                        facing = FacingDirection.Right;
 
                     break;
 
@@ -131,13 +131,13 @@ namespace ThielynGame.GamePlay
             //if (velocity.X == 0) isSafeFlag = true;
 
             // set the point we want to check for terrain based on facing
-            if (facing == Direction.Left)
+            if (facing == FacingDirection.Left)
             {
                 referencePoint.X = VerticalCollisionBox.Left - 5;
                 referencePoint.Y = VerticalCollisionBox.Bottom + 5;
             }
 
-            if (facing == Direction.Right)
+            if (facing == FacingDirection.Right)
             {
                 referencePoint.X = VerticalCollisionBox.Right + 5;
                 referencePoint.Y = VerticalCollisionBox.Bottom + 5;

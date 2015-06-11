@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 namespace ThielynGame.GamePlay
 {
     public enum ObjectAlignment { Player, Enemy, Neutral }
-    public enum Direction {Left = -1, Right = 1}
+    public enum FacingDirection {Left = -1, Right = 1}
+    public enum AllDirections { Left, Up, Right, Down}
 
     public abstract class GameObject
     {

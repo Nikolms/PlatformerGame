@@ -35,12 +35,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Troll.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\ExitPoint.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\GameObject.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\ICollisionObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\ICharacterInteract.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\IPlayerInterAct.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\MeleeAreaEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\MovableObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\LevelManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Platform.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Player.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Traps\SpikeTrap.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GameSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LevelGenerator\LevelGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LevelGenerator\LevelSection.cs" />

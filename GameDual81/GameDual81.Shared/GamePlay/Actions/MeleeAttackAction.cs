@@ -19,8 +19,8 @@ namespace ThielynGame.GamePlay.Actions
             textureFileName = actor.characterType + "_melee";
 
             string animationName = actor.characterType + "_melee_";
-            if (actor.Facing == Direction.Left) animationName += "left";
-            if (actor.Facing == Direction.Right) animationName += "right";
+            if (actor.Facing == FacingDirection.Left) animationName += "left";
+            if (actor.Facing == FacingDirection.Right) animationName += "right";
 
             animation = new Animation(AnimationLists.GetAnimation(animationName), false);
             animation.Start();
@@ -37,9 +37,9 @@ namespace ThielynGame.GamePlay.Actions
                 actor.BoundingBox.Height
                 );
 
-            if (actor.Facing == Direction.Left)
+            if (actor.Facing == FacingDirection.Left)
                 AttackSize.X -= AttackSize.Width - (actor.BoundingBox.Width / 2);
-            if (actor.Facing == Direction.Right)
+            if (actor.Facing == FacingDirection.Right)
                 AttackSize.X += actor.BoundingBox.Width / 2;
 
 
