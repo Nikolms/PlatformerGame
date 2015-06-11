@@ -23,9 +23,9 @@ namespace ThielynGame.GamePlay
             position.Y = actor.BoundingBox.Y;
 
             // then readjust position depending on facing
-            if (actor.Facing == Direction.Left)
+            if (actor.Facing == FacingDirection.Left)
                 position.X -= actualSize.Width - (actor.BoundingBox.Width / 2);
-            if (actor.Facing == Direction.Right)
+            if (actor.Facing == FacingDirection.Right)
                 position.X += actor.BoundingBox.Width / 2;
 
             base.Update(time);

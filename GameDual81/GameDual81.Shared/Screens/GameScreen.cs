@@ -76,6 +76,8 @@ namespace ThielynGame.Screens
 
             // update all game objects
             objectManager.Update(time);
+
+            if (objectManager.gameOver) ExitScreen(); 
         }
 
         public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch s)

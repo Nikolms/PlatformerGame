@@ -5,19 +5,27 @@ using System.Text;
 
 namespace ThielynGame.GamePlay
 {
-    class ExitPoint : GameObject, ICollisionObject
+    class ExitPoint : GameObject, IPlayerInterAct
     {
-        public bool LevelCompleted { get; private set; }
+
+        public ExitPoint(Rectangle SizeAndPosition) 
+        {
+            actualSize = SizeAndPosition;
+            position.X = SizeAndPosition.X;
+            position.Y = SizeAndPosition.Y;
+        }
+
 
         public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch S, AnimationFiles.TextureLoader T)
         {
-            throw new NotImplementedException();
+            S.Draw(T.GetTexture("TODO"), MyRectangle.AdjustExistingRectangle(BoundingBox), Color.White);
         }
 
-        public void CheckCollisionWithCharacter(Character C)
+
+        public void CheckPlayerCollision(Player P)
         {
-            if (actualSize.Contains(C.BoundingBox)) 
-                LevelCompleted = true;
+            if (BoundingBox.Contains(P.BoundingBox)) 
+                P.ReachedEndOfLevel = true;
         }
     }
 }

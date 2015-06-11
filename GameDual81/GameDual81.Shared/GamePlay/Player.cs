@@ -10,18 +10,25 @@ namespace ThielynGame.GamePlay
 {
     class Player : Character
     {
+        public bool ReachedEndOfLevel { get; set; }
+
         public Player(Vector2 startPosition) : base(startPosition) 
         {
             alignment = ObjectAlignment.Player;
             TextureFileName = "player_sprite";
             characterType = "player";
-            this.actualSize = new Rectangle(0,0,60,90);
+            this.actualSize = new Rectangle(0,0,45,70);
 
             maxSpeed = 5;
             acceleration = 0.24f;
             AttackSpeed = 400;
 
-            facing = Direction.Right;
+            facing = FacingDirection.Right;
+            maxHealth = 100;
+            armor = 15;
+            ReachedEndOfLevel = false;
+
+            setParameters();
         }
 
         ////////////////////////////
@@ -32,8 +39,19 @@ namespace ThielynGame.GamePlay
         // makes the player jump
         public void DoJump(GameButton G) 
         {
+            int jumpPower;
             if (touchesGround)
-                velocity.Y = -24;
+            {
+                jumpPower = 13 + Math.Abs((int)velocity.X);
+                velocity.Y = -jumpPower;
+            }
+        }
+
+        // this function is used to reset player for the start of level
+        // sets velocity to 0 and clears negative effects etc
+        public void ResetPlayerStatus() 
+        {
+            ReachedEndOfLevel = false;
         }
     }
 }

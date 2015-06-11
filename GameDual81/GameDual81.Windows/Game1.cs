@@ -51,8 +51,8 @@ namespace ThielynGame
             // TODO: Add your initialization logic here
 
             // calculate screenmultiplier
-            screenMultiplierHeight = (float)GraphicsDevice.Viewport.Height /1080;
-            screenMultiplierWidth = ((float)GraphicsDevice.Viewport.Width + 1)/ 1920;
+            screenMultiplierHeight = (float)GraphicsDevice.Viewport.Height /768;
+            screenMultiplierWidth = ((float)GraphicsDevice.Viewport.Width + 1)/ 1280;
 
             Debug.WriteLine(
                 "width:  " + GraphicsDevice.Viewport.Width + 

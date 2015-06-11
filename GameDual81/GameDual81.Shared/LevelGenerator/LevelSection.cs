@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ThielynGame.GamePlay.Traps;
 
 namespace ThielynGame.LevelGenerator
 {
@@ -12,7 +13,8 @@ namespace ThielynGame.LevelGenerator
     class LevelSection
     {
         // a section contains information about the terrainpieces
-        public List<Platform> sectionTerrain = new List<Platform>();
+        public List<GameObject> sectionTerrain = new List<GameObject>();
+        public List<GameObject> sectionObjects = new List<GameObject>();
         // every section has certain spawn points where enemies or items can spawn
         // we have a separate spawn point for more specific objects such as keys, exit points, special items
         List<Vector2> commonSpawn = new List<Vector2>();
@@ -21,12 +23,12 @@ namespace ThielynGame.LevelGenerator
         // this function changes to the terrainposition to correspond the position of the section
         public void AdjustPositions(int row, int column) 
         {
-            foreach (Platform P in sectionTerrain) 
+            foreach (GameObject O in sectionTerrain) 
             {
                 // horizonta position is dependant on what column its on the map
-                P.AdjustHorizontalPosition(1, column * 1280);
+                O.AdjustHorizontalPosition(1, column * 1280);
                 // vertical position is dependat on what row its on the map
-                P.AdjustVerticalPosition(1,  row * 768);
+                O.AdjustVerticalPosition(1,  row * 768);
             }
         }
 

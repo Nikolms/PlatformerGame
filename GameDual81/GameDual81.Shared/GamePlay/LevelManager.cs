@@ -8,11 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GameDual81.LevelGenerator;
+using ThielynGame.Screens;
 
 namespace ThielynGame.GamePlay
 {
     class LevelManager
     {
+        public bool gameOver { get; private set; }
+
         // this flag is checked to know loading screen needs to display
         public bool IsCreatingLevel { get; private set; }
 
@@ -24,7 +27,7 @@ namespace ThielynGame.GamePlay
         // and not lose them before next frame when masterlist is overwritten
         static List<GameObject> NewObjectsWaitList = new List<GameObject>();
 
-        List<GameObject> updateAndrenderList;
+        List<GameObject> updateAndrenderList = new List<GameObject>();
 
         // we need to keep track of player separately too
         Player player;
@@ -56,8 +59,23 @@ namespace ThielynGame.GamePlay
         {
             IsCreatingLevel = true;
             levelCounter ++;
-            LevelGeneratorObject G = new LevelGeneratorObject(10);
+            LevelGeneratorObject G = new LevelGeneratorObject(16);
             G.getLevelInfo(masterlist);
+
+            // TESTING, REMOVE
+            masterlist.Add(new Traps.SpikeTrap(levelCounter, new Rectangle(300,400,30,30)));
+            levelExit = new ExitPoint(new Rectangle(1000,350, 90, 120));
+            masterlist.Add(levelExit);
+
+            Enemy E = new EnemyTypes.Troll(new Vector2(2000,700));
+            Enemy E1 = new EnemyTypes.Troll(new Vector2(1500, 1000));
+            Enemy E2 = new EnemyTypes.Troll(new Vector2(1000, 400));
+
+            masterlist.Add(E);
+            masterlist.Add(E1);
+            masterlist.Add(E2);
+
+            await Task.Delay(TimeSpan.FromSeconds(2));
 
             IsCreatingLevel = false;
         }
@@ -75,7 +93,7 @@ namespace ThielynGame.GamePlay
             // a list for all the terrain that matters this frame
             List<Platform> terrainToUpdate = new List<Platform>();
             List<MovableObject> movableObjectsToUpdate = new List<MovableObject>();
-            List<ICollisionObject> interactiveObjects = new List<ICollisionObject>();
+            List<ICharacterInteract> interactiveObjects = new List<ICharacterInteract>();
             List<Character> activeCharacters = new List<Character>();
             List<GameObject> miscObjects = new List<GameObject>();
 
@@ -102,8 +120,8 @@ namespace ThielynGame.GamePlay
                         if (G is Platform) 
                             terrainToUpdate.Add((Platform)G);
 
-                        if (G is ICollisionObject)
-                            interactiveObjects.Add((ICollisionObject)G);
+                        if (G is ICharacterInteract)
+                            interactiveObjects.Add((ICharacterInteract)G);
 
                         if (G is Character)
                             activeCharacters.Add((Character)G);
@@ -137,8 +155,10 @@ namespace ThielynGame.GamePlay
 
             // check for object interaction collision, such as item pick up, projectiles
             // and areaeffects
-            foreach (ICollisionObject O in interactiveObjects) 
+            foreach (ICharacterInteract O in interactiveObjects) 
             {
+                O.CheckCollisionWithCharacter(player);
+
                 foreach (Character C in activeCharacters)
                 {
                     O.CheckCollisionWithCharacter(C);
@@ -150,7 +170,12 @@ namespace ThielynGame.GamePlay
 
             // at the end of updating we want to readjust the world to that player
             // is in the middle of screen
-            Camera.FocusCameraOnPlayer(masterlist ,player);
+            Camera.FocusCameraOnPlayer(masterlist, player); 
+
+            // if player is dead exit game screen
+            if (player.IsDead) gameOver = true;
+            if (levelExit.LevelCompleted) StartNewLevel();
+
         }
 
         // draw all gameobjects
@@ -160,6 +185,7 @@ namespace ThielynGame.GamePlay
             {
                 G.Draw(S, T);
             }
+            levelExit.Draw(S,T);
             player.Draw(S,T);
         }
 

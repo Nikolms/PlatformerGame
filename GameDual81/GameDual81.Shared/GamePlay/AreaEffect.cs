@@ -6,7 +6,7 @@ using ThielynGame.AnimationFiles;
 
 namespace ThielynGame.GamePlay
 {
-    class AreaEffect : GameObject, ICollisionObject
+    class AreaEffect : GameObject, ICharacterInteract
     {
         bool isVisible;
         List<Character> CharactersHitByThis = new List<Character>();

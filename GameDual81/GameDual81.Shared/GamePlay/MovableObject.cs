@@ -17,8 +17,8 @@ namespace ThielynGame.GamePlay
         protected bool affectedByGravity = true;
         protected bool touchesGround;
 
-        protected Direction facing = Direction.Right;
-        public Direction Facing { get { return facing; } }
+        protected FacingDirection facing = FacingDirection.Right;
+        public FacingDirection Facing { get { return facing; } }
 
         float lastUpdate;
         protected float acceleration, maxSpeed;
@@ -55,7 +55,7 @@ namespace ThielynGame.GamePlay
         public virtual void ApplyGravity(TimeSpan time) 
         {
             if (affectedByGravity)
-            velocity.Y += 2;
+            velocity.Y += 1;
 
             if (velocity.Y > MAX_FALL_SPEED) velocity.Y = MAX_FALL_SPEED;
         }
