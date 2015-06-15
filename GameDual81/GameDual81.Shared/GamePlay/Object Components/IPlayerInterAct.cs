@@ -9,6 +9,6 @@ namespace ThielynGame.GamePlay
     // like level Exit door, pick up items and so on
     interface IPlayerInterAct
     {
-        void CheckPlayerCollision(Player P) { }
+        void CheckPlayerCollision(Player P);
     }
 }

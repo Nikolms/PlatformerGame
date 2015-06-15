@@ -13,7 +13,7 @@ namespace ThielynGame.GamePlay
     public enum CharacterState { Run, Jump, Idle }
 
     //base class for player and enemies
-     public abstract class Character : MovableObject
+     public abstract class Character : PhysicsObjects
     {
         protected FacingDirection previousFacing;
         protected CharacterState characterState, previousState;
@@ -24,7 +24,7 @@ namespace ThielynGame.GamePlay
         protected BaseAction currentAction;
 
         protected bool hasTakenDamage;
-        protected float hurtTimer;
+        protected float hurtImmunityTimer;
 
         protected int maxHealth,
             armor, level;
@@ -33,8 +33,6 @@ namespace ThielynGame.GamePlay
         protected Rectangle MeleeReach;
 
         public float AttackSpeed { get; protected set; }
-
-        protected float speed;
 
         public Character(Vector2 startPosition) 
         {
@@ -50,9 +48,9 @@ namespace ThielynGame.GamePlay
 
         public override void Update(TimeSpan time)
         {
-            hurtTimer -= time.Milliseconds;
+            hurtImmunityTimer -= time.Milliseconds;
 
-            if (hurtTimer <= 0)
+            if (hurtImmunityTimer <= 0)
                 hasTakenDamage = false;
 
             if (currentAction != null) 
@@ -169,14 +167,14 @@ namespace ThielynGame.GamePlay
 
          // functions to handle being hit by attacks and similar
          // damage reduction from armor happens in this function
-        public void HitByAttack(int damage)
+        public virtual void HitByAttack(int damage)
         {
             // if character is still recovering from recent damage, ignore this damage
             if (hasTakenDamage) return;
 
             // switch the invincibility on after receiving damage
             hasTakenDamage = true;
-            hurtTimer = 150;
+            hurtImmunityTimer = 500;
 
             float reduction = ((float)armor / 100) * damage;
             int actualDamage = damage - (int)reduction;
@@ -202,7 +200,7 @@ namespace ThielynGame.GamePlay
          {
              if (touchesGround && velocity.X > 0) velocity.X = 0;
              // increase velocity only if touches ground and has not reached max speed
-             if (touchesGround && velocity.X > -maxSpeed)
+             if (touchesGround && velocity.X > -maxSpeedX)
                  // left has a negative X
                  velocity.X -= acceleration;
 
@@ -215,7 +213,7 @@ namespace ThielynGame.GamePlay
          {
              if (touchesGround && velocity.X < 0) velocity.X = 0;
              // increase velocity only if touches ground and has not reached max speed
-             if (touchesGround && velocity.X < maxSpeed)
+             if (touchesGround && velocity.X < maxSpeedX)
                  velocity.X += acceleration;
 
              previousFacing = facing;

@@ -21,7 +21,6 @@ namespace ThielynGame.GamePlay
             this.duration = duration;
             this.alignment = alignment;
             isVisible = true;
-            InteractsWithCharacter = true;
             actualSize = hitBox;
             position.X = hitBox.X; position.Y = hitBox.Y;
         }

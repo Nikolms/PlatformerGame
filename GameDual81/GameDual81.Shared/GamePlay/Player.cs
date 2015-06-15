@@ -19,8 +19,8 @@ namespace ThielynGame.GamePlay
             characterType = "player";
             this.actualSize = new Rectangle(0,0,45,70);
 
-            maxSpeed = 5;
-            acceleration = 0.24f;
+            maxSpeedX = 5;
+            acceleration = 0.66f;
             AttackSpeed = 400;
 
             facing = FacingDirection.Right;

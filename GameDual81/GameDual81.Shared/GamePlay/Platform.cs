@@ -8,22 +8,17 @@ using System.Threading.Tasks;
 
 namespace ThielynGame.GamePlay
 {
-    public enum TilePosition { Left, right, Middle, Top, Bottom, Custom}
-
     public class Platform : GameObject
     {
-        protected bool isDisappearingPlatform;
+        protected bool isDisappearingPlatform = false;
+
         protected bool isMovingPlatform = false;
         float travelDistance, currentDistance;
-        protected Vector2 speed = new Vector2(0,0);
-        bool verticalMove;
-        int direction;
-        List<MovableObject> objectsOnTopOfThis = new List<MovableObject>();
-        TilePosition tilePosition;
-        Rectangle TextureSource;
+        int currentDirection;
 
+        // list of objects that standing on this platform
+        List<PhysicsObjects> objectsOnTopOfThis = new List<PhysicsObjects>();
 
-        public Vector2 Speed { get { return speed; } }
         public string TextureSet { set { TextureFileName = value; } }
 
         public Platform(Rectangle positionAndSize) 
@@ -34,29 +29,15 @@ namespace ThielynGame.GamePlay
 
             // TODO, only for testing purposes
             TextureFileName = "terrain_stone";
-
-            // TODO
-            /*
-            switch (tileposition) 
-            {
-                case TilePosition.Middle: TextureSource = new Rectangle(0,0,64,32); break;
-                case TilePosition.Top: TextureSource = new Rectangle(64,0,64,32); break;
-                case TilePosition.Custom: TextureSource = actualSize; break;
-                default: TextureSource = new Rectangle(0, 0, 64, 32); break;
-            } */
         }
 
-        public Platform(Rectangle positionAndSize, string tilesetName, bool isMoving, bool verticalMove, float speed, int travelDistance)  :
+        public Platform(Rectangle positionAndSize, string tilesetName, Vector2 velocity, float travelDistance)  :
             this (positionAndSize)
         {
-            this.verticalMove = verticalMove;
+            maxSpeedX = velocity.X; maxSpeedY = velocity.Y;
+            isMovingPlatform = true;
             this.travelDistance = travelDistance;
-            isMovingPlatform = isMoving;
             currentDistance = 0;
-            direction = 1;
-
-            if (verticalMove) this.speed.Y = speed;
-            else this.speed.X = speed;
         }
 
 
@@ -66,26 +47,28 @@ namespace ThielynGame.GamePlay
             // if this platform has its own movement update it
             if (isMovingPlatform) 
             {
-                    position.Y += speed.Y * direction;
-
-                    position.X += speed.X * direction;
-
-                currentDistance += speed.X;
-                currentDistance += speed.Y;
-
-                // loop through all movable objects standing on this
-                // and make their position follow platforms X movement
-                //if (objectsOnTopOfThis.Count > 0) { 
-                foreach(MovableObject O in objectsOnTopOfThis) 
+                // switch direction if max distance or zero distance is reached
+                if (currentDistance <= 0) 
                 {
-                    O.AdjustHorizontalPosition(direction, (int)speed.X);
+                    currentDirection = 1;
+                    velocity.X = maxSpeedX; velocity.Y = maxSpeedY;
                 }
 
-                // change distance if max travel was reached
                 if (currentDistance >= travelDistance)
                 {
-                    direction = -direction;
-                    currentDistance = 0;
+                    currentDirection = -1;
+                    velocity.X = -maxSpeedX; velocity.Y = -maxSpeedY;
+                }
+
+                // multiply velo with direction, to get negative or positive value depending on direction
+                position += velocity;
+
+                // update to current travel distance by velocity lenght
+                currentDistance += velocity.Length() * currentDirection;
+
+                foreach (PhysicsObjects O in objectsOnTopOfThis) 
+                {
+                    O.AddExternalSpeed(velocity.X, velocity.Y);
                 }
             }
             // unregister all objects every frame. Objects must renew their collision
@@ -104,7 +87,7 @@ namespace ThielynGame.GamePlay
         }
 
 
-        public void RegisterObjectOnTop(MovableObject O) 
+        public void RegisterObjectOnTop(PhysicsObjects O) 
         {
             objectsOnTopOfThis.Add(O);
         }

@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 
 namespace ThielynGame.GamePlay
 {
-    public abstract class MovableObject : GameObject
+    // this class contains base functionalities for non terrain objects
+    // these objects have more complex physics than terrain objects
+
+    public abstract class PhysicsObjects : GameObject
     {
         protected float MAX_FALL_SPEED = 16f,
                         AIR_FRICTION = 1f,
-                        GROUND_FRICTION = 0.08f;
+                        GROUND_FRICTION = 0.5f;
 
         // some special objects might ignore gravity
         protected bool affectedByGravity = true;
@@ -20,10 +23,10 @@ namespace ThielynGame.GamePlay
         protected FacingDirection facing = FacingDirection.Right;
         public FacingDirection Facing { get { return facing; } }
 
-        float lastUpdate;
-        protected float acceleration, maxSpeed;
-        protected Vector2 velocity;
-        public Vector2 Velocity { get { return velocity; } }
+        
+        //float lastUpdate;
+        protected float acceleration;
+        protected Vector2 externalSpeed;
 
 
         public Rectangle HorizontalCollisionBox
@@ -44,12 +47,16 @@ namespace ThielynGame.GamePlay
         
         public override void Update (TimeSpan time) 
         {
-            // touches ground needs to be reset by collsion every frame
+            // touches ground needs to be reset by collision every frame
             touchesGround = false;
 
             ApplyGravity(time);
 
             position += velocity;
+            position += externalSpeed;
+
+            externalSpeed.X = 0;
+            externalSpeed.Y = 0;
         }
 
         public virtual void ApplyGravity(TimeSpan time) 
@@ -72,12 +79,18 @@ namespace ThielynGame.GamePlay
             if (CC.directionY < 0)
             {
                 touchesGround = true;
-                velocity.Y = collidedWith.Speed.Y;
                 collidedWith.RegisterObjectOnTop(this);
             }
 
             AdjustHorizontalPosition(CC.directionX, CC.correctionDistanceX);
             AdjustVerticalPosition(CC.directionY, CC.correctionDistanceY);
+
+        }
+
+        public void AddExternalSpeed(float X, float Y) 
+        {
+            externalSpeed.X = X;
+            externalSpeed.Y = Y;
 
         }
 

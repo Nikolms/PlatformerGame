@@ -21,15 +21,14 @@ namespace ThielynGame.GamePlay
         protected Rectangle actualSize;
         protected Vector2 position;
 
-        public bool IgnoresTerrain { get; protected set; }
-        public bool InteractsWithCharacter { get; protected set; }
+        protected Vector2 velocity;
+        protected float maxSpeedY, maxSpeedX;
 
         // the texturefile that should be loaded for the object
         // objects dont store their own textures, just the filename
         public string TextureFileName { get; protected set; }
 
         public bool IsDead { get; protected set; }
-
 
         // TODO add logic to determine if near screen or not
         public bool IsNearScreen () 
@@ -49,6 +48,7 @@ namespace ThielynGame.GamePlay
         public virtual void Update(TimeSpan time) { }
 
         public abstract void Draw(SpriteBatch S, TextureLoader T);
+       
 
         #region methods used to reposition objects related to camera or collision correction
 

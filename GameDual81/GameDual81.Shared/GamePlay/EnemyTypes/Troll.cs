@@ -13,7 +13,7 @@ namespace ThielynGame.GamePlay.EnemyTypes
             TextureFileName = "troll_sprite";
             characterType = "troll";
             actualSize = new Rectangle(0,0,80,120);
-            maxSpeed = 1.5f;
+            maxSpeedX = 1.5f;
             acceleration = 0.24f;
 
             maxHealth = 2;

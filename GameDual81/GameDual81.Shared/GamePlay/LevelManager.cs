@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GameDual81.LevelGenerator;
 using ThielynGame.Screens;
+using ThielynGame.GamePlay.EnemyTypes;
 
 namespace ThielynGame.GamePlay
 {
@@ -31,7 +32,6 @@ namespace ThielynGame.GamePlay
 
         // we need to keep track of player separately too
         Player player;
-        ExitPoint levelExit;
 
         // keep track of current level
         int levelCounter = 0;
@@ -63,17 +63,13 @@ namespace ThielynGame.GamePlay
             G.getLevelInfo(masterlist);
 
             // TESTING, REMOVE
-            masterlist.Add(new Traps.SpikeTrap(levelCounter, new Rectangle(300,400,30,30)));
-            levelExit = new ExitPoint(new Rectangle(1000,350, 90, 120));
-            masterlist.Add(levelExit);
+            Enemy e1 = new Slime(new Vector2(1000,200));
+            Enemy e2 = new Slime(new Vector2(2000, 200));
+            Enemy e3 = new Slime(new Vector2(1500, 200));
 
-            Enemy E = new EnemyTypes.Troll(new Vector2(2000,700));
-            Enemy E1 = new EnemyTypes.Troll(new Vector2(1500, 1000));
-            Enemy E2 = new EnemyTypes.Troll(new Vector2(1000, 400));
-
-            masterlist.Add(E);
-            masterlist.Add(E1);
-            masterlist.Add(E2);
+            AddGameObject(e1);
+            AddGameObject(e2);
+            AddGameObject(e3);
 
             await Task.Delay(TimeSpan.FromSeconds(2));
 
@@ -83,17 +79,20 @@ namespace ThielynGame.GamePlay
         //all game objects are updated in this method
         public void Update(TimeSpan time) 
         {
-            // add any objects to masterlist
+            // add new objects to masterlist
             masterlist.AddRange(NewObjectsWaitList);
-            // clear the waitinglist
+            // clear the new objects waitinglist
             NewObjectsWaitList.Clear();
 
             // a list that stores all objects that are not dead, 
             List<GameObject> AliveObjects = new List<GameObject>();
-            // a list for all the terrain that matters this frame
+            // a list for all the terrain that is near screen this frame
             List<Platform> terrainToUpdate = new List<Platform>();
-            List<MovableObject> movableObjectsToUpdate = new List<MovableObject>();
+            // all movable objects that are near screen
+            List<PhysicsObjects> movableObjectsToUpdate = new List<PhysicsObjects>();
             List<ICharacterInteract> interactiveObjects = new List<ICharacterInteract>();
+            List<IPlayerInterAct> playerInteractionObjects = new List<IPlayerInterAct>();
+            // all enemies that need to update and check collisions this frame
             List<Character> activeCharacters = new List<Character>();
             List<GameObject> miscObjects = new List<GameObject>();
 
@@ -120,14 +119,17 @@ namespace ThielynGame.GamePlay
                         if (G is Platform) 
                             terrainToUpdate.Add((Platform)G);
 
+                        if (G is IPlayerInterAct)
+                            playerInteractionObjects.Add((IPlayerInterAct)G);
+
                         if (G is ICharacterInteract)
                             interactiveObjects.Add((ICharacterInteract)G);
 
                         if (G is Character)
                             activeCharacters.Add((Character)G);
 
-                        if (G is MovableObject)
-                            movableObjectsToUpdate.Add((MovableObject)G);
+                        if (G is PhysicsObjects)
+                            movableObjectsToUpdate.Add((PhysicsObjects)G);
                     }
                 }
             }
@@ -147,11 +149,15 @@ namespace ThielynGame.GamePlay
             // collision checks
             GroundCollisionControl.CheckGroundCollision(player, terrainToUpdate);
             // Update all other objects
-            foreach (MovableObject O in movableObjectsToUpdate) 
+            foreach (PhysicsObjects O in movableObjectsToUpdate) 
             {
                 GroundCollisionControl.CheckGroundCollision(O, terrainToUpdate);
             }
 
+            foreach(IPlayerInterAct P in playerInteractionObjects) 
+            {
+                P.CheckPlayerCollision(player);
+            }
 
             // check for object interaction collision, such as item pick up, projectiles
             // and areaeffects
@@ -174,8 +180,6 @@ namespace ThielynGame.GamePlay
 
             // if player is dead exit game screen
             if (player.IsDead) gameOver = true;
-            if (levelExit.LevelCompleted) StartNewLevel();
-
         }
 
         // draw all gameobjects
@@ -185,7 +189,6 @@ namespace ThielynGame.GamePlay
             {
                 G.Draw(S, T);
             }
-            levelExit.Draw(S,T);
             player.Draw(S,T);
         }
 

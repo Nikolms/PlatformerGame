@@ -17,7 +17,7 @@ namespace ThielynGame.GamePlay
 
     class GroundCollisionControl
     {
-        public static void CheckGroundCollision(MovableObject collider, List<Platform> terrain) 
+        public static void CheckGroundCollision(PhysicsObjects collider, List<Platform> terrain) 
         {
             foreach (Platform P in terrain) 
             {
