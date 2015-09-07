@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace ThielynGame.GamePlay
 {
-    public enum AIstate { Patrol, Idle, Combat, Guard}
+    public enum AI_IdleMovement { Patrol, Guard}
+    public enum AI_CombatMovement { MoveCloser, Guard, Patrol}
 
     abstract class Enemy : Character
     {
@@ -17,12 +18,28 @@ namespace ThielynGame.GamePlay
         public static Point playerLocation;
 
         protected bool hasDetectedPlayer;
-        protected bool primaryRanged;
 
-        AIstate currentAIState;
+        protected AI_IdleMovement AI_idleMovement;
+        protected AI_CombatMovement AI_combatMovement;
+
         bool collidedAlongXAxis;
 
         protected float detectionRange;
+        protected float rangePrimaryAttack;
+        protected float rangeSecondaryAttack;
+
+         bool canDoAttackPrimary;
+         bool canDoAttackSecondary;
+
+        float timerPrimaryAttack;
+        float timerSecondaryAttack;
+
+        protected float cooldownPrimaryAttack;
+        protected float cooldownSecondaryAttack;
+
+        // this cooldown is used to prevent AI from performing both attacks too fast after each other
+        float timerAttackAction;
+        protected float cooldownBetweenAttacks;
 
         public Enemy(Vector2 startPosition) : base(startPosition) 
         {
@@ -34,12 +51,17 @@ namespace ThielynGame.GamePlay
         
         public override void Update(TimeSpan time)
         {
+            // advance all cooldown counters
+            timerPrimaryAttack -= time.Milliseconds;
+            timerSecondaryAttack -= time.Milliseconds;
+            timerAttackAction -= time.Milliseconds;
+
             // if enemy is not performing any action it should evaluate
             // what it should do during this frame
             if (currentAction == null) 
             {
-                SetAIBehaviour();
-                UpdateAI();
+                checkAIRanges();
+                //UpdateAI();
             }
 
             base.Update(time);
@@ -59,69 +81,133 @@ namespace ThielynGame.GamePlay
         //////////////////////////////////////
         // This is the AI section basically
         //-----------------------------------------------
-        void SetAIBehaviour() 
+        void checkAIRanges() 
         {
+            // check detection range
             if (Math.Abs(playerLocation.X - position.X) < detectionRange &&
                 Math.Abs(playerLocation.Y - position.Y) < 90)
                 hasDetectedPlayer = true;
             else
                 hasDetectedPlayer = false;
 
-            if (hasDetectedPlayer) 
+            // check primary attack range
+            if (Math.Abs(playerLocation.X - BoundingBox.Center.X) <= rangePrimaryAttack)
+                canDoAttackPrimary = true;
+
+            // check secondary attack range
+            if (Math.Abs(playerLocation.X - BoundingBox.Center.X) <= rangeSecondaryAttack)
+                canDoAttackSecondary = true;
+
+            if (hasDetectedPlayer)
             {
-                if (primaryRanged) currentAIState = AIstate.Guard;
-
-                else currentAIState = AIstate.Guard;
+                facing = playerDirection();
+                DoCombatAI();
             }
+            if (!hasDetectedPlayer) DoNeutralAI();
 
-            // if enemy has not detected player, it patrols along its platform
-            else 
-                currentAIState = AIstate.Patrol;
+            // clear attack range checks before next frame
+            canDoAttackPrimary = false;
+            canDoAttackSecondary = false;
         }
 
-        void UpdateAI() 
+        void DoCombatAI() 
         {
-            switch (currentAIState) 
+            if (timerAttackAction < 0)
             {
-                    /////////////////
-                case AIstate.Patrol:
+                // first resolve any attacks that can be made
+                if (canDoAttackPrimary && timerPrimaryAttack < 0)
+                {
+                    DoPrimaryAttack();
+                    return;
+                }
+                if (canDoAttackSecondary && timerSecondaryAttack < 0)
+                {
+                    DoSecondaryAttack();
+                    return;
+                }
+            }
 
-                    // Do movement in the direction watching
-                    if (facing == FacingDirection.Left)
-                    {
-                        if (IsNextStepSafe() && !collidedAlongXAxis)
-                            DoMovementLeft();
+            // if no attacks can be made perform combat movement
+            switch (AI_combatMovement) 
+            {
+                case AI_CombatMovement.Guard: break;
 
-                        else
-                            DoMovementRight();
-                        
-                    }
-                    else
-                    if (facing == FacingDirection.Right)
-                    {
-                        if (IsNextStepSafe() && !collidedAlongXAxis)
-                            DoMovementRight();
-
-                        else
-                            DoMovementLeft();
-                    }
-                    
+                case AI_CombatMovement.MoveCloser:
+                    MoveTowardsPlayer();
                     break;
 
-                    ///////////////
-                case AIstate.Guard:
-                    if (playerLocation.X < BoundingBox.Center.X)
-                        facing = FacingDirection.Left;
-                    if (playerLocation.X > BoundingBox.Center.X)
-                        facing = FacingDirection.Right;
-
+                case AI_CombatMovement.Patrol:
+                    DoPatrol();
                     break;
-
-                    //////////////
-                case AIstate.Combat: break;
             }
         }
 
+        void DoNeutralAI()
+        {
+            switch (AI_idleMovement) 
+            {
+                case AI_IdleMovement.Guard: break;
+                case AI_IdleMovement.Patrol:
+                    DoPatrol();
+                    break;
+            }
+        }
+
+        void DoPatrol() 
+        {
+            // Do movement in the direction watching
+            if (facing == FacingDirection.Left)
+            {
+                if (IsNextStepSafe() && !collidedAlongXAxis)
+                    DoMovementLeft();
+
+                else
+                    DoMovementRight();
+
+            }
+            else
+                if (facing == FacingDirection.Right)
+                {
+                    if (IsNextStepSafe() && !collidedAlongXAxis)
+                        DoMovementRight();
+
+                    else
+                        DoMovementLeft();
+                }
+        }
+
+        void MoveTowardsPlayer() 
+        {
+            // return without doing any movement if there is a valid attack range
+            if (canDoAttackPrimary || canDoAttackSecondary) return;
+
+            // determine which direction to reach player
+            if (playerDirection() == FacingDirection.Left) 
+            {
+                facing = FacingDirection.Left;
+                if (IsNextStepSafe()) DoMovementLeft();
+            }
+
+            if (playerDirection() == FacingDirection.Right) 
+            {
+                facing = FacingDirection.Right;
+                if (IsNextStepSafe()) DoMovementRight();
+            }
+        }
+
+        protected virtual void DoPrimaryAttack() 
+        {
+            timerPrimaryAttack = cooldownPrimaryAttack;
+            timerAttackAction = cooldownBetweenAttacks;
+        }
+
+        protected virtual void DoSecondaryAttack() 
+        {
+            timerSecondaryAttack = cooldownSecondaryAttack;
+            timerAttackAction = cooldownBetweenAttacks;
+        }
+
+        // this method checks if edges in current movement direction are too high to climb back up again
         bool IsNextStepSafe()
         {
             // not safe by default unless a terrain piece changes this later in the loop
@@ -152,6 +238,18 @@ namespace ThielynGame.GamePlay
             }
 
             return isSafeFlag;
+        }
+
+        // this method calculates in which direction player is from current position
+        FacingDirection playerDirection() 
+        {
+            FacingDirection direction = FacingDirection.Left;
+
+            if (playerLocation.X < BoundingBox.Center.X) direction = FacingDirection.Left;
+
+            if (playerLocation.X > BoundingBox.Center.X) direction = FacingDirection.Right;
+
+            return direction;
         }
 
     }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ThielynGame.GamePlay;
+using ThielynGame.GamePlay.Actions;
 
 namespace ThielynGame.GamePlay.EnemyTypes
 {
@@ -13,14 +14,34 @@ namespace ThielynGame.GamePlay.EnemyTypes
             TextureFileName = "troll_sprite";
             characterType = "troll";
             actualSize = new Rectangle(0,0,80,120);
-            maxSpeedX = 1.5f;
-            acceleration = 0.24f;
+            maxSpeedX = 2f;
+            acceleration = 0.66f;
 
-            maxHealth = 2;
+            MaxHealth = 2;
             detectionRange = 300;
+            rangePrimaryAttack = 60;
+            rangeSecondaryAttack = 60;
+
+            cooldownPrimaryAttack = 4000;
+            cooldownSecondaryAttack = 2000;
+            cooldownBetweenAttacks = 1500;
+
+            AI_combatMovement = AI_CombatMovement.MoveCloser;
+            AI_idleMovement = AI_IdleMovement.Patrol;
+
 
             // finalize the calculated  parameters
             setParameters();
+        }
+
+        protected override void DoPrimaryAttack()
+        {
+            
+        }
+
+        protected override void DoSecondaryAttack()
+        {
+            
         }
     }
 }

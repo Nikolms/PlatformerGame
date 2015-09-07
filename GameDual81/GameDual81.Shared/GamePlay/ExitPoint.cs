@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ThielynGame.GamePlay
 {
-    class ExitPoint : GameObject, IPlayerInterAct
+    class ExitPoint : GameObject, IInteractiveObject
     {
 
         public ExitPoint(Rectangle SizeAndPosition) 

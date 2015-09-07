@@ -20,40 +20,27 @@ namespace ThielynGame.AnimationFiles
             animationCollection = new Dictionary<string, List<FrameObject>>();
 
             #region player animations
-            List<FrameObject> player_Idle = new List<FrameObject>();
-                FrameObject PA = new FrameObject(); PA.durationMillisec = 2000; PA.frameSource = new Rectangle(0, 180, 60, 90);
-                FrameObject PB = new FrameObject(); PB.durationMillisec = 150; PB.frameSource = new Rectangle(60, 180, 60, 90);
-                FrameObject PC = new FrameObject(); PC.durationMillisec = 150; PC.frameSource = new Rectangle(120, 180, 60, 90);
-                FrameObject PD = new FrameObject(); PD.durationMillisec = 150; PD.frameSource = new Rectangle(60, 180, 60, 90);
-            player_Idle.Add(PA); player_Idle.Add(PB); player_Idle.Add(PC); player_Idle.Add(PD);
+            List<FrameObject> player_idle = new List<FrameObject>() 
+            {
+            new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(0,0,45,70)}
+            };
 
-            List<FrameObject> player_Run_Left = new List<FrameObject>();
-            FrameObject PE = new FrameObject(); PE.durationMillisec = 150; PE.frameSource = new Rectangle(0, 90, 60, 90);
-            FrameObject PF = new FrameObject(); PF.durationMillisec = 150; PF.frameSource = new Rectangle(60, 90, 60, 90);
-            FrameObject PG = new FrameObject(); PG.durationMillisec = 150; PG.frameSource = new Rectangle(120, 90, 60, 90);
-            FrameObject PH = new FrameObject(); PH.durationMillisec = 150; PH.frameSource = new Rectangle(180, 90, 60, 90);
-            player_Run_Left.Add(PE); player_Run_Left.Add(PF); player_Run_Left.Add(PG); player_Run_Left.Add(PH);
+            List<FrameObject> player_run = new List<FrameObject>()
+            {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(45,0,45,70)},
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(90,0,45,70)}
+            };
 
-            List<FrameObject> player_Run_Right = new List<FrameObject>();
-            FrameObject PI = new FrameObject(); PI.durationMillisec = 150; PI.frameSource = new Rectangle(0, 0, 60, 90);
-            FrameObject PJ = new FrameObject(); PJ.durationMillisec = 150; PJ.frameSource = new Rectangle(60, 0, 60, 90);
-            FrameObject PK = new FrameObject(); PK.durationMillisec = 150; PK.frameSource = new Rectangle(120, 0, 60, 90);
-            FrameObject PL = new FrameObject(); PL.durationMillisec = 150; PL.frameSource = new Rectangle(180, 0, 60, 90);
-            player_Run_Right.Add(PI); player_Run_Right.Add(PJ); player_Run_Right.Add(PK); player_Run_Right.Add(PL);
+            List<FrameObject> player_melee = new List<FrameObject>()
+            {
+                new FrameObject() {durationMillisec = 200, frameSource = new Rectangle(0,70,65,90)},
+                new FrameObject() {durationMillisec = 200, frameSource = new Rectangle(64,70,80,70)},
+            };
 
-            List<FrameObject> player_Melee_Right = new List<FrameObject>();
-            FrameObject PM1 = new FrameObject(); PM1.durationMillisec = 100; PM1.frameSource = new Rectangle(0, 0, 140, 120);
-            FrameObject PM2 = new FrameObject(); PM2.durationMillisec = 100; PM2.frameSource = new Rectangle(140, 0, 140, 120);
-            FrameObject PM3 = new FrameObject(); PM3.durationMillisec = 100; PM3.frameSource = new Rectangle(280, 0, 140, 120);
-            FrameObject PM4 = new FrameObject(); PM4.durationMillisec = 100; PM4.frameSource = new Rectangle(420, 0, 140, 120);
-            player_Melee_Right.Add(PM1); player_Melee_Right.Add(PM2); player_Melee_Right.Add(PM3); player_Melee_Right.Add(PM4);
-
-            List<FrameObject> player_Melee_Left = new List<FrameObject>();
-            FrameObject PM5 = new FrameObject(); PM5.durationMillisec = 100; PM5.frameSource = new Rectangle(0, 120, 140, 120);
-            FrameObject PM6 = new FrameObject(); PM6.durationMillisec = 100; PM6.frameSource = new Rectangle(140, 120, 140, 120);
-            FrameObject PM7 = new FrameObject(); PM7.durationMillisec = 100; PM7.frameSource = new Rectangle(290, 120, 140, 120);
-            FrameObject PM8 = new FrameObject(); PM8.durationMillisec = 100; PM8.frameSource = new Rectangle(420, 120, 140, 120);
-            player_Melee_Left.Add(PM5); player_Melee_Left.Add(PM6); player_Melee_Left.Add(PM7); player_Melee_Left.Add(PM8);
+            List<FrameObject> player_charge = new List<FrameObject>() 
+            {
+                new FrameObject() {durationMillisec = 200, frameSource = new Rectangle(64,139,55,80)}
+            };
 
             #endregion
 
@@ -82,18 +69,98 @@ namespace ThielynGame.AnimationFiles
             FrameObject T13 = new FrameObject(); T13.durationMillisec = 500; T13.frameSource = new Rectangle(0,0,80,120);
             Troll_idle.Add(T13);
 
+            List<FrameObject> troll_melee_right = new List<FrameObject>() 
+            {
+                new FrameObject() {durationMillisec = 1000, frameSource = new Rectangle(0,0,80,120)},
+                new FrameObject() {durationMillisec = 200, frameSource = new Rectangle(0,0,80,120)}
+            };
+            List<FrameObject> troll_melee_left = new List<FrameObject>() 
+            {
+                new FrameObject() {durationMillisec = 1000, frameSource = new Rectangle(0,0,80,120)},
+                new FrameObject() {durationMillisec = 200, frameSource = new Rectangle(0,0,80,120)}
+            };
             #endregion
 
-            // add all animations to dictionary
-            animationCollection.Add("player_idle", player_Idle);
-            animationCollection.Add("player_run_left", player_Run_Left);
-            animationCollection.Add("player_run_right", player_Run_Right);
-            animationCollection.Add("player_melee_left", player_Melee_Left);
-            animationCollection.Add("player_melee_right", player_Melee_Right);
+            #region slime animation
 
-            animationCollection.Add("troll_idle", Troll_idle);
-            animationCollection.Add("troll_run_left", Troll_run_left);
-            animationCollection.Add("troll_run_right", Troll_run_right);
+            List<FrameObject> slime_idle = new List<FrameObject> 
+            {
+                new FrameObject() {durationMillisec = 100, frameSource = new Rectangle(0,0,70,50)}
+            };
+
+            List<FrameObject> slime_run = new List<FrameObject> 
+            {
+                new FrameObject() {durationMillisec = 200, frameSource = new Rectangle(0,0,70,50)},
+                new FrameObject() {durationMillisec = 200, frameSource = new Rectangle(70,0,70,50)}
+            };
+
+            #endregion
+
+            #region snake animation
+
+            List<FrameObject> snake_idle = new List<FrameObject>() 
+            {
+                new FrameObject() {durationMillisec = 100, frameSource = new Rectangle(0,0,80,90)} 
+            };
+            List<FrameObject> snake_run_left = new List<FrameObject>() 
+            {
+                new FrameObject() {durationMillisec = 250, frameSource = new Rectangle(0,90,80,90)},
+                new FrameObject() {durationMillisec = 250, frameSource = new Rectangle(80,90,80,90)}
+            };
+            List<FrameObject> snake_run_right = new List<FrameObject>()
+            {
+                new FrameObject() {durationMillisec = 250, frameSource = new Rectangle(0,0,80,90)},
+                new FrameObject() {durationMillisec = 250, frameSource = new Rectangle(80,0,80,90)}
+            };
+            List<FrameObject> snake_melee_left = new List<FrameObject>()
+            {
+                new FrameObject() {durationMillisec = 500, frameSource = new Rectangle(160,90,80,90)},
+                new FrameObject() {durationMillisec = 200, frameSource = new Rectangle(240,90,160,90)}
+            };
+            List<FrameObject> snake_melee_right = new List<FrameObject>()
+            {
+                new FrameObject() {durationMillisec = 500, frameSource = new Rectangle(160,0,80,90)},
+                new FrameObject() {durationMillisec = 200, frameSource = new Rectangle(240,0,160,90)}
+            };
+
+            #endregion
+
+            #region archer animation
+
+            List<FrameObject> archer_idle = new List<FrameObject>() 
+            {
+                new FrameObject() {durationMillisec = 100, frameSource = new Rectangle(0,0,80,90)} 
+            };
+            List<FrameObject> archer_run_left = new List<FrameObject>() 
+            {
+                new FrameObject() {durationMillisec = 150, frameSource = new Rectangle(0,90,80,90)},
+                new FrameObject() {durationMillisec = 150, frameSource = new Rectangle(80,90,80,90)}
+            };
+            List<FrameObject> archer_run_right = new List<FrameObject>()
+            {
+                new FrameObject() {durationMillisec = 180, frameSource = new Rectangle(0,0,80,90)},
+                new FrameObject() {durationMillisec = 180, frameSource = new Rectangle(80,0,80,90)}
+            };
+            List<FrameObject> archer_ranged_left = new List<FrameObject>() 
+            {
+                new FrameObject() {durationMillisec = 100, frameSource = new Rectangle(160,90,80,90)},
+                new FrameObject() {durationMillisec = 100, frameSource = new Rectangle(240,90,160,90)}
+            };
+            List<FrameObject> archer_ranged_right = new List<FrameObject>() 
+            {
+                new FrameObject() {durationMillisec = 100, frameSource = new Rectangle(160,0,80,90)},
+                new FrameObject() {durationMillisec = 100, frameSource = new Rectangle(240,0,160,90)}
+            };
+#endregion
+
+            // add all animations to dictionary
+            animationCollection.Add("player_idle", player_idle);
+            animationCollection.Add("player_run", player_run);
+            animationCollection.Add("player_melee", player_melee);
+            animationCollection.Add("player_charge", player_charge);
+
+            animationCollection.Add("slime_idle", slime_idle);
+            animationCollection.Add("slime_run", slime_run);
 
         }
 

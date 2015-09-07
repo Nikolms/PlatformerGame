@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ThielynGame.GamePlay.Actions;
+using ThielynGame.GamePlay.StatusEffects;
 
 namespace ThielynGame.GamePlay
 {
@@ -20,12 +21,13 @@ namespace ThielynGame.GamePlay
             this.actualSize = new Rectangle(0,0,45,70);
 
             maxSpeedX = 5;
-            acceleration = 0.66f;
-            AttackSpeed = 400;
+            acceleration = 0.75f;
+            AttackSpeed = 100;
+            MeleeReach = new Rectangle(0,0,70,70);
 
             facing = FacingDirection.Right;
-            maxHealth = 100;
-            armor = 15;
+            MaxHealth = 100;
+            armor = GameSettings.ArmorUpgrade + 0;
             ReachedEndOfLevel = false;
 
             setParameters();
@@ -40,11 +42,28 @@ namespace ThielynGame.GamePlay
         public void DoJump(GameButton G) 
         {
             int jumpPower;
-            if (touchesGround)
+            if (TouchesGround)
             {
                 jumpPower = 13 + Math.Abs((int)velocity.X);
                 velocity.Y = -jumpPower;
             }
+        }
+
+        public void DoSkillSlotOne(GameButton G) 
+        {
+            if (currentAction == null)
+                startNewAction(BaseAction.CreateAction(ActionType.Charge, this));
+        }
+        public void DoSkillSlotTwo(GameButton G) 
+        {
+        }
+        public void DoSkillSlotThree(GameButton G) 
+        {
+        }
+
+        public void DoMeleeAttack(GameButton G) 
+        {
+             startNewAction( BaseAction.CreateAction(ActionType.MeleeAttack, this));
         }
 
         // this function is used to reset player for the start of level

@@ -7,7 +7,7 @@ namespace ThielynGame.GamePlay.Traps
 {
     public enum TravelingAxis { Horizontal, Vertical}
 
-    class Spikes : GameObject, IPlayerInterAct
+    class Spikes : GameObject, IInteractiveObject
     {
         int level;
         bool MovingTrap = false;
@@ -56,8 +56,7 @@ namespace ThielynGame.GamePlay.Traps
         {
             if (!P.BoundingBox.Intersects(this.BoundingBox)) return;
 
-            P.HitByAttack(10 + level);
-            P.KnockBack(AllDirections.Up, 17);
+            P.OnReceiveDamage(10 + level, false, null);
         }
     }
 }

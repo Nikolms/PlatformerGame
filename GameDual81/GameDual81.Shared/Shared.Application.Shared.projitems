@@ -25,25 +25,26 @@
       <DependentUpon>GamePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Actions\BaseAction.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Actions\MeleeAttackAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\AreaEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Camera.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Character.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\CharacterAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\CollisionControl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Enemy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Archer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Slime.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Snake.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Troll.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\ExitPoint.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\GameObject.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\MeleeAreaEffect.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Object Components\DamageOnTouch.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Object Components\ICharacterInteract.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Object Components\IObsticle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Object Components\IPlayerInterAct.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\PhysicsObjects.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\LevelManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Platform.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Player.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Projectile.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\StatusEffects\StatusEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Traps\Spikes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GameSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LevelGenerator\LevelGenerator.cs" />

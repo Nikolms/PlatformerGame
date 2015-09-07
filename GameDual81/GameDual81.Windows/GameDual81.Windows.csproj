@@ -160,6 +160,12 @@
     <Content Include="Content\terrain_stone.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\slime_sprite.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\naga_sprite.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="GameDual81.Windows_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

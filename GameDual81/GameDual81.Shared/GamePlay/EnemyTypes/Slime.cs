@@ -2,29 +2,33 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ThielynGame.GamePlay.StatusEffects;
 
 namespace ThielynGame.GamePlay.EnemyTypes
 {
-    class Slime : Enemy, IPlayerInterAct
+    class Slime : Enemy, IInteractiveObject
     {
         public Slime(Vector2 startPos) : base (startPos)
         {
-            TextureFileName = "troll_sprite";
-            characterType = "troll";
-            maxHealth = 10;
-            maxSpeedX = 5;
+            TextureFileName = "slime_sprite";
+            characterType = "slime";
+            MaxHealth = 10;
+            maxSpeedX = 1.5f;
             acceleration = 0.66f;
 
-            detectionRange = 10;
+            detectionRange = 0;
             setParameters();
 
-            actualSize = new Rectangle(0, 0, 70, 50);
+            AI_combatMovement = AI_CombatMovement.Patrol;
+            AI_idleMovement = AI_IdleMovement.Patrol;
+
+            actualSize = new Rectangle(0, 0, 70, 40);
         }
 
         public void CheckPlayerCollision(Player P)
         {
             if (P.BoundingBox.Intersects(BoundingBox))
-            P.HitByAttack(10);
+            P.OnReceiveDamage(10, true, StatusEffect.createEffect(level, EffectType.Poison));
         }
     }
 }

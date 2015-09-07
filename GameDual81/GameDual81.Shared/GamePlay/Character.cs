@@ -7,10 +7,28 @@ using System.Text;
 using System.Threading.Tasks;
 using ThielynGame.GamePlay.Actions;
 using System.Diagnostics;
+using ThielynGame.GamePlay.StatusEffects;
 
 namespace ThielynGame.GamePlay
 {
-    public enum CharacterState { Run, Jump, Idle }
+    public enum CharacterState { Run, Jump, Idle, Action }
+    public enum AttackEffects { None, Poison, Fragile}
+
+    public class CharacterStatuses 
+    {
+        public bool Shielded;
+         public float Fragile,
+            Slow,
+            Fury;
+
+        public void Reset() 
+        {
+            Shielded = false;
+            Fragile = 1;
+            Slow = 1;
+            Fury = 1;
+        }
+    }
 
     //base class for player and enemies
      public abstract class Character : PhysicsObjects
@@ -26,28 +44,45 @@ namespace ThielynGame.GamePlay
         protected bool hasTakenDamage;
         protected float hurtImmunityTimer;
 
-        protected int maxHealth,
-            armor, level;
+        public CharacterStatuses statusModifiers { get; protected set; }
+        protected List<StatusEffect> currentEffectsList = new List<StatusEffect>();
 
+        protected int armor;
+        public int level { get; protected set; }
+
+        public int MaxHealth { get; protected set; }
         public int CurrentHealth { get; protected set; }
-        protected Rectangle MeleeReach;
+
+        public Rectangle MeleeReach { get; protected set; }
 
         public float AttackSpeed { get; protected set; }
 
         public Character(Vector2 startPosition) 
         {
             position = startPosition;
+            statusModifiers = new CharacterStatuses();
         }
 
          //this method is to be used by child classes to set parameters that are unknown at the time of
          // calling base constructor
         protected void setParameters () 
         {
-            CurrentHealth = maxHealth;
+            CurrentHealth = MaxHealth;
         }
 
         public override void Update(TimeSpan time)
         {
+            statusModifiers.Reset();
+
+            List<StatusEffect> tempList = new List<StatusEffect>();
+
+            foreach (StatusEffect S in currentEffectsList) 
+            {
+                if (S.CheckIfTimeLeft(time, this, statusModifiers)) 
+                    tempList.Add(S);
+            }
+            currentEffectsList = tempList;
+
             hurtImmunityTimer -= time.Milliseconds;
 
             if (hurtImmunityTimer <= 0)
@@ -62,15 +97,12 @@ namespace ThielynGame.GamePlay
                 }
             }
 
-            if (currentAction == null)
-            {
                 setStateAndFacing();
                 setStateAnimation();
                 animation.CheckIfDoneAndUpdate(time);
-            }
 
             // apply friction
-            if (touchesGround)
+            if (TouchesGround)
             {
                 if (Math.Abs(velocity.X) < GROUND_FRICTION)
                     velocity.X = 0;
@@ -84,16 +116,29 @@ namespace ThielynGame.GamePlay
 
         public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch S, TextureLoader T)
         {
-            if (currentAction != null) currentAction.Draw(S, T);
-            else
-            {
+            if (animation == null) return;
+
+            Rectangle RenderBox = animation.AnimationFrameToDraw;
+            RenderBox.X = BoundingBox.X - ((animation.AnimationFrameToDraw.Width - BoundingBox.Width) / 2);
+            RenderBox.Y = BoundingBox.Y - ((animation.AnimationFrameToDraw.Height - BoundingBox.Height) / 2);
+             
+            if (facing == FacingDirection.Left)
                 S.Draw(
                     T.GetTexture(TextureFileName),
-                    MyRectangle.AdjustExistingRectangle(BoundingBox),
+                    MyRectangle.AdjustExistingRectangle(RenderBox),
                     animation.AnimationFrameToDraw,
                     Color.White
                     );
-            }
+
+            if (facing == FacingDirection.Right)
+                S.Draw(T.GetTexture(TextureFileName),
+                    MyRectangle.AdjustExistingRectangle(RenderBox),
+                    animation.AnimationFrameToDraw,
+                    Color.White, 0,
+                    Vector2.Zero,
+                    Microsoft.Xna.Framework.Graphics.SpriteEffects.FlipHorizontally,
+                    0);
+            
         }
 
          // determines characters current state depending on different parameters, such as speed and direction or touches ground
@@ -101,7 +146,13 @@ namespace ThielynGame.GamePlay
         {
             previousState = characterState;
 
-            if (touchesGround)
+            if (currentAction != null) 
+            {
+                characterState = CharacterState.Action;
+                return;
+            }
+
+            if (TouchesGround)
             {
                 if (velocity.X == 0)
                     characterState = CharacterState.Idle;
@@ -111,96 +162,97 @@ namespace ThielynGame.GamePlay
             }
             else 
                 characterState = CharacterState.Idle;
-
-            /*
-            if (velocity.X >= 0) 
-                facing = Direction.Right;
-            if (velocity.X < 0) 
-                facing = Direction.Left;
-             */
-             
         }
 
         // creates an animation for the character based on what state character is in
         protected virtual void setStateAnimation() 
          {
+            // if state has not changed there is no need to change current animation
+             if (characterState == previousState) return;
+
              AnimationLists A = new AnimationLists();
              List<FrameObject> framelist = new List<FrameObject>();
 
              switch (characterState) 
              {
-                 case CharacterState.Run:
-                     // we create a new animation only if previous was not run and facing has not changed
-                     if (previousState != CharacterState.Run || facing != previousFacing)
-                     {
-                         if (facing == FacingDirection.Left)
-                             framelist = A.getAnimation(characterType + "_run_left");
-                         if (facing == FacingDirection.Right)
-                             framelist = A.getAnimation(characterType + "_run_right");
+                 case CharacterState.Action:
+                     framelist = A.getAnimation(characterType + currentAction.actionAnimationName);
+                     animation = new Animation(framelist, false);
+                     animation.Start();
+                     break;
 
-                         animation = new Animation(framelist, true);
-                         animation.Start();
-                     }
+                 case CharacterState.Run:
+                        framelist = AnimationLists.GetAnimation(characterType + "_run");
+                        animation = new Animation(framelist, true);
+                        animation.Start();
                      break;
 
                  case CharacterState.Idle:
-                     if (previousState != CharacterState.Idle) 
-                     {
                          framelist = A.getAnimation(characterType + "_idle");
-
                          animation = new Animation(framelist, true);
                          animation.Start();
-                     }
                      break;
 
                  case CharacterState.Jump:
-                     if (previousState != CharacterState.Jump) 
-                     {
                          framelist = A.getAnimation(characterType + "_jump");
-
                          animation = new Animation(framelist, true);
-                     }
                      break;
              }
          }
 
 
+
          // functions to handle being hit by attacks and similar
          // damage reduction from armor happens in this function
-        public virtual void HitByAttack(int damage)
+        public virtual void OnReceiveDamage(int damage, bool ignoresArmor, StatusEffect effect)
         {
-            // if character is still recovering from recent damage, ignore this damage
-            if (hasTakenDamage) return;
+            // if character is still recovering from recent damage or has an active shield buff, ignore this damage
+            if (hasTakenDamage || statusModifiers.Shielded) 
+                return;
 
             // switch the invincibility on after receiving damage
             hasTakenDamage = true;
             hurtImmunityTimer = 500;
 
-            float reduction = ((float)armor / 100) * damage;
-            int actualDamage = damage - (int)reduction;
+            float reduction = 1;
+
+            if (!ignoresArmor)
+                reduction = ((float)armor / 100);
+
+            float actualDamage = damage * statusModifiers.Fragile * reduction;
 
             //Debug.WriteLine("DamageDealt:  "+damage+"\nDamageTaken:  " + actualDamage + "\n\n");
 
-            CurrentHealth -= actualDamage;
+            CurrentHealth -= (int)actualDamage;
             if (CurrentHealth <= 0)
                 IsDead = true;
-        }
-         // call this function if the attack had a knockback effect
-        public void KnockBack(AllDirections knockDirection, int knockingStrength) 
-        {
-            if (knockDirection == AllDirections.Down) velocity.Y =  knockingStrength;
-            if (knockDirection == AllDirections.Left) velocity.X = knockingStrength * -1;
-            if (knockDirection == AllDirections.Right) velocity.X = knockingStrength;
-            if (knockDirection == AllDirections.Up) velocity.Y = knockingStrength * -1;
+
+            if (effect != null) OnReceiveEffect(effect);
         }
 
+        public virtual void OnReceiveEffect(StatusEffect effect) 
+        {
+            currentEffectsList.Add(effect);
+        }
+
+        public virtual void OnReceiveHeal(int amount) 
+        {
+            CurrentHealth += amount;
+        }
+
+         public void startNewAction (BaseAction action) 
+         {
+             currentAction = action;
+         }
 
          // accelerates character towards left
          public virtual void DoMovementLeft()
          {
-             if (touchesGround && velocity.X > 0) velocity.X = 0;
+             if (currentAction != null) return;
+
+             if (velocity.X > 0) velocity.X = 0;
              // increase velocity only if touches ground and has not reached max speed
-             if (touchesGround && velocity.X > -maxSpeedX)
+             if (velocity.X > -maxSpeedX)
                  // left has a negative X
                  velocity.X -= acceleration;
 
@@ -211,9 +263,11 @@ namespace ThielynGame.GamePlay
          //accelerates character towards right
          public virtual void DoMovementRight()
          {
-             if (touchesGround && velocity.X < 0) velocity.X = 0;
+             if (currentAction != null) return;
+
+             if (velocity.X < 0) velocity.X = 0;
              // increase velocity only if touches ground and has not reached max speed
-             if (touchesGround && velocity.X < maxSpeedX)
+             if (velocity.X < maxSpeedX)
                  velocity.X += acceleration;
 
              previousFacing = facing;
@@ -221,35 +275,20 @@ namespace ThielynGame.GamePlay
          }
 
 
-         public virtual void DoMeleeAttack(GameButton G)
-         {
-             if (currentAction == null)
-             {
-                 currentAction = new MeleeAttackAction(400, this);
-             }
-         }
-
-         public virtual void DoRangedAttack(GameButton G)
-         {
-         }
-
-         public virtual void DoSkillAction(GameButton G)
-         {
-         }
 
          public virtual int GetMeleeDamage ()
          {
-             return 1;
+             return 20;
          }
 
          public virtual int GetRangedDamage ()
          {
-             return 1;
+             return 20;
          }
 
-         public virtual int GetSpellDamage ()
+         public virtual int GetSpellPower ()
          {
-             return 1;
+             return level;
          }
 
     }

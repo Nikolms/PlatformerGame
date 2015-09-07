@@ -21,8 +21,10 @@ namespace ThielynGame.GamePlay
         protected Rectangle actualSize;
         protected Vector2 position;
 
+        
         protected Vector2 velocity;
         protected float maxSpeedY, maxSpeedX;
+        public Vector2 Velocity { get { return velocity; } }
 
         // the texturefile that should be loaded for the object
         // objects dont store their own textures, just the filename

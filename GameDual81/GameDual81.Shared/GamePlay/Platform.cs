@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ThielynGame.GamePlay.Object_Components;
 
 namespace ThielynGame.GamePlay
 {
-    public class Platform : GameObject
+    public class Platform : GameObject, IObsticle
     {
         protected bool isDisappearingPlatform = false;
 
@@ -21,9 +22,9 @@ namespace ThielynGame.GamePlay
 
         public string TextureSet { set { TextureFileName = value; } }
 
-        public Platform(Rectangle positionAndSize) 
+        public Platform(Rectangle positionAndSize)
         {
-            actualSize = new Rectangle(0,0,positionAndSize.Width, positionAndSize.Height);
+            actualSize = new Rectangle(0, 0, positionAndSize.Width, positionAndSize.Height);
             position.X = positionAndSize.X;
             position.Y = positionAndSize.Y;
 
@@ -31,8 +32,8 @@ namespace ThielynGame.GamePlay
             TextureFileName = "terrain_stone";
         }
 
-        public Platform(Rectangle positionAndSize, string tilesetName, Vector2 velocity, float travelDistance)  :
-            this (positionAndSize)
+        public Platform(Rectangle positionAndSize, string tilesetName, Vector2 velocity, float travelDistance) :
+            this(positionAndSize)
         {
             maxSpeedX = velocity.X; maxSpeedY = velocity.Y;
             isMovingPlatform = true;
@@ -45,10 +46,10 @@ namespace ThielynGame.GamePlay
         public override void Update(TimeSpan time)
         {
             // if this platform has its own movement update it
-            if (isMovingPlatform) 
+            if (isMovingPlatform)
             {
                 // switch direction if max distance or zero distance is reached
-                if (currentDistance <= 0) 
+                if (currentDistance <= 0)
                 {
                     currentDirection = 1;
                     velocity.X = maxSpeedX; velocity.Y = maxSpeedY;
@@ -66,7 +67,7 @@ namespace ThielynGame.GamePlay
                 // update to current travel distance by velocity lenght
                 currentDistance += velocity.Length() * currentDirection;
 
-                foreach (PhysicsObjects O in objectsOnTopOfThis) 
+                foreach (PhysicsObjects O in objectsOnTopOfThis)
                 {
                     O.AddExternalSpeed(velocity.X, velocity.Y);
                 }
@@ -76,20 +77,37 @@ namespace ThielynGame.GamePlay
             objectsOnTopOfThis.Clear();
 
         }
-        
+
 
         public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch S, TextureLoader T)
         {
             S.Draw(
                 T.GetTexture(TextureFileName),
                 MyRectangle.AdjustExistingRectangle(BoundingBox),
-                Color.White); 
+                Color.White);
         }
 
 
-        public void RegisterObjectOnTop(PhysicsObjects O) 
+        public void RegisterObjectOnTop(PhysicsObjects O)
         {
             objectsOnTopOfThis.Add(O);
+        }
+
+        public CollisionDetailObject CheckObsticleCollision(PhysicsObjects P)
+        {
+            CollisionDetailObject CC = new CollisionDetailObject() { correctionValueX = 0, correctionValueY = 0 };
+
+            if (BoundingBox.Intersects(P.HorizontalCollisionBox)) 
+            {
+                // collider moving left
+                if (P.Velocity.X < 0) CC.correctionValueX = BoundingBox.Right - P.BoundingBox.X;
+                // collider moving right
+                if (P.Velocity.X > 0) CC.correctionValueX = BoundingBox.X - P.BoundingBox.Right;
+            }
+
+            if (BoundingBox.Intersects(P.VerticalCollisionBox)) ;
+
+            return CC;
         }
     }
 }

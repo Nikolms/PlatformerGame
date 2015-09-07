@@ -81,6 +81,21 @@ namespace ThielynGame
             {
                 jumpInput = true;
             }
+            // request skill slot 1 if 1 was pressed
+            if (keyBoardState.IsKeyDown(Keys.D1) && previousKeyboardState.IsKeyUp(Keys.D1)) 
+            {
+                SKill_1_Input = true;
+            }
+            // skill 2
+            if (keyBoardState.IsKeyDown(Keys.D2) && previousKeyboardState.IsKeyUp(Keys.D2)) 
+            {
+                Skill_2_Input = true;
+            }
+            // skill 3
+            if (keyBoardState.IsKeyDown(Keys.D3) && previousKeyboardState.IsKeyUp(Keys.D3))
+            {
+                Skill_3_Input = true;
+            }
             // Exit GameScreen if ESC is pressed
             if (keyBoardState.IsKeyDown(Keys.Escape) && previousKeyboardState.IsKeyUp(Keys.Escape)) 
             {

@@ -59,24 +59,34 @@ namespace ThielynGame.GamePlay
 
             GameButton Jump = new GameButton();
             GameButton Melee = new GameButton();
-            GameButton Ranged = new GameButton();
+            GameButton SkillOne = new GameButton();
+            GameButton SkillTwo = new GameButton();
+            GameButton SkillThree = new GameButton();
 
             Jump.PositionAndSize = new Rectangle(1170, 658, 100, 100);
             Melee.PositionAndSize = new Rectangle(10, 658, 100, 100);
-            Ranged.PositionAndSize = new Rectangle(120, 658, 100, 100);
+            SkillOne.PositionAndSize = new Rectangle(10, 70,100, 100);
+            SkillTwo.PositionAndSize = new Rectangle(10, 240, 100, 100);
+            SkillThree.PositionAndSize = new Rectangle(10, 410, 100, 100);
 
             Jump.TextureSource = new Rectangle(0,0,100,100);
             Melee.TextureSource = new Rectangle(100,0,100,100);
-            Ranged.TextureSource = new Rectangle(200,0,100,100);
-
+            SkillOne.TextureSource = new Rectangle(100, 0, 100, 100);
+            SkillTwo.TextureSource = new Rectangle(100, 0, 100, 100);
+            SkillThree.TextureSource = new Rectangle(100, 0, 100, 100);
+           
             Jump.onClick += player.DoJump;
             Melee.onClick += player.DoMeleeAttack;
-            Ranged.onClick += player.DoRangedAttack;
+            SkillOne.onClick += player.DoSkillSlotOne;
+            SkillTwo.onClick += player.DoSkillSlotTwo;
+            SkillThree.onClick += player.DoSkillSlotThree;
 
             UIbuttons.Add(Jump);
             UIbuttons.Add(Melee);
-            UIbuttons.Add(Ranged);
-
+            UIbuttons.Add(SkillOne);
+            UIbuttons.Add(SkillTwo);
+            UIbuttons.Add(SkillThree);
+                
         }
 
 

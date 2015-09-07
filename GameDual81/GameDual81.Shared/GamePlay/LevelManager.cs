@@ -66,10 +66,16 @@ namespace ThielynGame.GamePlay
             Enemy e1 = new Slime(new Vector2(1000,200));
             Enemy e2 = new Slime(new Vector2(2000, 200));
             Enemy e3 = new Slime(new Vector2(1500, 200));
+            Enemy e4 = new Slime(new Vector2(3000, 200));
+            Enemy e5 = new Slime(new Vector2(4000, 200));
+            Enemy e6 = new Slime(new Vector2(3500, 200));
 
             AddGameObject(e1);
             AddGameObject(e2);
             AddGameObject(e3);
+            AddGameObject(e4);
+            AddGameObject(e5);
+            AddGameObject(e6);
 
             await Task.Delay(TimeSpan.FromSeconds(2));
 
@@ -90,8 +96,8 @@ namespace ThielynGame.GamePlay
             List<Platform> terrainToUpdate = new List<Platform>();
             // all movable objects that are near screen
             List<PhysicsObjects> movableObjectsToUpdate = new List<PhysicsObjects>();
-            List<ICharacterInteract> interactiveObjects = new List<ICharacterInteract>();
-            List<IPlayerInterAct> playerInteractionObjects = new List<IPlayerInterAct>();
+            List<HarmfullObject> interactiveObjects = new List<HarmfullObject>();
+            List<IInteractiveObject> playerInteractionObjects = new List<IInteractiveObject>();
             // all enemies that need to update and check collisions this frame
             List<Character> activeCharacters = new List<Character>();
             List<GameObject> miscObjects = new List<GameObject>();
@@ -119,11 +125,11 @@ namespace ThielynGame.GamePlay
                         if (G is Platform) 
                             terrainToUpdate.Add((Platform)G);
 
-                        if (G is IPlayerInterAct)
-                            playerInteractionObjects.Add((IPlayerInterAct)G);
+                        if (G is IInteractiveObject)
+                            playerInteractionObjects.Add((IInteractiveObject)G);
 
-                        if (G is ICharacterInteract)
-                            interactiveObjects.Add((ICharacterInteract)G);
+                        if (G is HarmfullObject)
+                            interactiveObjects.Add((HarmfullObject)G);
 
                         if (G is Character)
                             activeCharacters.Add((Character)G);
@@ -154,14 +160,14 @@ namespace ThielynGame.GamePlay
                 GroundCollisionControl.CheckGroundCollision(O, terrainToUpdate);
             }
 
-            foreach(IPlayerInterAct P in playerInteractionObjects) 
+            foreach(IInteractiveObject P in playerInteractionObjects) 
             {
                 P.CheckPlayerCollision(player);
             }
 
             // check for object interaction collision, such as item pick up, projectiles
             // and areaeffects
-            foreach (ICharacterInteract O in interactiveObjects) 
+            foreach (HarmfullObject O in interactiveObjects) 
             {
                 O.CheckCollisionWithCharacter(player);
 

@@ -18,7 +18,7 @@ namespace ThielynGame.GamePlay
 
         // some special objects might ignore gravity
         protected bool affectedByGravity = true;
-        protected bool touchesGround;
+        public bool TouchesGround { get; protected set; }
 
         protected FacingDirection facing = FacingDirection.Right;
         public FacingDirection Facing { get { return facing; } }
@@ -33,7 +33,7 @@ namespace ThielynGame.GamePlay
         {
             get
             {
-                return new Rectangle((int)position.X, (int)position.Y + 8, actualSize.Width, actualSize.Height - 16);
+                return new Rectangle((int)position.X, (int)position.Y + 10, actualSize.Width, actualSize.Height - 20);
             }
         }
 
@@ -41,14 +41,14 @@ namespace ThielynGame.GamePlay
         {
             get
             {
-                return new Rectangle((int)position.X + 8, (int)position.Y, actualSize.Width - 16, actualSize.Height);
+                return new Rectangle((int)position.X + 10, (int)position.Y, actualSize.Width - 20, actualSize.Height);
             }
         }
         
         public override void Update (TimeSpan time) 
         {
             // touches ground needs to be reset by collision every frame
-            touchesGround = false;
+            TouchesGround = false;
 
             ApplyGravity(time);
 
@@ -71,6 +71,10 @@ namespace ThielynGame.GamePlay
         {
             // if the object hits its "head" zero its vertical velocity
             if (CC.directionY > 0) velocity.Y = 0;
+            if (CC.directionY > 0) velocity.X = 0;
+
+            // cap the correction distance at current velocity in that direction
+            if (CC.correctionDistanceY > Math.Abs(velocity.Y)) CC.correctionDistanceY = (int)Math.Abs(velocity.Y) + 1;
             
 
             // if object was moved towards negative Y, it must have touched ground
@@ -78,8 +82,9 @@ namespace ThielynGame.GamePlay
             // match potential movement
             if (CC.directionY < 0)
             {
-                touchesGround = true;
+                TouchesGround = true;
                 collidedWith.RegisterObjectOnTop(this);
+                velocity.Y = 0;
             }
 
             AdjustHorizontalPosition(CC.directionX, CC.correctionDistanceX);
@@ -92,6 +97,12 @@ namespace ThielynGame.GamePlay
             externalSpeed.X = X;
             externalSpeed.Y = Y;
 
+        }
+
+        public void ApplyForce(float X, float Y) 
+        {
+            velocity.Y += Y;
+            velocity.X += X;
         }
 
     }

@@ -6,24 +6,23 @@ using ThielynGame.AnimationFiles;
 
 namespace ThielynGame.GamePlay
 {
-    class AreaEffect : GameObject, ICharacterInteract
+    class AreaEffect : GameObject, HarmfullObject
     {
-        bool isVisible;
-        List<Character> CharactersHitByThis = new List<Character>();
-        int damage = 0;
+        protected bool isVisible;
+        protected List<Character> CharactersHitByThis = new List<Character>();
+        protected int damage = 0;
         float duration, elapsedTime;
         Animation animation;
 
-        // TODO create additional constructor for animated area effects
-        public AreaEffect(float duration, int damage, ObjectAlignment alignment, Rectangle hitBox) 
+        public AreaEffect(float duration, int damage, Character actor, Rectangle Size) 
         {
-            this.damage = damage;
             this.duration = duration;
-            this.alignment = alignment;
-            isVisible = true;
-            actualSize = hitBox;
-            position.X = hitBox.X; position.Y = hitBox.Y;
+            this.damage = damage;
+            alignment = actor.Alignment;
+            actualSize = Size;
+            position.X = Size.X; position.Y = Size.Y;
         }
+
 
         public override void Update(TimeSpan time) 
         {
@@ -43,7 +42,7 @@ namespace ThielynGame.GamePlay
             // once finished deal damage to all characters that collided with this during its lifespan
             foreach (Character C in CharactersHitByThis)
             {
-                C.HitByAttack(damage);
+                C.OnReceiveDamage(damage, false, null);
             }
         }
         
@@ -52,21 +51,75 @@ namespace ThielynGame.GamePlay
             if (isVisible)
                 // TODO
                 S.Draw(T.GetTexture("TODO"),
-                    BoundingBox,
+                    MyRectangle.AdjustExistingRectangle(BoundingBox),
                     Color.White);
         }
 
-        public void CheckCollisionWithCharacter(Character C)
+        public virtual void CheckCollisionWithCharacter(Character C)
         {
+            // check that objects are different alignment
+            if (C.Alignment == alignment) return;
+
             if (BoundingBox.Intersects(C.BoundingBox))
             {
-                // check that objects are different alignment and character was not already in the list
-                if (C.Alignment != alignment && !CharactersHitByThis.Contains(C))
-                {
+                // check character was not already in the list
+                if (CharactersHitByThis.Contains(C)) return;
+                
                     CharactersHitByThis.Add(C);
-                }
             }
         }
 
+    }
+
+    class MeleeArea : AreaEffect 
+    {
+        public MeleeArea(float duration, int damage, Character actor, Rectangle size) : 
+            base (duration, damage, actor, size)
+        {
+            isVisible = true; 
+        }
+
+        public override void CheckCollisionWithCharacter(Character C)
+        {
+            if (CharactersHitByThis.Contains(C)) return;
+            CharactersHitByThis.Add(C);
+        }
+       
+    }
+
+    class WhirlWindArea : AreaEffect 
+    {
+        float interval = 1000, lastEffect = 0;
+        Character caster;
+
+        public WhirlWindArea(float duration, int damage, Character actor, Rectangle size) :
+            base(duration, damage, actor, size)
+        {
+            isVisible = true;
+            caster = actor;
+        }
+
+        public override void Update(TimeSpan time)
+        {
+            lastEffect += time.Milliseconds;
+
+            if (lastEffect >= interval) 
+            {
+                lastEffect = 0;
+            }
+
+            position.X = caster.BoundingBox.X - ( (actualSize.Width - caster.BoundingBox.Width) / 2 );
+            position.Y = caster.BoundingBox.Y - (actualSize.Height - caster.BoundingBox.Height);
+
+            base.Update(time);
+        }
+
+        public override void CheckCollisionWithCharacter(Character C)
+        {
+            if (lastEffect > 0) return;
+
+            if (BoundingBox.Intersects(C.BoundingBox))
+                C.OnReceiveDamage(damage, false, null);
+        }
     }
 }

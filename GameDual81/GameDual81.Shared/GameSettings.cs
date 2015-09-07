@@ -33,5 +33,16 @@ namespace ThielynGame
         // accelerometer sensitivity
         // TODO add functionality to limit within certain values
         public static float Sensitivity { get; set; }
+
+
+        // Player ingame stats and abilities
+        public static string Skill1 { get; set; }
+        public static string Skill2 { get; set; }
+        public static string Skill3 { get; set; }
+        public static string Skill4 { get; set; }
+
+        public static int ArmorUpgrade { get; set; }
+        public static int MeleeUpgrade { get; set; }
+        public static int RangedUpgrade { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace ThielynGame
         // multiplier used to scale things to screenresolution
         public static float screenMultiplierWidth, screenMultiplierHeight;
 
-        // th current screen that needs to update, either Menu, Loading or gameplay
+        // the current screen that needs to update, either Menu, Loading or gameplay
         Screen currentScreen;
 
         InputHandler inputHandler;
@@ -38,6 +38,10 @@ namespace ThielynGame
             inputHandler = new InputHandler();
             IsMouseVisible = true;
             TargetElapsedTime = TimeSpan.FromMilliseconds(16);
+
+            GameSettings.ArmorUpgrade = 0;
+            GameSettings.MeleeUpgrade = 0;
+            GameSettings.RangedUpgrade = 0;
         }
 
         /// <summary>
@@ -52,11 +56,12 @@ namespace ThielynGame
 
             // calculate screenmultiplier
             screenMultiplierHeight = (float)GraphicsDevice.Viewport.Height /768;
-            screenMultiplierWidth = ((float)GraphicsDevice.Viewport.Width + 1)/ 1280;
+            screenMultiplierWidth = (float)GraphicsDevice.Viewport.Width / 1280;
 
             Debug.WriteLine(
                 "width:  " + GraphicsDevice.Viewport.Width + 
-                "\nHeight:  " + GraphicsDevice.Viewport.Height
+                "\nHeight:  " + GraphicsDevice.Viewport.Height +
+                "\nWidthMulti:  " + screenMultiplierWidth
                 );
 
             base.Initialize();
