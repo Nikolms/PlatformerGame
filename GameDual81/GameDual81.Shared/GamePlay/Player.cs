@@ -12,11 +12,12 @@ namespace ThielynGame.GamePlay
     class Player : Character
     {
         public bool ReachedEndOfLevel { get; set; }
+        
 
-        public Player(Vector2 startPosition) : base(startPosition) 
+        public Player(Vector2 startPosition, int level) : base(startPosition, level) 
         {
             alignment = ObjectAlignment.Player;
-            TextureFileName = "player_sprite";
+            TextureFileName = "test_character";
             characterType = "player";
             this.actualSize = new Rectangle(0,0,45,70);
 
@@ -27,7 +28,7 @@ namespace ThielynGame.GamePlay
 
             facing = FacingDirection.Right;
             MaxHealth = 100;
-            armor = GameSettings.ArmorUpgrade + 0;
+            armor = GameSettings.ArmorUpgrade + 1;
             ReachedEndOfLevel = false;
 
             setParameters();
@@ -39,7 +40,7 @@ namespace ThielynGame.GamePlay
 
        
         // makes the player jump
-        public void DoJump(GameButton G) 
+        public void DoJump() 
         {
             int jumpPower;
             if (TouchesGround)
@@ -48,29 +49,48 @@ namespace ThielynGame.GamePlay
                 velocity.Y = -jumpPower;
             }
         }
-
-        public void DoSkillSlotOne(GameButton G) 
+       
+        public void DoMeleeAttack() 
         {
-            if (currentAction == null)
-                startNewAction(BaseAction.CreateAction(ActionType.Charge, this));
-        }
-        public void DoSkillSlotTwo(GameButton G) 
-        {
-        }
-        public void DoSkillSlotThree(GameButton G) 
-        {
+             startNewAction( BaseAction.CreateAction(ActionID.MeleeAttack, this));
         }
 
-        public void DoMeleeAttack(GameButton G) 
+        public void ActionInput(ActionButton G)
         {
-             startNewAction( BaseAction.CreateAction(ActionType.MeleeAttack, this));
-        }
+            if (currentAction != null)
+            {
+                G.coolDownLeft = 0;
+                return;
+            }
 
+            startNewAction(BaseAction.CreateAction(G.skill_ID, this));
+            G.coolDownLeft = currentAction.CoolDown;
+            G.maxCoolDown = currentAction.CoolDown;
+        }
+        
         // this function is used to reset player for the start of level
         // sets velocity to 0 and clears negative effects etc
         public void ResetPlayerStatus() 
         {
+            currentEffectsList.Clear();
             ReachedEndOfLevel = false;
+        }
+
+        public void LevelUP()
+        {
+            this.level++;
+        }
+
+        public override int GetMeleeDamage()
+        {
+            float damage = (19 + level) * statusModifiers.meleeDamageMod;
+            return (int)damage;
+        }
+
+        public override int GetSpellPower()
+        {
+            float spellPower = (19 + level) * statusModifiers.spellPowerMod;
+            return (int)spellPower;
         }
     }
 }

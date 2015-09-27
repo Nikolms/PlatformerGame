@@ -15,5 +15,10 @@ namespace ThielynGame
 
         public static SpriteFont menuFont { get; set; }
         public static Texture2D menuButtonBackground { get; set; }
+        public static Texture2D skillMenuIcons { get; set; }
+        public static Texture2D PopupBackground { get; set; }
+
+        // TODO for dummy uses only
+        public static Texture2D TODO { get; set; }
     }
 }

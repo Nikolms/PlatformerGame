@@ -41,7 +41,7 @@ namespace ThielynGame.GamePlay
         float timerAttackAction;
         protected float cooldownBetweenAttacks;
 
-        public Enemy(Vector2 startPosition) : base(startPosition) 
+        public Enemy(Vector2 startPosition, int level) : base(startPosition, level) 
         {
             // default facing for all monsters
             facing = FacingDirection.Left;

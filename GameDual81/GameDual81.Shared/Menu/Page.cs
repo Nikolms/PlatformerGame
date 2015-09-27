@@ -13,14 +13,14 @@ namespace ThielynGame.Menu
     abstract class Page
     {
         public static MenuScreen containingScreen { get; set; }
-        protected List<MenuButton> buttons;
+        protected List<BaseButton> buttons = new List<BaseButton>();
 
         // iterate all buttons on the page for every input available
         public virtual void checkButtonClick(List<Vector2> inputLocations) 
         {
             foreach (Vector2 input in inputLocations)
             {
-                foreach (MenuButton B in buttons)
+                foreach (BaseButton B in buttons)
                 {
                     B.CheckIfClicked(input);
                 }
@@ -30,7 +30,7 @@ namespace ThielynGame.Menu
         public virtual void Draw(SpriteBatch S) 
         {
             //draw all the buttons that belong to the screen
-            foreach (MenuButton B in buttons) 
+            foreach (BaseButton B in buttons) 
             {
                 B.Draw(S);
             }

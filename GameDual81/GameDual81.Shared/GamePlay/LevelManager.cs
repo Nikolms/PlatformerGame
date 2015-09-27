@@ -30,7 +30,7 @@ namespace ThielynGame.GamePlay
 
         List<GameObject> updateAndrenderList = new List<GameObject>();
 
-        // we need to keep track of player separately too
+        // we need to keep separate track of certain objects
         Player player;
 
         // keep track of current level
@@ -50,6 +50,7 @@ namespace ThielynGame.GamePlay
             // overwrite masterlist everytime a new level is to be created
             masterlist = new List<GameObject>();
             NewObjectsWaitList = new List<GameObject>();
+            player.ResetPlayerStatus();
 
             Task t = new Task(CreateNewLevel);
             t.Start();
@@ -59,16 +60,24 @@ namespace ThielynGame.GamePlay
         {
             IsCreatingLevel = true;
             levelCounter ++;
-            LevelGeneratorObject G = new LevelGeneratorObject(16);
+            player.LevelUP();
+            LevelGeneratorObject G = new LevelGeneratorObject(20);
             G.getLevelInfo(masterlist);
 
             // TESTING, REMOVE
-            Enemy e1 = new Slime(new Vector2(1000,200));
-            Enemy e2 = new Slime(new Vector2(2000, 200));
-            Enemy e3 = new Slime(new Vector2(1500, 200));
-            Enemy e4 = new Slime(new Vector2(3000, 200));
-            Enemy e5 = new Slime(new Vector2(4000, 200));
-            Enemy e6 = new Slime(new Vector2(3500, 200));
+            Enemy e1 = new Troll(new Vector2(8000,200), levelCounter);
+            Enemy e2 = new Troll(new Vector2(2000, 200), levelCounter);
+            Enemy e3 = new Snake(new Vector2(1500, 200), levelCounter);
+            Enemy e4 = new Snake(new Vector2(13000, 200), levelCounter);
+            Enemy e5 = new Archer(new Vector2(14000, 200), levelCounter);
+            Enemy e6 = new Slime(new Vector2(3500, 200), levelCounter);
+
+            Enemy e11 = new Slime(new Vector2(16000, 200), levelCounter);
+            Enemy e22 = new Snake(new Vector2(12000, 200), levelCounter);
+            Enemy e33 = new Archer(new Vector2(15700, 200), levelCounter);
+            Enemy e44 = new Slime(new Vector2(13000, 200), levelCounter);
+            Enemy e55 = new Archer(new Vector2(14000, 200), levelCounter);
+            Enemy e66 = new Snake(new Vector2(19500, 200), levelCounter);
 
             AddGameObject(e1);
             AddGameObject(e2);
@@ -76,8 +85,14 @@ namespace ThielynGame.GamePlay
             AddGameObject(e4);
             AddGameObject(e5);
             AddGameObject(e6);
+            AddGameObject(e11);
+            AddGameObject(e22);
+            AddGameObject(e33);
+            AddGameObject(e44);
+            AddGameObject(e55);
+            AddGameObject(e66);
 
-            await Task.Delay(TimeSpan.FromSeconds(2));
+            await Task.Delay(TimeSpan.FromSeconds(1));
 
             IsCreatingLevel = false;
         }
@@ -182,7 +197,10 @@ namespace ThielynGame.GamePlay
 
             // at the end of updating we want to readjust the world to that player
             // is in the middle of screen
-            Camera.FocusCameraOnPlayer(masterlist, player); 
+            Camera.FocusCameraOnPlayer(masterlist, player);
+
+            if (player.ReachedEndOfLevel)
+                this.StartNewLevel();
 
             // if player is dead exit game screen
             if (player.IsDead) gameOver = true;

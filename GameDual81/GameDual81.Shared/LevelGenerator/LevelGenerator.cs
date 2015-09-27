@@ -137,7 +137,6 @@ namespace GameDual81.LevelGenerator
         }
 
 
-
         void randomTopWall(LevelSection section) 
         {
             int i = random.Next(1,2);
@@ -175,7 +174,7 @@ namespace GameDual81.LevelGenerator
                     section.sectionTerrain.Add(new Platform(new Rectangle(0, 518, 310, 250)));
                     section.sectionTerrain.Add(new Platform(new Rectangle(310, 368, 200, 400)));
                     section.sectionTerrain.Add(new Platform(new Rectangle(510, 218, 200, 550)));
-                    section.sectionTerrain.Add(new Platform(new Rectangle(710, 68, 320, 698)));
+                    section.sectionTerrain.Add(new Platform(new Rectangle(710, 73, 320, 698)));
                     section.sectionTerrain.Add(new Platform(new Rectangle(1030, 0, 250, 768)));
                     break;
             }
@@ -193,7 +192,7 @@ namespace GameDual81.LevelGenerator
                     section.sectionTerrain.Add(new Platform(new Rectangle(400, 618, 880, 150)));
                     section.sectionTerrain.Add(new Platform(new Rectangle(500, 258, 780, 70)));
                     section.sectionTerrain.Add(new Platform(new Rectangle(610, 158, 670, 100)));
-                    section.sectionTerrain.Add(new Platform(new Rectangle(710, 68, 570, 90)));
+                    section.sectionTerrain.Add(new Platform(new Rectangle(710, 73, 570, 90)));
                     break;
 
             }
@@ -202,7 +201,7 @@ namespace GameDual81.LevelGenerator
         void randomCommon(LevelSection section) 
         {
             // increase random max value as new switch cases are added
-            int i = random.Next(1,4);
+            int i = random.Next(1,3);
 
             switch (i) 
             {
@@ -243,8 +242,10 @@ namespace GameDual81.LevelGenerator
                     section.sectionTerrain.Add(new Platform(new Rectangle(430, 393, 420, 375)));
                     section.sectionTerrain.Add(new Platform(new Rectangle(850, 543, 430, 225)));
 
-                    section.sectionTerrain.Add(new Spikes(20,new Rectangle(330,513,100,32)));
-                    section.sectionTerrain.Add(new Spikes(20, new Rectangle(850, 513, 100, 32)));
+                    section.sectionTerrain.Add(new Platform(new Rectangle(330,513,100,32)));
+                    section.sectionTerrain.Add(new Platform(new Rectangle(850, 513, 100, 32)));
+
+                    section.sectionTerrain.Add(new ExitPoint(new Rectangle(585, 283, 75, 110)));
                     break;
             }
         }

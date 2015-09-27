@@ -12,6 +12,7 @@
     <ApplicationDefinition Include="$(MSBuildThisFileDirectory)App.xaml">
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="$(MSBuildThisFileDirectory)AbilityInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AnimationFiles\Animation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AnimationFiles\AnimationLists.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AnimationFiles\FrameObject.cs" />
@@ -29,8 +30,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Camera.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Character.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\CollisionControl.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Enemy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Archer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Beast.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Enemy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Slime.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Snake.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Troll.cs" />
@@ -49,6 +51,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)GameSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LevelGenerator\LevelGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LevelGenerator\LevelSection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Menu\CharacterSetupPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Menu\MainMenuPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Menu\MenuButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Menu\OptionsPage.cs" />

@@ -12,8 +12,11 @@ namespace ThielynGame
     // and also gives the draw method contract
     public class BaseButton
     {
-        protected Rectangle clickArea;
+        // general parameters
+        public Rectangle imageSourceLocation { get; set; }
 
+        protected Rectangle clickArea;
+                
         public virtual Rectangle PositionAndSize 
         { 
             // sizebox is scaled to fit screen resolution

@@ -29,7 +29,14 @@ namespace ThielynGame.AnimationFiles
 
         public Texture2D GetTexture(string filename) 
         {
-            return content.Load<Texture2D>(filename);
+            try
+            {
+                return content.Load<Texture2D>(filename);
+            }
+            catch
+            {
+                return content.Load<Texture2D>("TODO");
+            }
         }
     }
 }

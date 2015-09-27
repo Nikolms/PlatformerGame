@@ -64,6 +64,11 @@ namespace ThielynGame
                 "\nWidthMulti:  " + screenMultiplierWidth
                 );
 
+            SkillData.Init();
+            GameSettings.Skill1 = GamePlay.Actions.ActionID.BattleRage;
+            GameSettings.Skill2 = GamePlay.Actions.ActionID.FireCloak;
+            GameSettings.Skill3 = GamePlay.Actions.ActionID.IceBolt;
+
             base.Initialize();
         }
 
@@ -75,10 +80,14 @@ namespace ThielynGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
             // TODO: use this.Content to load your game content here
             CommonAssets.menuButtonBackground = Content.Load<Texture2D>("menubuttonbackground");
             CommonAssets.menuFont = Content.Load<SpriteFont>("menufont");
             CommonAssets.LoadingBackGround = Content.Load<Texture2D>("loadingbackground");
+            CommonAssets.TODO = Content.Load<Texture2D>("TODO");
+            CommonAssets.skillMenuIcons = Content.Load<Texture2D>("skill_buttons");
+            CommonAssets.PopupBackground = Content.Load<Texture2D>("popup_background");
 
             // Create a menuscreen as the entryscreen when game launches
             //currentScreen = new MenuScreen(this);

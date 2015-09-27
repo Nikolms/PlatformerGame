@@ -9,7 +9,7 @@ namespace ThielynGame.GamePlay.EnemyTypes
 {
     class Troll : Enemy
     {
-        public Troll(Vector2 startLocation) : base(startLocation) 
+        public Troll(Vector2 startLocation, int level) : base(startLocation, level) 
         {
             TextureFileName = "troll_sprite";
             characterType = "troll";
@@ -21,6 +21,9 @@ namespace ThielynGame.GamePlay.EnemyTypes
             detectionRange = 300;
             rangePrimaryAttack = 60;
             rangeSecondaryAttack = 60;
+
+            MeleeReach = new Rectangle(0,0,100,100);
+            AttackSpeed = 1000;
 
             cooldownPrimaryAttack = 4000;
             cooldownSecondaryAttack = 2000;
@@ -36,7 +39,7 @@ namespace ThielynGame.GamePlay.EnemyTypes
 
         protected override void DoPrimaryAttack()
         {
-            
+            startNewAction(BaseAction.CreateAction(ActionID.MeleeAttack, this));
         }
 
         protected override void DoSecondaryAttack()

@@ -15,6 +15,7 @@ namespace ThielynGame.LevelGenerator
         // a section contains information about the terrainpieces
         public List<GameObject> sectionTerrain = new List<GameObject>();
         public List<GameObject> sectionObjects = new List<GameObject>();
+
         // every section has certain spawn points where enemies or items can spawn
         // we have a separate spawn point for more specific objects such as keys, exit points, special items
         List<Vector2> commonSpawn = new List<Vector2>();
@@ -29,6 +30,12 @@ namespace ThielynGame.LevelGenerator
                 O.AdjustHorizontalPosition(1, column * 1280);
                 // vertical position is dependat on what row its on the map
                 O.AdjustVerticalPosition(1,  row * 768);
+            }
+
+            foreach (GameObject O in sectionObjects)
+            {
+                O.AdjustHorizontalPosition(1, column * 1280);
+                O.AdjustVerticalPosition(1, row * 768);
             }
         }
 

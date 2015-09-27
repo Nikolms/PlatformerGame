@@ -27,6 +27,8 @@ namespace ThielynGame
         public bool Skill_3_Input { get; protected set; }
         public bool Skill_4_Input { get; protected set; }
 
+        public bool Developer_Skip { get; protected set; }
+
         public bool ExitGame_Input { get; protected set; }
 
         public void Update() 
@@ -41,7 +43,9 @@ namespace ThielynGame
             MeleeAttackInput = false;
             RangedAttackInput = false;
 
+            Developer_Skip = false;
             ExitGame_Input = false;
+
 
             // check keyboard and mouse
             KeyboardState keyBoardState = Keyboard.GetState();
@@ -84,7 +88,7 @@ namespace ThielynGame
             // request skill slot 1 if 1 was pressed
             if (keyBoardState.IsKeyDown(Keys.D1) && previousKeyboardState.IsKeyUp(Keys.D1)) 
             {
-                SKill_1_Input = true;
+                Developer_Skip = true;
             }
             // skill 2
             if (keyBoardState.IsKeyDown(Keys.D2) && previousKeyboardState.IsKeyUp(Keys.D2)) 

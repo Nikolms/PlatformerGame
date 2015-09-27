@@ -11,8 +11,6 @@ namespace ThielynGame.Menu
     {
         public OptionsPage() 
         {
-            buttons = new List<MenuButton>();
-
             // create buttons
             MenuButton Music = new MenuButton("Music:  ");
             MenuButton Sound = new MenuButton("Sound:  ");

@@ -8,11 +8,11 @@ namespace ThielynGame.GamePlay.EnemyTypes
 {
     class Slime : Enemy, IInteractiveObject
     {
-        public Slime(Vector2 startPos) : base (startPos)
+        public Slime(Vector2 startPos, int level) : base (startPos, level)
         {
             TextureFileName = "slime_sprite";
             characterType = "slime";
-            MaxHealth = 10;
+            MaxHealth = 15 + (5 * level);
             maxSpeedX = 1.5f;
             acceleration = 0.66f;
 
@@ -28,7 +28,7 @@ namespace ThielynGame.GamePlay.EnemyTypes
         public void CheckPlayerCollision(Player P)
         {
             if (P.BoundingBox.Intersects(BoundingBox))
-            P.OnReceiveDamage(10, true, StatusEffect.createEffect(level, EffectType.Poison));
+            P.OnReceiveDamage((level / 4) + 5, true, StatusEffect.createEffect(level, EffectType.Poison, 5000));
         }
     }
 }

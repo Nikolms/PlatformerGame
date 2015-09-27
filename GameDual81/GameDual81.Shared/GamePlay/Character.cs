@@ -17,16 +17,23 @@ namespace ThielynGame.GamePlay
     public class CharacterStatuses 
     {
         public bool Shielded;
-         public float Fragile,
-            Slow,
-            Fury;
+        public float receiveDamageMod,
+           moveSpeedMod,
+           meleeDamageMod,
+           rangedDamageMod,
+           spellPowerMod,
+           gravityMod;
+
 
         public void Reset() 
         {
             Shielded = false;
-            Fragile = 1;
-            Slow = 1;
-            Fury = 1;
+            receiveDamageMod = 1;
+            moveSpeedMod = 1;
+            meleeDamageMod = 1;
+            rangedDamageMod = 1;
+            spellPowerMod = 1;
+            gravityMod = 1;
         }
     }
 
@@ -57,8 +64,14 @@ namespace ThielynGame.GamePlay
 
         public float AttackSpeed { get; protected set; }
 
-        public Character(Vector2 startPosition) 
+        // characters can modify their speed values through effects
+        protected float actualMaxSpeed;
+
+        public Character(Vector2 startPosition, int level) 
         {
+            TextureFileName = "test_character";
+
+            this.level = level;
             position = startPosition;
             statusModifiers = new CharacterStatuses();
         }
@@ -138,7 +151,12 @@ namespace ThielynGame.GamePlay
                     Vector2.Zero,
                     Microsoft.Xna.Framework.Graphics.SpriteEffects.FlipHorizontally,
                     0);
-            
+
+            foreach (StatusEffect E in currentEffectsList)
+            {
+                E.Draw(S, T);
+            }
+
         }
 
          // determines characters current state depending on different parameters, such as speed and direction or touches ground
@@ -207,6 +225,7 @@ namespace ThielynGame.GamePlay
         public virtual void OnReceiveDamage(int damage, bool ignoresArmor, StatusEffect effect)
         {
             // if character is still recovering from recent damage or has an active shield buff, ignore this damage
+            // and all effect with it
             if (hasTakenDamage || statusModifiers.Shielded) 
                 return;
 
@@ -217,30 +236,57 @@ namespace ThielynGame.GamePlay
             float reduction = 1;
 
             if (!ignoresArmor)
-                reduction = ((float)armor / 100);
+                reduction = 1 - ((float)armor / 100);
 
-            float actualDamage = damage * statusModifiers.Fragile * reduction;
+            float actualDamage = damage * statusModifiers.receiveDamageMod * reduction;
+            if (actualDamage < 1) actualDamage = 1;
 
-            //Debug.WriteLine("DamageDealt:  "+damage+"\nDamageTaken:  " + actualDamage + "\n\n");
+            Debug.WriteLine(characterType + "takes " + actualDamage + "damage!");
 
             CurrentHealth -= (int)actualDamage;
             if (CurrentHealth <= 0)
                 IsDead = true;
 
-            if (effect != null) OnReceiveEffect(effect);
+            if (effect != null)
+            OnReceiveEffect(effect);
         }
 
         public virtual void OnReceiveEffect(StatusEffect effect) 
         {
-            currentEffectsList.Add(effect);
+            if (effect == null)
+                return;
+
+            bool isExistingStatus = false;
+
+                foreach (StatusEffect SE in currentEffectsList)
+                {
+                    if (SE.GetType() == effect.GetType())
+                    {
+                        SE.ReplaceWithNewInstance(effect.duration);
+                        isExistingStatus = true;
+                    }
+                }
+
+            if (!isExistingStatus)
+                currentEffectsList.Add(effect);
+
         }
 
         public virtual void OnReceiveHeal(int amount) 
         {
+            // if the heal amount would exceed maxhealth, change to heal to difference on max and current
+            if (CurrentHealth + amount > MaxHealth)
+                amount = MaxHealth - CurrentHealth;
+                        
             CurrentHealth += amount;
         }
 
-         public void startNewAction (BaseAction action) 
+        public virtual void ClearStatuses()
+        {
+            currentEffectsList.Clear();
+        }
+
+        public void startNewAction (BaseAction action) 
          {
              currentAction = action;
          }
@@ -252,7 +298,7 @@ namespace ThielynGame.GamePlay
 
              if (velocity.X > 0) velocity.X = 0;
              // increase velocity only if touches ground and has not reached max speed
-             if (velocity.X > -maxSpeedX)
+             if (velocity.X > ( -maxSpeedX * statusModifiers.moveSpeedMod) )
                  // left has a negative X
                  velocity.X -= acceleration;
 
@@ -267,7 +313,7 @@ namespace ThielynGame.GamePlay
 
              if (velocity.X < 0) velocity.X = 0;
              // increase velocity only if touches ground and has not reached max speed
-             if (velocity.X < maxSpeedX)
+             if (velocity.X <  ( maxSpeedX * statusModifiers.moveSpeedMod ))
                  velocity.X += acceleration;
 
              previousFacing = facing;
@@ -278,18 +324,21 @@ namespace ThielynGame.GamePlay
 
          public virtual int GetMeleeDamage ()
          {
-             return 20;
+            float damage = 20 * statusModifiers.meleeDamageMod;
+            return (int)damage;
          }
 
          public virtual int GetRangedDamage ()
          {
-             return 20;
-         }
+            float damage = 20 * statusModifiers.rangedDamageMod;
+            return (int)damage;
+        }
 
          public virtual int GetSpellPower ()
          {
-             return level;
-         }
+            float damage = 20 * statusModifiers.spellPowerMod;
+            return (int)damage;
+        }
 
     }
 }

@@ -8,12 +8,12 @@ namespace ThielynGame.GamePlay.EnemyTypes
 {
     class Archer : Enemy
     {
-        public Archer(Vector2 startPos) : base (startPos)
+        public Archer(Vector2 startPos, int level) : base (startPos, level)
         {
-            TextureFileName = "troll_sprite";
+            // TextureFileName = "troll_sprite";
             characterType = "archer";
 
-            MaxHealth = 10;
+            MaxHealth = 30 + level;
             maxSpeedX = 2;
             acceleration = 0.66f;
 
@@ -40,7 +40,7 @@ namespace ThielynGame.GamePlay.EnemyTypes
 
         public override int GetRangedDamage()
         {
-            return 20;
+            return 19 + level;
         }
     }
 }

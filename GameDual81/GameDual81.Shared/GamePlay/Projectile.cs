@@ -37,7 +37,7 @@ namespace ThielynGame.GamePlay
                     { 
                         velocity = new Vector2(4f,0), 
                         actualSize = new Rectangle(0,0,60,60), 
-                        appliedEffect = StatusEffect.createEffect(actor.level, EffectType.Fragile)
+                        appliedEffect = StatusEffect.createEffect(actor.level, EffectType.Fragile, 3000)
                     };
                     break;
             }

@@ -30,20 +30,20 @@ namespace ThielynGame.Screens
 
             // create the player instance that is used by GUI
             // and levelmanager
-            Player player = new Player(Vector2.Zero);
+            Player player = new Player(Vector2.Zero, 1);
 
             // create objectManager to hold and perform updates on gameobjects
             objectManager = new LevelManager();
             objectManager.Initialize(player);
-
-            // create the GUI
-            levelGUI = new LevelGUI(player);
 
             // create the helper class to load textures from
             GamePlayTextures = new TextureLoader(content);
 
             // create the animationlists
             AnimationLists.Initialize();
+
+            // create the GUI
+            levelGUI = new LevelGUI(player);
 
             Task T = new Task(Load);
             T.Start();
@@ -68,6 +68,7 @@ namespace ThielynGame.Screens
             if (objectManager.IsCreatingLevel) return;
 
             // read input information
+            levelGUI.UpdateGUI(time);
             levelGUI.checkButtonClicks(input.InputLocations);
             levelGUI.PlayerNonVisualInput(input);
 
