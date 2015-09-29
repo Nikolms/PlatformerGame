@@ -19,10 +19,13 @@ namespace ThielynGame.GamePlay.EnemyTypes
 
             AttackSpeed = 500;
 
+            baseMeleeDamage = 20 + level;
+
             MeleeReach = new Rectangle(0,0,100,90);
             rangePrimaryAttack = 60;
             rangeSecondaryAttack = 0;
             detectionRange = 250;
+            releaseDetectRange = 260;
 
             cooldownBetweenAttacks = 1750;
             cooldownPrimaryAttack = 1750;
@@ -36,6 +39,7 @@ namespace ThielynGame.GamePlay.EnemyTypes
         protected override void DoPrimaryAttack()
         {
             this.startNewAction(BaseAction.CreateAction(ActionID.MeleeAttack, this));
+            base.DoPrimaryAttack();
         }
 
         public override int GetMeleeDamage()

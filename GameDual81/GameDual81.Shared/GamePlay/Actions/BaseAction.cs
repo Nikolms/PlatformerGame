@@ -45,11 +45,14 @@ namespace ThielynGame.GamePlay.Actions
         public static BaseAction CreateAction(ActionID type, Character actor) 
         {
             BaseAction A = null;
+            if (type == ActionID.RangedAttack) A = new RangedAttack()
+                { CoolDown = 0, PreExecuteDuration = (int)actor.AttackSpeed, PostExecutionDuration = 0, actionAnimationName = "_melee" };
+              
             if (type == ActionID.MeleeAttack) A = new MeleeAttack() 
                 {CoolDown = 0, PreExecuteDuration = (int)actor.AttackSpeed, PostExecutionDuration = 100, actionAnimationName = "_melee"};
             
             if (type == ActionID.Charge) A = new Charge() 
-                {CoolDown = 6000, PreExecuteDuration = 0, PostExecutionDuration = 400, actionAnimationName = "_charge"};
+                {CoolDown = 6000, PreExecuteDuration = (int)actor.AttackSpeed, PostExecutionDuration = 400, actionAnimationName = "_charge"};
 
             if (type == ActionID.IceBolt) A = new IceBolt()
                 {CoolDown = 3000, PreExecuteDuration = 1000, PostExecutionDuration = 0, actionAnimationName = "_spellcast" };
@@ -65,7 +68,7 @@ namespace ThielynGame.GamePlay.Actions
 
             if (type == ActionID.GhostWalk) A = new GhostWalk()
                 {CoolDown = 20000, PreExecuteDuration = 0, PostExecutionDuration = 0, actionAnimationName = "_charge" };
-
+            
             A.totalDuration = A.PreExecuteDuration + A.PostExecutionDuration;
             A.actor = actor;
             return A;
@@ -96,8 +99,8 @@ namespace ThielynGame.GamePlay.Actions
             return false;
         }
 
-        public abstract void DoPreExecution();
-        public abstract void DoPostExecution();
+        public virtual void DoPreExecution() { }
+        public virtual void DoPostExecution() { }
         protected abstract void Execute();
 
         public abstract void Draw(SpriteBatch S, TextureLoader T);
@@ -105,16 +108,6 @@ namespace ThielynGame.GamePlay.Actions
 
     class IceBolt : BaseAction
     {
-        public override void DoPreExecution()
-        {
-            // nothing special
-        }
-
-        public override void DoPostExecution()
-        {
-            // nothing special
-        }
-
         protected override void Execute()
         {
             Projectile P = Projectile.createProjectile(ProjetileType.IceBolt, actor);
@@ -128,18 +121,23 @@ namespace ThielynGame.GamePlay.Actions
         }
     }
 
-    class MeleeAttack : BaseAction
+    class RangedAttack : BaseAction
     {
-        public override void DoPreExecution()
+        protected override void Execute()
+        {
+            Projectile P = Projectile.createProjectile(ProjetileType.Arrow, actor);
+            LevelManager L = new LevelManager();
+            L.AddGameObject(P);
+        }
+
+        public override void Draw(SpriteBatch S, TextureLoader T)
         {
             // nothing
         }
+    }
 
-        public override void DoPostExecution()
-        {
-           // nothing
-        }
-
+    class MeleeAttack : BaseAction
+    {
         protected override void Execute()
         {
             // calculate the hitbox position
@@ -159,23 +157,12 @@ namespace ThielynGame.GamePlay.Actions
 
         public override void Draw(SpriteBatch S, TextureLoader T)
         {
-            throw new NotImplementedException();
+            // nothing
         }
     }
 
     class WhirlWind : BaseAction 
     {
-
-        public override void DoPreExecution()
-        {
-            // nothing
-        }
-
-        public override void DoPostExecution()
-        {
-            // nothing
-        }
-
         protected override void Execute()
         {
             Rectangle hitbox = new Rectangle(0,0,100,200);
@@ -193,11 +180,6 @@ namespace ThielynGame.GamePlay.Actions
 
     class Charge : BaseAction
     {
-        public override void DoPreExecution()
-        {
-            // Nothing
-        }
-
         public override void DoPostExecution()
         {
             actor.AddExternalSpeed(18 * (int)actor.Facing, 0);
@@ -220,16 +202,6 @@ namespace ThielynGame.GamePlay.Actions
 
     class Regenerate : BaseAction
     {
-        public override void DoPostExecution()
-        {
-            // nothing
-        }
-
-        public override void DoPreExecution()
-        {
-            // nothing
-        }
-
         public override void Draw(SpriteBatch S, TextureLoader T)
         {
             // nothing
@@ -244,16 +216,6 @@ namespace ThielynGame.GamePlay.Actions
 
     class FireCloak : BaseAction
     {
-        public override void DoPostExecution()
-        {
-            // nothing
-        }
-
-        public override void DoPreExecution()
-        {
-            // nothing
-        }
-
         public override void Draw(SpriteBatch S, TextureLoader T)
         {
             // nothing
@@ -276,16 +238,6 @@ namespace ThielynGame.GamePlay.Actions
 
     class BattleRage : BaseAction
     {
-        public override void DoPostExecution()
-        {
-            //nothing
-        }
-
-        public override void DoPreExecution()
-        {
-            // nothing
-        }
-
         public override void Draw(SpriteBatch S, TextureLoader T)
         {
             // nothing
@@ -299,16 +251,6 @@ namespace ThielynGame.GamePlay.Actions
 
     class GhostWalk : BaseAction
     {
-        public override void DoPostExecution()
-        {
-            // nothing
-        }
-
-        public override void DoPreExecution()
-        {
-            // nothing
-        }
-
         public override void Draw(SpriteBatch S, TextureLoader T)
         {
             // nothing

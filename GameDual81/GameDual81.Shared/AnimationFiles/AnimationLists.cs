@@ -88,7 +88,6 @@ namespace ThielynGame.AnimationFiles
             #endregion
 
             #region snake animation
-
             List<FrameObject> snake_idle = new List<FrameObject>() 
             {
                 new FrameObject() {durationMillisec = 100, frameSource = new Rectangle(0,0,80,90)} 
@@ -104,8 +103,6 @@ namespace ThielynGame.AnimationFiles
                 new FrameObject() {durationMillisec = 500, frameSource = new Rectangle(160,90,80,90)},
                 new FrameObject() {durationMillisec = 100, frameSource = new Rectangle(240,90,160,90)}
             };
-            
-
             #endregion
 
             #region archer animation
@@ -125,6 +122,23 @@ namespace ThielynGame.AnimationFiles
             List<FrameObject> archer_ranged = new List<FrameObject>() 
             {
                 new FrameObject() {durationMillisec = 100, frameSource = new Rectangle(0,70,45,70)}
+            };
+
+            #endregion
+
+            #region Beast animation
+            List<FrameObject> beast_idle = new List<FrameObject>()
+            {
+                new FrameObject() {durationMillisec = 200, frameSource = new Rectangle(0,0,80,90) }
+            };
+            List<FrameObject> beast_run = new List<FrameObject>()
+            {
+                new FrameObject() {durationMillisec = 250, frameSource = new Rectangle(0,90,80,90)},
+                new FrameObject() {durationMillisec = 250, frameSource = new Rectangle(80,90,80,90)}
+            };
+            List<FrameObject> beast_charge = new List<FrameObject>()
+            {
+                 new FrameObject() {durationMillisec = 500, frameSource = new Rectangle(160,90,80,90)}
             };
 
             #endregion
@@ -191,6 +205,10 @@ namespace ThielynGame.AnimationFiles
             animationCollection.Add("troll_idle", Troll_idle);
             animationCollection.Add("troll_run", Troll_run);
             animationCollection.Add("troll_melee", troll_melee);
+
+            animationCollection.Add("beast_idle", beast_idle);
+            animationCollection.Add("beast_run", beast_run);
+            animationCollection.Add("beast_charge", beast_charge);
 
             animationCollection.Add("furyEffect", furyEffect);
             animationCollection.Add("fire_cloak_effect", fireCloak);

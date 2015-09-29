@@ -18,7 +18,8 @@ namespace ThielynGame.GamePlay.EnemyTypes
             acceleration = 0.66f;
 
             detectionRange = 600;
-            rangePrimaryAttack = 600;
+            releaseDetectRange = 650;
+            rangePrimaryAttack = 650;
             rangeSecondaryAttack = 0;
 
             cooldownBetweenAttacks = 2000;
@@ -35,7 +36,8 @@ namespace ThielynGame.GamePlay.EnemyTypes
 
         protected override void DoPrimaryAttack()
         {
-            
+            startNewAction(BaseAction.CreateAction(ActionID.RangedAttack, this));
+            base.DoPrimaryAttack();
         }
 
         public override int GetRangedDamage()

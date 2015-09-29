@@ -65,15 +65,15 @@ namespace ThielynGame.GamePlay
             G.getLevelInfo(masterlist);
 
             // TESTING, REMOVE
-            Enemy e1 = new Troll(new Vector2(8000,200), levelCounter);
-            Enemy e2 = new Troll(new Vector2(2000, 200), levelCounter);
-            Enemy e3 = new Snake(new Vector2(1500, 200), levelCounter);
-            Enemy e4 = new Snake(new Vector2(13000, 200), levelCounter);
-            Enemy e5 = new Archer(new Vector2(14000, 200), levelCounter);
-            Enemy e6 = new Slime(new Vector2(3500, 200), levelCounter);
+            Enemy e1 = new Beast(new Vector2(8000,200), levelCounter);
+            Enemy e2 = new Archer(new Vector2(2000, 200), levelCounter);
+            Enemy e3 = new Beast(new Vector2(1500, 200), levelCounter);
+            Enemy e4 = new Archer(new Vector2(13000, 200), levelCounter);
+            Enemy e5 = new Beast(new Vector2(14000, 200), levelCounter);
+            Enemy e6 = new Archer(new Vector2(3500, 200), levelCounter);
 
             Enemy e11 = new Slime(new Vector2(16000, 200), levelCounter);
-            Enemy e22 = new Snake(new Vector2(12000, 200), levelCounter);
+            Enemy e22 = new Troll(new Vector2(12000, 200), levelCounter);
             Enemy e33 = new Archer(new Vector2(15700, 200), levelCounter);
             Enemy e44 = new Slime(new Vector2(13000, 200), levelCounter);
             Enemy e55 = new Archer(new Vector2(14000, 200), levelCounter);

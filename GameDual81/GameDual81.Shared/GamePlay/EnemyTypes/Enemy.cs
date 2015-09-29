@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ThielynGame.GamePlay.Actions;
 
 namespace ThielynGame.GamePlay
 {
@@ -24,18 +25,27 @@ namespace ThielynGame.GamePlay
 
         bool collidedAlongXAxis;
 
-        protected float detectionRange;
+        protected float detectionRange = 100;
+        protected float releaseDetectRange = 150;
         protected float rangePrimaryAttack;
         protected float rangeSecondaryAttack;
+        protected float rangeThirdAttack;
 
-         bool canDoAttackPrimary;
-         bool canDoAttackSecondary;
+        bool canDoAttackPrimary;
+        bool canDoAttackSecondary;
+        bool canDoThirdAttack;
 
         float timerPrimaryAttack;
         float timerSecondaryAttack;
+        float timerThirdAttack;
 
         protected float cooldownPrimaryAttack;
         protected float cooldownSecondaryAttack;
+        protected float cooldownThirdAttack;
+
+        ActionID firstAttackID;
+        ActionID secondAttackID;
+        ActionID thirdAttackID;
 
         // this cooldown is used to prevent AI from performing both attacks too fast after each other
         float timerAttackAction;
@@ -83,20 +93,36 @@ namespace ThielynGame.GamePlay
         //-----------------------------------------------
         void checkAIRanges() 
         {
-            // check detection range
-            if (Math.Abs(playerLocation.X - position.X) < detectionRange &&
-                Math.Abs(playerLocation.Y - position.Y) < 90)
-                hasDetectedPlayer = true;
-            else
-                hasDetectedPlayer = false;
+            // if enemy has not detected player at start of the frame, we check for possible detection
+            if (!hasDetectedPlayer)
+            {
+                // check detection to left
+                if (BoundingBox.Center.X - playerLocation.X <= detectionRange && facing == FacingDirection.Left)
+                    hasDetectedPlayer = true;
 
-            // check primary attack range
-            if (Math.Abs(playerLocation.X - BoundingBox.Center.X) <= rangePrimaryAttack)
-                canDoAttackPrimary = true;
+                //check detection to right
+                if (playerLocation.X - BoundingBox.Center.X <= detectionRange && facing == FacingDirection.Right)
+                    hasDetectedPlayer = true;
 
-            // check secondary attack range
-            if (Math.Abs(playerLocation.X - BoundingBox.Center.X) <= rangeSecondaryAttack)
-                canDoAttackSecondary = true;
+                if (Math.Abs(playerLocation.Y - BoundingBox.Center.Y) > 60)
+                    hasDetectedPlayer = false;
+            }
+
+            // check if enemy has lost detection every frame
+            // detection release is only checked if the enemy had already detected player
+            if (hasDetectedPlayer)
+            {
+                if (Math.Abs(playerLocation.X - position.X) > releaseDetectRange)
+                    hasDetectedPlayer = false;
+
+                // check primary attack range
+                if (Math.Abs(playerLocation.X - BoundingBox.Center.X) <= rangePrimaryAttack)
+                    canDoAttackPrimary = true;
+
+                // check secondary attack range
+                if (Math.Abs(playerLocation.X - BoundingBox.Center.X) <= rangeSecondaryAttack)
+                    canDoAttackSecondary = true;
+            }
 
             if (hasDetectedPlayer)
             {
@@ -207,6 +233,8 @@ namespace ThielynGame.GamePlay
             timerAttackAction = cooldownBetweenAttacks;
         }
 
+        protected virtual void DoThirdAttack() { }
+
         // this method checks if edges in current movement direction are too high to climb back up again
         bool IsNextStepSafe()
         {
@@ -251,6 +279,8 @@ namespace ThielynGame.GamePlay
 
             return direction;
         }
+
+
 
     }
 }

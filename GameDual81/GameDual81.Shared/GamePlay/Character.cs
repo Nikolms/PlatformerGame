@@ -54,6 +54,7 @@ namespace ThielynGame.GamePlay
         public CharacterStatuses statusModifiers { get; protected set; }
         protected List<StatusEffect> currentEffectsList = new List<StatusEffect>();
 
+        protected int baseMeleeDamage, baseRangeDamage, baseSpellPower;
         protected int armor;
         public int level { get; protected set; }
 
@@ -324,19 +325,19 @@ namespace ThielynGame.GamePlay
 
          public virtual int GetMeleeDamage ()
          {
-            float damage = 20 * statusModifiers.meleeDamageMod;
+            float damage = baseMeleeDamage * statusModifiers.meleeDamageMod;
             return (int)damage;
          }
 
          public virtual int GetRangedDamage ()
          {
-            float damage = 20 * statusModifiers.rangedDamageMod;
+            float damage = baseRangeDamage * statusModifiers.rangedDamageMod;
             return (int)damage;
         }
 
          public virtual int GetSpellPower ()
          {
-            float damage = 20 * statusModifiers.spellPowerMod;
+            float damage = baseSpellPower * statusModifiers.spellPowerMod;
             return (int)damage;
         }
 
