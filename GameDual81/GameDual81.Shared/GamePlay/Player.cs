@@ -57,15 +57,13 @@ namespace ThielynGame.GamePlay
 
         public void ActionInput(ActionButton G)
         {
-            if (currentAction != null)
+            if (startNewAction(BaseAction.CreateAction(G.skill_ID, this)))
             {
-                G.coolDownLeft = 0;
-                return;
+                G.coolDownLeft = currentAction.CoolDown;
+                G.maxCoolDown = currentAction.CoolDown;
             }
-
-            startNewAction(BaseAction.CreateAction(G.skill_ID, this));
-            G.coolDownLeft = currentAction.CoolDown;
-            G.maxCoolDown = currentAction.CoolDown;
+            else
+                G.coolDownLeft = 0;
         }
         
         // this function is used to reset player for the start of level

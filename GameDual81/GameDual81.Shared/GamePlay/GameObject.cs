@@ -47,7 +47,9 @@ namespace ThielynGame.GamePlay
             }
         }
 
-        public virtual void Update(TimeSpan time) { }
+        public virtual void Update(TimeSpan time)
+        {
+        }
 
         public abstract void Draw(SpriteBatch S, TextureLoader T);
        

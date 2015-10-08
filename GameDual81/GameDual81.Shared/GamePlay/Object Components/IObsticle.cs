@@ -11,6 +11,6 @@ namespace ThielynGame.GamePlay.Object_Components
     }
     interface IObsticle
     {
-        CollisionDetailObject CheckObsticleCollision(PhysicsObjects P);
+        void CheckObsticleCollision(PhysicsObjects P);
     }
 }

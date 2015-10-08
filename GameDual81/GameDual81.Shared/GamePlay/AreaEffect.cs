@@ -4,31 +4,37 @@ using System.Collections.Generic;
 using System.Text;
 using ThielynGame.AnimationFiles;
 using Microsoft.Xna.Framework.Graphics;
+using ThielynGame.GamePlay.Object_Components;
 
 namespace ThielynGame.GamePlay
 {
-    class AreaEffect : GameObject, HarmfullObject
+    class AreaEffect : GameObject, IHarmfulObject
     {
         protected bool isVisible;
         protected List<Character> CharactersHitByThis = new List<Character>();
-        float duration, elapsedTime;
-        Animation animation = null;
+        protected float duration, elapsedTime;
+        protected Animation animation = null;
         protected string TextureSourceFile = "TODO";
 
-        protected int damage = 0;
-        Character actor;
+        protected float intervalTime, timeSinceLastInterval;
+        protected Character actor;
+        protected AttackDetailObject attackDetail;
+
+        // behaviour flags
         public bool FollowsActor { get; set; }
+        public bool centerAroundActor { get; set;}
+        protected bool DoesInterValEffect { get; set; }
         
 
-        public AreaEffect(float duration, int damage, Character actor, Rectangle Size) 
+        public AreaEffect(float duration, Character actor, Rectangle Size, AttackDetailObject attack) 
         {
             this.actor = actor;
             isVisible = false; ;
             this.duration = duration;
-            this.damage = damage;
             alignment = actor.Alignment;
             actualSize = Size;
             position.X = Size.X; position.Y = Size.Y;
+            attackDetail = attack;
         }
 
         // set visible to true if an animation is initialzed, otherwise the object is not visible
@@ -39,25 +45,43 @@ namespace ThielynGame.GamePlay
             animation = A;
             animation.Start();
         }
+        public void SetInterval(float intervaltime)
+        {
+            intervalTime = intervaltime;
+            timeSinceLastInterval = 0;
+            DoesInterValEffect = true;
+        }
 
         public override void Update(TimeSpan time) 
         {
             elapsedTime += time.Milliseconds;
+            if (DoesInterValEffect) timeSinceLastInterval += time.Milliseconds;
 
             if (animation != null) animation.CheckIfDoneAndUpdate(time);
+
 
             if (elapsedTime >= duration)
             {
                 OnComplete();
-
                 // this object disappears when time is out
                 IsDead = true;
             }
 
+
+            if (actor.IsDead)
+                IsDead = true;
+
             if (FollowsActor)
             {
+               
                 position.X = actor.BoundingBox.X;
                 position.Y = actor.BoundingBox.Y;
+            }
+
+            if (centerAroundActor && FollowsActor)
+            {
+                position.X = actor.BoundingBox.X - ((BoundingBox.Width - actor.BoundingBox.Width) / 2);
+                position.Y = actor.BoundingBox.Y - ((BoundingBox.Height - actor.BoundingBox.Height) / 2);
             }
 
         }
@@ -67,7 +91,7 @@ namespace ThielynGame.GamePlay
             // once finished deal damage to all characters that collided with this during its lifespan
             foreach (Character C in CharactersHitByThis)
             {
-                C.OnReceiveDamage(damage, false, null);
+                C.OnReceiveAttackOrEffect(attackDetail);
             }
         }
         
@@ -85,79 +109,41 @@ namespace ThielynGame.GamePlay
             // check that objects are different alignment
             if (C.Alignment == alignment) return;
 
+            // check if intervaltimer has expired for interval areas
+            if (DoesInterValEffect && timeSinceLastInterval < intervalTime) return;
+
             if (BoundingBox.Intersects(C.BoundingBox))
             {
                 // check character was not already in the list
                 if (CharactersHitByThis.Contains(C)) return;
+
+                // if intervalArea, deal damage right away
+                if (DoesInterValEffect)
+                    C.OnReceiveAttackOrEffect(attackDetail);
                 
+                // else record character in list to receive damage on completion
+                else                
                     CharactersHitByThis.Add(C);
             }
         }
 
     }
 
-    class MeleeArea : AreaEffect 
+
+    class ArcaneCloakArea : AreaEffect, IObsticle
     {
-        public MeleeArea(float duration, int damage, Character actor, Rectangle size) : 
-            base (duration, damage, actor, size)
+        public ArcaneCloakArea(float duration, Character actor, Rectangle Size, AttackDetailObject attack) 
+            : base(duration, actor, Size, attack)
         {
-            // TODO set to false when no longer needed for testing
-            isVisible = true; 
         }
 
-        public override void CheckCollisionWithCharacter(Character C)
+        public void CheckObsticleCollision(PhysicsObjects P)
         {
-            if (CharactersHitByThis.Contains(C) || C.Alignment == alignment)
-                return;
-            if (BoundingBox.Intersects(C.BoundingBox))
-            CharactersHitByThis.Add(C);
+            if (P is Projectile)
+                P.HandleObsticleCollision(new CollisionDetailObject(), null);
+                
         }
-
-        //  TODO override not needed outside testing purposes
-        public override void Draw(SpriteBatch S, TextureLoader T)
-        {
-            S.Draw(T.GetTexture(TextureSourceFile),
-                MyRectangle.AdjustExistingRectangle(BoundingBox),
-                Color.White);
-        }
-
     }
 
-    class IntervalDamageArea : AreaEffect 
-    {
-        float interval, lastEffect = 0;
-        Character caster;
 
-        public IntervalDamageArea(int damageInterval, float duration, int damage, Character actor, Rectangle size) :
-            base(duration, damage, actor, size)
-        {
-            interval = damageInterval;
-            caster = actor;
-        }
-
-        public override void Update(TimeSpan time)
-        {
-            lastEffect += time.Milliseconds;
-
-            if (lastEffect >= interval) 
-            {
-                lastEffect = 0;
-            }
-
-            position.X = caster.BoundingBox.X - ( (actualSize.Width - caster.BoundingBox.Width) / 2 );
-            position.Y = caster.BoundingBox.Y - (actualSize.Height - caster.BoundingBox.Height);
-
-            base.Update(time);
-        }
-
-        public override void CheckCollisionWithCharacter(Character C)
-        {
-            // deal damage only when interval timer has been resetB
-            if (lastEffect > 0) return;
-
-            if (BoundingBox.Intersects(C.BoundingBox) && C.Alignment != caster.Alignment)
-                C.OnReceiveDamage(damage, false, null);
-        }
-    }
-    
 }

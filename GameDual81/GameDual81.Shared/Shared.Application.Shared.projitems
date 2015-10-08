@@ -30,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Camera.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Character.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\CollisionControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\ArcaneKnight.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Archer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Beast.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Enemy.cs" />
@@ -38,9 +39,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Troll.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\ExitPoint.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\GameObject.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Object Components\ICharacterInteract.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Object Components\IHarmfulObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Object Components\IObsticle.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Object Components\IPlayerInterAct.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Object Components\IInteractiveObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\PhysicsObjects.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\LevelManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Platform.cs" />

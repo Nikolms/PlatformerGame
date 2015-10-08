@@ -207,7 +207,7 @@ namespace GameDual81.LevelGenerator
             {
                 case 3:
                     section.sectionTerrain.Add(new Platform(new Rectangle(0, 450, 256, 256)));
-                    section.sectionTerrain.Add(new Platform(new Rectangle(356, 450, 160, 40), "", new Vector2(3,0), 408));
+                    section.sectionTerrain.Add(new Platform(new Rectangle(356, 450, 160, 40)));
                     section.sectionTerrain.Add(new Platform(new Rectangle(1024, 512, 256, 256)));
                     break;
 

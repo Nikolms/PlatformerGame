@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ThielynGame.GamePlay
 {
-    public struct collisionCorrection 
+    public struct CollisionDetailObject 
     {
         public int directionY,
             directionX,
@@ -17,6 +17,7 @@ namespace ThielynGame.GamePlay
 
     class GroundCollisionControl
     {
+        // TODO remove this function. Replaced by new ones
         public static void CheckGroundCollision(PhysicsObjects collider, List<Platform> terrain) 
         {
             foreach (Platform P in terrain) 
@@ -24,7 +25,7 @@ namespace ThielynGame.GamePlay
                 if (collider.BoundingBox.Intersects(P.BoundingBox)) 
                 {
                     // calculate the correction distances depending on entry direction
-                    collisionCorrection CC = new collisionCorrection();
+                    CollisionDetailObject CC = new CollisionDetailObject();
                     CC.correctionDistanceX = 0; CC.correctionDistanceY = 0;
                     CC.directionX = 0; CC.directionY = 0;
 
@@ -46,7 +47,7 @@ namespace ThielynGame.GamePlay
                             CC.correctionDistanceY = collider.BoundingBox.Height - (P.BoundingBox.Y - collider.BoundingBox.Y);
                         }
                         CC.correctionDistanceY = Math.Abs(CC.correctionDistanceY);
-                        collider.HandleGroundCollision(CC, P);
+                        collider.HandleObsticleCollision(CC, P);
                     }
 
                     // reset the correction values after Y- axis is resolved
@@ -69,11 +70,10 @@ namespace ThielynGame.GamePlay
                         {
                             CC.directionX = -1;
                             CC.correctionDistanceX = collider.BoundingBox.Width - (P.BoundingBox.X - collider.BoundingBox.X);
-                            
                         }
 
                         CC.correctionDistanceX = Math.Abs(CC.correctionDistanceX);
-                        collider.HandleGroundCollision(CC, P);
+                        collider.HandleObsticleCollision(CC, P);
                     }
                     
                 }
@@ -81,5 +81,63 @@ namespace ThielynGame.GamePlay
             }
         }
 
+        public static CollisionDetailObject CheckObsticleY(PhysicsObjects collider, Rectangle Obsticle)
+        {
+            CollisionDetailObject CC = new CollisionDetailObject();
+            CC.correctionDistanceX = 0; CC.correctionDistanceY = 0;
+            CC.directionX = 0; CC.directionY = 0;
+
+            if (!collider.VerticalCollisionBox.Intersects(Obsticle)) return CC;
+            
+                // calculate collision correction based on colliders vertical direction
+                if (collider.VerticalCollisionBox.Y < Obsticle.Bottom &&
+                    collider.VerticalCollisionBox.Y > Obsticle.Y)
+                {
+                    CC.directionY = 1;
+                    CC.correctionDistanceY = Math.Abs(collider.BoundingBox.Y - Obsticle.Bottom);
+                }
+
+                if (collider.VerticalCollisionBox.Bottom < Obsticle.Bottom &&
+                    collider.VerticalCollisionBox.Bottom > Obsticle.Y)
+                {
+                    CC.directionY = -1;
+                    CC.correctionDistanceY = Math.Abs(Obsticle.Y - collider.BoundingBox.Bottom);
+                }
+                
+                    if (CC.correctionDistanceY > Math.Abs(collider.TotalVelocity.Y))
+                      CC.correctionDistanceY = (int)Math.Abs(collider.TotalVelocity.Y) + 1;
+
+                return CC;
+            
+        }
+
+        public static CollisionDetailObject CheckObsticleX (PhysicsObjects collider, Rectangle Obsticle)
+        {
+            CollisionDetailObject CC = new CollisionDetailObject();
+            CC.correctionDistanceX = 0; CC.correctionDistanceY = 0;
+            CC.directionX = 0; CC.directionY = 0;
+
+            if (!collider.HorizontalCollisionBox.Intersects(Obsticle)) return CC;
+
+            if (collider.HorizontalCollisionBox.Left > Obsticle.X &&
+                collider.HorizontalCollisionBox.Left < Obsticle.Right)
+            {
+                CC.directionX = 1;
+                CC.correctionDistanceX = Math.Abs(collider.BoundingBox.X - Obsticle.Right);
+            }
+
+            if (collider.HorizontalCollisionBox.Right > Obsticle.X &&
+                collider.HorizontalCollisionBox.Right < Obsticle.Right)
+            {
+                CC.directionX = -1;
+                CC.correctionDistanceX = Math.Abs(Obsticle.X - collider.BoundingBox.Right);
+            }
+
+            //if (CC.correctionDistanceX > Math.Abs(collider.TotalVelocity.X))
+            //    CC.correctionDistanceX = (int)Math.Abs(collider.TotalVelocity.X) + 1;
+
+            return CC;
+        }
+        
     }
 }

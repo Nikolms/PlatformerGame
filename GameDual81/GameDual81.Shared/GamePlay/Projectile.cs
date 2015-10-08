@@ -6,13 +6,15 @@ using ThielynGame.GamePlay.StatusEffects;
 
 namespace ThielynGame.GamePlay
 {
-    public enum ProjetileType {Arrow, IceBolt}
+    public enum ProjetileType {Arrow, IceBolt, ChainSpear}
 
-    class Projectile : PhysicsObjects, HarmfullObject
+    class Projectile : PhysicsObjects, IHarmfulObject
     {
         int damage;
         StatusEffect appliedEffect;
         bool piercing;
+        // this can be used if an action needs a trigger marker
+        public bool collidedWithSomething {get; protected set;}
 
         protected Projectile() 
         {
@@ -27,7 +29,7 @@ namespace ThielynGame.GamePlay
                 case ProjetileType.Arrow:
                     P = new Projectile() 
                     { 
-                      velocity = new Vector2(6.5f, 0),
+                      velocity = new Vector2(8, 0),
                       actualSize = new Rectangle(0, 0, 50, 10)
                     };
                     break;
@@ -35,9 +37,18 @@ namespace ThielynGame.GamePlay
                 case ProjetileType.IceBolt:
                     P = new Projectile() 
                     { 
-                        velocity = new Vector2(4f,0), 
+                        velocity = new Vector2(4.5f,0), 
                         actualSize = new Rectangle(0,0,60,60), 
                         appliedEffect = StatusEffect.createEffect(actor.level, EffectType.Fragile, 3000)
+                    };
+                    break;
+
+                case ProjetileType.ChainSpear:
+                    P = new ChainSpear()
+                    {
+                        actor = actor,
+                        velocity = new Vector2(10f,0),
+                        actualSize = new Rectangle(0,0,30,30)
                     };
                     break;
             }
@@ -51,31 +62,47 @@ namespace ThielynGame.GamePlay
         }
         
 
-        public void CheckCollisionWithCharacter(Character C)
+        public virtual void CheckCollisionWithCharacter(Character C)
         {
             if (C.BoundingBox.Intersects(BoundingBox) && alignment != C.Alignment)
             {
-                C.OnReceiveDamage(damage, false, appliedEffect);
+                collidedWithSomething = true;
                 IsDead = true;
             }
         }
 
-        public override void HandleGroundCollision(collisionCorrection CC, Platform collidedWith)
+        public override void HandleObsticleCollision(CollisionDetailObject CC, Platform collidedWith)
         {
+            collidedWithSomething = true;
             IsDead = true;
         }
-
-        public void CollideWithObsticle() 
-        {
-            IsDead = true;
-        }
-
+        
         public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch S, AnimationFiles.TextureLoader T)
         {
             S.Draw(
                 T.GetTexture("TODO"),
                 MyRectangle.AdjustExistingRectangle(BoundingBox), 
                 Color.White);
+        }
+    }
+
+    class ChainSpear : Projectile
+    {
+        public Character actor;
+
+        public override void CheckCollisionWithCharacter(Character C)
+        {
+            if (C.BoundingBox.Intersects(BoundingBox) && C.Alignment != alignment)
+            {
+                C.ApplyForce(velocity.X * -2 , -3);
+            }
+            base.CheckCollisionWithCharacter(C);
+        }
+
+        public override void HandleObsticleCollision(CollisionDetailObject CC, Platform collidedWith)
+        {
+            actor.ApplyForce(velocity.X * 2, 0);
+            base.HandleObsticleCollision(CC, collidedWith);
         }
     }
 }

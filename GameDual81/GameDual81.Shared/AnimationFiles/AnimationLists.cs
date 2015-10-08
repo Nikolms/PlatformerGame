@@ -121,6 +121,7 @@ namespace ThielynGame.AnimationFiles
             
             List<FrameObject> archer_ranged = new List<FrameObject>() 
             {
+                new FrameObject() {durationMillisec = 250, frameSource = new Rectangle(45,70,45,70)},
                 new FrameObject() {durationMillisec = 100, frameSource = new Rectangle(0,70,45,70)}
             };
 
@@ -141,6 +142,32 @@ namespace ThielynGame.AnimationFiles
                  new FrameObject() {durationMillisec = 500, frameSource = new Rectangle(160,90,80,90)}
             };
 
+            #endregion
+
+            #region ArcaneKnight animation
+            List<FrameObject> ArcaneKnight_idle = new List<FrameObject>()
+            {
+                new FrameObject() {durationMillisec = 500, frameSource = new Rectangle(0,0,45,70) }
+            };
+
+            List<FrameObject> ArcaneKnight_run = new List<FrameObject>()
+            {
+                new FrameObject() { durationMillisec = 500, frameSource = new Rectangle(0,0,45,70) },
+                new FrameObject() { durationMillisec = 500, frameSource = new Rectangle(45,0,45,70) },
+                new FrameObject() { durationMillisec = 500, frameSource = new Rectangle(90,0,45,70) },
+                new FrameObject() { durationMillisec = 500, frameSource = new Rectangle(45,0,45,70) }
+            };
+
+            List<FrameObject> ArcaneKnight_melee = new List<FrameObject>()
+            {
+                new FrameObject() { durationMillisec = 300, frameSource = new Rectangle(135,0,90,70) },
+                new FrameObject() { durationMillisec = 100, frameSource = new Rectangle(0,0,45,70) }
+            };
+
+            List<FrameObject> ArcaneKnight_spellcast = new List<FrameObject>()
+            {
+                new FrameObject() { durationMillisec = 100, frameSource = new Rectangle(45,70,45,70) }
+            };
             #endregion
 
             #region StatusEffect animations
@@ -209,6 +236,11 @@ namespace ThielynGame.AnimationFiles
             animationCollection.Add("beast_idle", beast_idle);
             animationCollection.Add("beast_run", beast_run);
             animationCollection.Add("beast_charge", beast_charge);
+
+            animationCollection.Add("arcaneknight_idle", ArcaneKnight_idle);
+            animationCollection.Add("arcaneknight_run", ArcaneKnight_run);
+            animationCollection.Add("arcaneknight_melee", ArcaneKnight_melee);
+            animationCollection.Add("arcaneknight_spellcast", ArcaneKnight_spellcast);
 
             animationCollection.Add("furyEffect", furyEffect);
             animationCollection.Add("fire_cloak_effect", fireCloak);

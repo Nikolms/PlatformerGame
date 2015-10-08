@@ -22,8 +22,10 @@ namespace ThielynGame.GamePlay.EnemyTypes
             rangePrimaryAttack = 650;
             rangeSecondaryAttack = 0;
 
-            cooldownBetweenAttacks = 2000;
-            cooldownPrimaryAttack = 2000;
+            AttackSpeed = 250;
+
+            cooldownBetweenAttacks = 3000;
+            cooldownPrimaryAttack = 3000;
             cooldownSecondaryAttack = 10000;
 
             actualSize = new Rectangle(0,0,45,70);

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using GameDual81.LevelGenerator;
 using ThielynGame.Screens;
 using ThielynGame.GamePlay.EnemyTypes;
+using ThielynGame.GamePlay.Object_Components;
 
 namespace ThielynGame.GamePlay
 {
@@ -65,19 +66,19 @@ namespace ThielynGame.GamePlay
             G.getLevelInfo(masterlist);
 
             // TESTING, REMOVE
-            Enemy e1 = new Beast(new Vector2(8000,200), levelCounter);
+            Enemy e1 = new Slime(new Vector2(3000,200), levelCounter);
             Enemy e2 = new Archer(new Vector2(2000, 200), levelCounter);
-            Enemy e3 = new Beast(new Vector2(1500, 200), levelCounter);
+            Enemy e3 = new ArcaneKnight(new Vector2(1500, 200), levelCounter);
             Enemy e4 = new Archer(new Vector2(13000, 200), levelCounter);
-            Enemy e5 = new Beast(new Vector2(14000, 200), levelCounter);
-            Enemy e6 = new Archer(new Vector2(3500, 200), levelCounter);
+            Enemy e5 = new Slime(new Vector2(14000, 200), levelCounter);
+            Enemy e6 = new Slime(new Vector2(3500, 200), levelCounter);
 
             Enemy e11 = new Slime(new Vector2(16000, 200), levelCounter);
             Enemy e22 = new Troll(new Vector2(12000, 200), levelCounter);
             Enemy e33 = new Archer(new Vector2(15700, 200), levelCounter);
-            Enemy e44 = new Slime(new Vector2(13000, 200), levelCounter);
-            Enemy e55 = new Archer(new Vector2(14000, 200), levelCounter);
-            Enemy e66 = new Snake(new Vector2(19500, 200), levelCounter);
+            Enemy e44 = new Archer(new Vector2(13000, 200), levelCounter);
+            Enemy e55 = new ArcaneKnight(new Vector2(14000, 200), levelCounter);
+            Enemy e66 = new Troll(new Vector2(19500, 200), levelCounter);
 
             AddGameObject(e1);
             AddGameObject(e2);
@@ -111,11 +112,10 @@ namespace ThielynGame.GamePlay
             List<Platform> terrainToUpdate = new List<Platform>();
             // all movable objects that are near screen
             List<PhysicsObjects> movableObjectsToUpdate = new List<PhysicsObjects>();
-            List<HarmfullObject> interactiveObjects = new List<HarmfullObject>();
+            List<IHarmfulObject> interactiveObjects = new List<IHarmfulObject>();
             List<IInteractiveObject> playerInteractionObjects = new List<IInteractiveObject>();
             // all enemies that need to update and check collisions this frame
             List<Character> activeCharacters = new List<Character>();
-            List<GameObject> miscObjects = new List<GameObject>();
 
             updateAndrenderList = new List<GameObject>();
 
@@ -143,8 +143,8 @@ namespace ThielynGame.GamePlay
                         if (G is IInteractiveObject)
                             playerInteractionObjects.Add((IInteractiveObject)G);
 
-                        if (G is HarmfullObject)
-                            interactiveObjects.Add((HarmfullObject)G);
+                        if (G is IHarmfulObject)
+                            interactiveObjects.Add((IHarmfulObject)G);
 
                         if (G is Character)
                             activeCharacters.Add((Character)G);
@@ -168,7 +168,9 @@ namespace ThielynGame.GamePlay
 
 
             // collision checks
-            GroundCollisionControl.CheckGroundCollision(player, terrainToUpdate);
+            foreach (IObsticle O in terrainToUpdate) { O.CheckObsticleCollision(player); }
+            //GroundCollisionControl.CheckGroundCollision(player, terrainToUpdate);
+            
             // Update all other objects
             foreach (PhysicsObjects O in movableObjectsToUpdate) 
             {
@@ -182,7 +184,7 @@ namespace ThielynGame.GamePlay
 
             // check for object interaction collision, such as item pick up, projectiles
             // and areaeffects
-            foreach (HarmfullObject O in interactiveObjects) 
+            foreach (IHarmfulObject O in interactiveObjects) 
             {
                 O.CheckCollisionWithCharacter(player);
 

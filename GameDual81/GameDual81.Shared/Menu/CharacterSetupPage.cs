@@ -124,9 +124,17 @@ namespace ThielynGame.Menu
         Rectangle popupPosition = new Rectangle(200,20,600,700);
 
         // These lists are important for balance        
-        List<ActionID> Tier1 = new List<ActionID> {ActionID.BattleRage, ActionID.FireCloak, ActionID.IceBolt };
-        List<ActionID> Tier2 = new List<ActionID> { ActionID.Charge, ActionID.Regenerate };
-        List<ActionID> Tier3 = new List<ActionID> { ActionID.GhostWalk};
+        List<ActionID> Tier1 = new List<ActionID>
+        { ActionID.BattleRage, ActionID.ArcaneCloak,
+          ActionID.ArcaneBolt, ActionID.ChainSpear,
+            ActionID.Heal, ActionID.ArcaneSpray };
+
+        List<ActionID> Tier2 = new List<ActionID>
+        { ActionID.Charge, ActionID.Regenerate,
+          ActionID.ArcaneLightning};
+
+        List<ActionID> Tier3 = new List<ActionID>
+        { ActionID.ShadowForm, ActionID.ArcaneStorm};
 
         public SkillSelectionPopup(SkillSelectButton activator, SkillSelectAction buttonAction)
         {

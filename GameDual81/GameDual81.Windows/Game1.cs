@@ -66,8 +66,8 @@ namespace ThielynGame
 
             SkillData.Init();
             GameSettings.Skill1 = GamePlay.Actions.ActionID.BattleRage;
-            GameSettings.Skill2 = GamePlay.Actions.ActionID.FireCloak;
-            GameSettings.Skill3 = GamePlay.Actions.ActionID.IceBolt;
+            GameSettings.Skill2 = GamePlay.Actions.ActionID.ArcaneCloak;
+            GameSettings.Skill3 = GamePlay.Actions.ActionID.ArcaneBolt;
 
             base.Initialize();
         }

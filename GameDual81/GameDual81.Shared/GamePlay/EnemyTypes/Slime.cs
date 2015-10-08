@@ -28,7 +28,13 @@ namespace ThielynGame.GamePlay.EnemyTypes
         public void CheckPlayerCollision(Player P)
         {
             if (P.BoundingBox.Intersects(BoundingBox))
-            P.OnReceiveDamage((level / 4) + 5, true, StatusEffect.createEffect(level, EffectType.Poison, 5000));
+            {
+                AttackDetailObject attack = new AttackDetailObject();
+                attack.BuffEffects = new List<StatusEffect>();
+                attack.BuffEffects.Add(
+                    StatusEffect.createEffect(level, EffectType.Poison, 5000));
+                attack.damage = 10 + (level / 4);
+            }
         }
     }
 }

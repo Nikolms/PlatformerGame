@@ -11,14 +11,8 @@ namespace ThielynGame.GamePlay
 {
     public class Platform : GameObject, IObsticle
     {
-        protected bool isDisappearingPlatform = false;
-
-        protected bool isMovingPlatform = false;
-        float travelDistance, currentDistance;
-        int currentDirection;
-
         // list of objects that standing on this platform
-        List<PhysicsObjects> objectsOnTopOfThis = new List<PhysicsObjects>();
+        protected List<PhysicsObjects> objectsOnTopOfThis = new List<PhysicsObjects>();
 
         public string TextureSet { set { TextureFileName = value; } }
 
@@ -31,23 +25,65 @@ namespace ThielynGame.GamePlay
             // TODO, only for testing purposes
             TextureFileName = "terrain_stone";
         }
-
-        public Platform(Rectangle positionAndSize, string tilesetName, Vector2 velocity, float travelDistance) :
-            this(positionAndSize)
+        
+        public override void Update(TimeSpan time)
         {
-            maxSpeedX = velocity.X; maxSpeedY = velocity.Y;
-            isMovingPlatform = true;
-            this.travelDistance = travelDistance;
-            currentDistance = 0;
+            // unregister all objects every frame. Objects must renew their collision
+            // on later frames
+            objectsOnTopOfThis.Clear();
+        }
+        
+        public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch S, TextureLoader T)
+        {
+            S.Draw(
+                T.GetTexture(TextureFileName),
+                MyRectangle.AdjustExistingRectangle(BoundingBox),
+                Color.White);
         }
 
 
+        public void RegisterObjectOnTop(PhysicsObjects O)
+        {
+            objectsOnTopOfThis.Add(O);
+        }
+
+        public void CheckObsticleCollision(PhysicsObjects P)
+        {
+            // checks simple collision
+            if (P.BoundingBox.Intersects(BoundingBox))
+            {
+                // if collision is detected, request detailed calculations
+                // and send it to collider
+                CollisionDetailObject C =
+                    GroundCollisionControl.CheckObsticleY(P, BoundingBox);
+                if (C.directionY < 0) RegisterObjectOnTop(P);
+                P.HandleObsticleCollision(C, this);
+                // repeat for X axis
+                C = GroundCollisionControl.CheckObsticleX(P, BoundingBox);
+                P.HandleObsticleCollision(C, this);
+            }
+        }
+    }
+
+    public class MovingPlatform : Platform
+    {
+
+        float travelDistance, currentDistance;
+        int currentDirection;
+
+        public Vector2 modifiedVelocity
+        { get; set; }
+
+        public MovingPlatform(Rectangle positionAndSize, Vector2 velocity, float TravelDistance) 
+            : base(positionAndSize)
+        {
+            maxSpeedX = velocity.X; maxSpeedY = velocity.Y;
+            travelDistance = TravelDistance;
+            currentDistance = 0;
+        }
 
         public override void Update(TimeSpan time)
         {
-            // if this platform has its own movement update it
-            if (isMovingPlatform)
-            {
                 // switch direction if max distance or zero distance is reached
                 if (currentDistance <= 0)
                 {
@@ -71,43 +107,9 @@ namespace ThielynGame.GamePlay
                 {
                     O.AddExternalSpeed(velocity.X, velocity.Y);
                 }
-            }
-            // unregister all objects every frame. Objects must renew their collision
-            // on later frames
-            objectsOnTopOfThis.Clear();
 
+            base.Update(time);
         }
 
-
-        public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch S, TextureLoader T)
-        {
-            S.Draw(
-                T.GetTexture(TextureFileName),
-                MyRectangle.AdjustExistingRectangle(BoundingBox),
-                Color.White);
-        }
-
-
-        public void RegisterObjectOnTop(PhysicsObjects O)
-        {
-            objectsOnTopOfThis.Add(O);
-        }
-
-        public CollisionDetailObject CheckObsticleCollision(PhysicsObjects P)
-        {
-            CollisionDetailObject CC = new CollisionDetailObject() { correctionValueX = 0, correctionValueY = 0 };
-
-            if (BoundingBox.Intersects(P.HorizontalCollisionBox)) 
-            {
-                // collider moving left
-                if (P.Velocity.X < 0) CC.correctionValueX = BoundingBox.Right - P.BoundingBox.X;
-                // collider moving right
-                if (P.Velocity.X > 0) CC.correctionValueX = BoundingBox.X - P.BoundingBox.Right;
-            }
-
-            if (BoundingBox.Intersects(P.VerticalCollisionBox)) ;
-
-            return CC;
-        }
     }
 }

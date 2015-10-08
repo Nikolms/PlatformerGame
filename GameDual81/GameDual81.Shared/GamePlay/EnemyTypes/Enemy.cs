@@ -42,11 +42,7 @@ namespace ThielynGame.GamePlay
         protected float cooldownPrimaryAttack;
         protected float cooldownSecondaryAttack;
         protected float cooldownThirdAttack;
-
-        ActionID firstAttackID;
-        ActionID secondAttackID;
-        ActionID thirdAttackID;
-
+        
         // this cooldown is used to prevent AI from performing both attacks too fast after each other
         float timerAttackAction;
         protected float cooldownBetweenAttacks;
@@ -79,12 +75,12 @@ namespace ThielynGame.GamePlay
             collidedAlongXAxis = false;
         }
 
-        public override void HandleGroundCollision(collisionCorrection CC, Platform collidedWith)
+        public override void HandleObsticleCollision(CollisionDetailObject CC, Platform collidedWith)
         {
             if (CC.correctionDistanceX > 0) 
                 collidedAlongXAxis = true;
 
-            base.HandleGroundCollision(CC, collidedWith);
+            base.HandleObsticleCollision(CC, collidedWith);
             
         }
 
@@ -204,9 +200,6 @@ namespace ThielynGame.GamePlay
 
         void MoveTowardsPlayer() 
         {
-            // return without doing any movement if there is a valid attack range
-            if (canDoAttackPrimary || canDoAttackSecondary) return;
-
             // determine which direction to reach player
             if (playerDirection() == FacingDirection.Left) 
             {
@@ -233,7 +226,11 @@ namespace ThielynGame.GamePlay
             timerAttackAction = cooldownBetweenAttacks;
         }
 
-        protected virtual void DoThirdAttack() { }
+        protected virtual void DoThirdAttack()
+        {
+            timerAttackAction = cooldownBetweenAttacks;
+            timerThirdAttack = cooldownThirdAttack;
+        }
 
         // this method checks if edges in current movement direction are too high to climb back up again
         bool IsNextStepSafe()

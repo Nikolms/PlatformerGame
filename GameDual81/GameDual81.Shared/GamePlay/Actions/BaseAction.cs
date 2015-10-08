@@ -9,15 +9,25 @@ using ThielynGame.GamePlay.StatusEffects;
 namespace ThielynGame.GamePlay.Actions
 {
     public enum ActionID {
+        ArcaneStorm,
+        ArcaneSpray,
+        ArcaneBolt,
+        ArcaneLightning,
+        BattleRage,        
+        ChainSpear,
+        Charge,
+        ArcaneCloak,
+        Heal,
+        ShadowForm,        
         MeleeAttack,
         RangedAttack,
-        Charge,
-        IceBolt,
         Regenerate,
-        FireCloak,
-        BattleRage,
-        GhostWalk
     }
+
+    public enum MonsterSkills {
+
+    }
+
 
     public abstract class BaseAction
     {
@@ -41,33 +51,47 @@ namespace ThielynGame.GamePlay.Actions
         public float EffectStrength { get; protected set; }
         public float SecondaryEffectStrenght { get; protected set; }
 
+        public bool CanBeUsedInAir { get; protected set; }
+        
 
         public static BaseAction CreateAction(ActionID type, Character actor) 
         {
             BaseAction A = null;
-            if (type == ActionID.RangedAttack) A = new RangedAttack()
-                { CoolDown = 0, PreExecuteDuration = (int)actor.AttackSpeed, PostExecutionDuration = 0, actionAnimationName = "_melee" };
-              
-            if (type == ActionID.MeleeAttack) A = new MeleeAttack() 
-                {CoolDown = 0, PreExecuteDuration = (int)actor.AttackSpeed, PostExecutionDuration = 100, actionAnimationName = "_melee"};
-            
-            if (type == ActionID.Charge) A = new Charge() 
-                {CoolDown = 6000, PreExecuteDuration = (int)actor.AttackSpeed, PostExecutionDuration = 400, actionAnimationName = "_charge"};
+            if (type == ActionID.ArcaneStorm) A = new ArcaneStorm()
+                { CoolDown = 3000, PreExecuteDuration = 0, PostExecutionDuration = 2000, actionAnimationName = "_spellcast"};
 
-            if (type == ActionID.IceBolt) A = new IceBolt()
-                {CoolDown = 3000, PreExecuteDuration = 1000, PostExecutionDuration = 0, actionAnimationName = "_spellcast" };
+            if (type == ActionID.ArcaneBolt) A = new ArcaneBolt()
+                { CoolDown = 3000, PreExecuteDuration = 750, PostExecutionDuration = 0, actionAnimationName = "_spellcast" };
 
-            if (type == ActionID.Regenerate) A = new Regenerate()
-                {CoolDown = 25000, PreExecuteDuration = 1000, PostExecutionDuration = 0, actionAnimationName = "_spellcast" };
+            if (type == ActionID.ArcaneCloak) A = new ArcaneCloak()
+                { CoolDown = 3000, PreExecuteDuration = 500, PostExecutionDuration = 0, actionAnimationName = "_spellcast" };
 
-            if (type == ActionID.FireCloak) A = new FireCloak()
-                {CoolDown = 5000, PreExecuteDuration = 500, PostExecutionDuration = 0, actionAnimationName = "_spellcast" };
+            if (type == ActionID.ArcaneLightning) A = new ArcaneLightning()
+            { CoolDown = 3000, PreExecuteDuration = 500, PostExecutionDuration = 0, actionAnimationName = "_spellcast" };
 
             if (type == ActionID.BattleRage) A = new BattleRage()
-                {CoolDown = 15000, PreExecuteDuration = 250, PostExecutionDuration = 0, actionAnimationName = "_charge" };
+                { CoolDown = 3000, PreExecuteDuration = 250, PostExecutionDuration = 0, actionAnimationName = "_charge" };
+            
+            if (type == ActionID.ChainSpear) A = new ChainSpear()
+                { CoolDown = 3000, PreExecuteDuration = 0, PostExecutionDuration = 10000, actionAnimationName = "_melee" };
 
-            if (type == ActionID.GhostWalk) A = new GhostWalk()
-                {CoolDown = 20000, PreExecuteDuration = 0, PostExecutionDuration = 0, actionAnimationName = "_charge" };
+            if (type == ActionID.Charge) A = new Charge()
+                { CoolDown = 3000, PreExecuteDuration = (int)actor.AttackSpeed, PostExecutionDuration = 400, actionAnimationName = "_charge" };
+            
+            if (type == ActionID.Heal) A = new Heal()
+                { CoolDown = 3000, PreExecuteDuration = 2000, PostExecutionDuration = 0, actionAnimationName = "_spellcast"};
+
+            if (type == ActionID.MeleeAttack) A = new MeleeAttack()
+                { CoolDown = 0, PreExecuteDuration = (int)actor.AttackSpeed, PostExecutionDuration = 100, actionAnimationName = "_melee" };
+            
+            if (type == ActionID.RangedAttack) A = new RangedAttack()
+                { CoolDown = 0, PreExecuteDuration = (int)actor.AttackSpeed, PostExecutionDuration = 100, actionAnimationName = "_ranged" };
+              
+            if (type == ActionID.Regenerate) A = new Regenerate()
+                {CoolDown = 3000, PreExecuteDuration = 1000, PostExecutionDuration = 0, actionAnimationName = "_spellcast" };
+            
+            if (type == ActionID.ShadowForm) A = new ShadowForm()
+                {CoolDown = 3000, PreExecuteDuration = 0, PostExecutionDuration = 0, actionAnimationName = "_charge" };
             
             A.totalDuration = A.PreExecuteDuration + A.PostExecutionDuration;
             A.actor = actor;
@@ -77,6 +101,10 @@ namespace ThielynGame.GamePlay.Actions
         public virtual bool UpdateAndCheckIfDone(TimeSpan time) 
         {
             elapsedTime += time.Milliseconds;
+
+            // recalculate total duration every frame. Important in case action
+            // is not fixed duration
+            totalDuration = PreExecuteDuration + PostExecutionDuration;
 
             if (animation != null)
             animation.CheckIfDoneAndUpdate(time);
@@ -103,10 +131,69 @@ namespace ThielynGame.GamePlay.Actions
         public virtual void DoPostExecution() { }
         protected abstract void Execute();
 
-        public abstract void Draw(SpriteBatch S, TextureLoader T);
+        // override this for actions that have other visual effect in addition to character animation
+        public virtual void Draw(SpriteBatch S, TextureLoader T)
+        {
+        }
     }
 
-    class IceBolt : BaseAction
+
+    class ArcaneLightning : BaseAction
+    {
+        protected override void Execute()
+        {
+            Rectangle damageArea = new Rectangle
+                (0 ,actor.BoundingBox.Y, 700,actor.BoundingBox.Height);
+
+            if (actor.Facing == FacingDirection.Left)
+                damageArea.X = actor.BoundingBox.Left - 695;
+            if (actor.Facing == FacingDirection.Right)
+                damageArea.X = actor.BoundingBox.Right;
+
+            AttackDetailObject attack = new AttackDetailObject()
+            { damage = actor.GetSpellPower() };
+
+            AreaEffect Area = new AreaEffect(500, actor, damageArea, attack);
+
+            Animation Anim = new Animation(AnimationFiles.AnimationLists.GetAnimation("fire_cloak_effect"), true);
+            Area.SetAnimation(Anim, "fire_shield");
+
+            LevelManager L = new LevelManager();
+            L.AddGameObject(Area);
+        }
+    }
+
+    class ArcaneStorm : BaseAction
+    {
+        protected override void Execute()
+        {
+            Rectangle damageArea = new Rectangle(0,0,1280, 768);
+            AttackDetailObject attack = new AttackDetailObject()
+            { damage = actor.GetSpellPower()  };
+
+            AreaEffect Area = 
+                new AreaEffect(2000, actor, damageArea, attack);
+
+            Animation Anim = new Animation(AnimationFiles.AnimationLists.GetAnimation("fire_cloak_effect"), true);
+            Area.SetAnimation(Anim, "fire_shield");
+
+            LevelManager L = new LevelManager();
+            L.AddGameObject(Area);
+        }
+    }
+
+    class Heal : BaseAction
+    {
+        protected override void Execute()
+        {
+            AttackDetailObject Heal = new AttackDetailObject()
+            { healing = 50 };
+            actor.OnReceiveAttackOrEffect(Heal);
+            actor.ClearStatuses();
+        }
+    }
+
+    class ArcaneBolt : BaseAction
     {
         protected override void Execute()
         {
@@ -114,10 +201,24 @@ namespace ThielynGame.GamePlay.Actions
             LevelManager L = new LevelManager();
             L.AddGameObject(P);
         }
+    }
 
-        public override void Draw(SpriteBatch S, TextureLoader T)
+    class ChainSpear : BaseAction
+    {
+        Projectile P;
+
+        protected override void Execute()
         {
-            //nothing
+            P = Projectile.createProjectile(ProjetileType.ChainSpear, actor);
+            LevelManager M = new LevelManager();
+            M.AddGameObject(P);
+        }
+
+        public override void DoPostExecution()
+        {
+            // when we react our projectile hit something, we set the duration to a very
+            // low value, which causes the next loop to react that duration is over
+            if (P.collidedWithSomething) PostExecutionDuration = 1;
         }
     }
 
@@ -128,11 +229,6 @@ namespace ThielynGame.GamePlay.Actions
             Projectile P = Projectile.createProjectile(ProjetileType.Arrow, actor);
             LevelManager L = new LevelManager();
             L.AddGameObject(P);
-        }
-
-        public override void Draw(SpriteBatch S, TextureLoader T)
-        {
-            // nothing
         }
     }
 
@@ -150,34 +246,15 @@ namespace ThielynGame.GamePlay.Actions
 
             hitbox.Y = actor.BoundingBox.Y - (hitbox.Height - actor.BoundingBox.Height);
 
-            MeleeArea AE = new MeleeArea(PostExecutionDuration, actor.GetMeleeDamage(), actor, hitbox);
-            LevelManager L = new LevelManager();
-            L.AddGameObject(AE);
-        }
+            AttackDetailObject attack = new AttackDetailObject()
+            { damage = actor.GetMeleeDamage()};
 
-        public override void Draw(SpriteBatch S, TextureLoader T)
-        {
-            // nothing
+            AreaEffect Area = new AreaEffect(PostExecutionDuration, actor, hitbox, attack);
+            LevelManager L = new LevelManager();
+            L.AddGameObject(Area);
         }
     }
-
-    class WhirlWind : BaseAction 
-    {
-        protected override void Execute()
-        {
-            Rectangle hitbox = new Rectangle(0,0,100,200);
-
-            IntervalDamageArea W = new IntervalDamageArea(1000,10000, actor.GetSpellPower(), actor, hitbox);
-            LevelManager L = new LevelManager();
-            L.AddGameObject(W);
-        }
-
-        public override void Draw(SpriteBatch S, TextureLoader T)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
+    
     class Charge : BaseAction
     {
         public override void DoPostExecution()
@@ -187,79 +264,75 @@ namespace ThielynGame.GamePlay.Actions
 
         protected override void Execute()
         {
-            float damage = actor.GetMeleeDamage() * 2;
-            AreaEffect Area = new AreaEffect(PostExecutionDuration, (int)damage, actor, actor.BoundingBox);
+            AttackDetailObject attack = new AttackDetailObject()
+            { damage = actor.GetMeleeDamage() * 2};
+
+            AreaEffect Area = new AreaEffect(PostExecutionDuration, actor, actor.BoundingBox, attack);
             Area.FollowsActor = true;
             LevelManager L = new LevelManager();
             L.AddGameObject(Area);
-        }
-
-        public override void Draw(SpriteBatch S, TextureLoader T)
-        {
-            // TODO
         }
     }
 
     class Regenerate : BaseAction
     {
-        public override void Draw(SpriteBatch S, TextureLoader T)
-        {
-            // nothing
-        }
-
         protected override void Execute()
         {
-            actor.OnReceiveEffect(StatusEffect.createEffect
-                (actor.level, EffectType.Regenerate, 20000));
+            AttackDetailObject buff = new AttackDetailObject();
+            buff.BuffEffects = new List<StatusEffect>();
+            buff.BuffEffects.Add(
+                StatusEffect.createEffect(actor.level, EffectType.Regenerate, 20000));
+
+            actor.OnReceiveAttackOrEffect(buff);
         }
     }
 
-    class FireCloak : BaseAction
+    class ArcaneCloak : BaseAction
     {
-        public override void Draw(SpriteBatch S, TextureLoader T)
-        {
-            // nothing
-        }
-
         protected override void Execute()
         {
             Rectangle hitbox = actor.BoundingBox;
             hitbox.Width += 100; hitbox.Height += 20;
 
-            IntervalDamageArea W = new IntervalDamageArea(1000, 8000, actor.GetSpellPower(), actor, hitbox);
+            AttackDetailObject attack = new AttackDetailObject()
+            { damage = actor.GetSpellPower() / 2 };
+
+            AreaEffect Area = new AreaEffect(8000, actor, hitbox, attack);
+            Area.centerAroundActor = true;
+            Area.FollowsActor = true;
+            Area.SetInterval(1000);
 
             Animation A = new Animation(AnimationFiles.AnimationLists.GetAnimation("fire_cloak_effect"), true);
-            W.SetAnimation(A, "fire_shield");
+            Area.SetAnimation(A, "fire_shield");
 
             LevelManager L = new LevelManager();
-            L.AddGameObject(W);
+            L.AddGameObject(Area);
         }
     }
 
     class BattleRage : BaseAction
     {
-        public override void Draw(SpriteBatch S, TextureLoader T)
-        {
-            // nothing
-        }
-
         protected override void Execute()
         {
-            actor.OnReceiveEffect(StatusEffect.createEffect(actor.level, StatusEffects.EffectType.BattleRage, 7000));
+            AttackDetailObject buff = new AttackDetailObject();
+            buff.BuffEffects = new List<StatusEffect>();
+            buff.BuffEffects.Add(
+                StatusEffect.createEffect(actor.level, StatusEffects.EffectType.BattleRage, 7000));
+
+            actor.OnReceiveAttackOrEffect(buff);
         }
     }
 
-    class GhostWalk : BaseAction
+    class ShadowForm : BaseAction
     {
-        public override void Draw(SpriteBatch S, TextureLoader T)
-        {
-            // nothing
-        }
-
         protected override void Execute()
         {
-            actor.ClearStatuses();
-            actor.OnReceiveEffect(StatusEffect.createEffect(actor.level, EffectType.GhostWalk, 3000));
+            AttackDetailObject buff = new AttackDetailObject();
+            buff.BuffEffects = new List<StatusEffect>();
+            buff.BuffEffects.Add(
+                StatusEffect.createEffect(actor.level, StatusEffects.EffectType.GhostWalk, 2000));
+
+            actor.OnReceiveAttackOrEffect(buff);
         }
     }
 

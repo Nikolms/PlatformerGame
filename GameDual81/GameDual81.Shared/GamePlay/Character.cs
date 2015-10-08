@@ -14,8 +14,18 @@ namespace ThielynGame.GamePlay
     public enum CharacterState { Run, Jump, Idle, Action }
     public enum AttackEffects { None, Poison, Fragile}
 
+    public class AttackDetailObject
+    {
+        public int damage;
+        public int healing;
+        public bool ignoresArmor;
+        public List<StatusEffect> BuffEffects = new List<StatusEffect>();
+        public List<StatusEffect> DeBuffEffect = new List<StatusEffect>();
+    }
     public class CharacterStatuses 
     {
+        public bool CannotAttack;
+        public bool StealsLife;
         public bool Shielded;
         public float receiveDamageMod,
            moveSpeedMod,
@@ -33,13 +43,14 @@ namespace ThielynGame.GamePlay
             meleeDamageMod = 1;
             rangedDamageMod = 1;
             spellPowerMod = 1;
-            gravityMod = 1;
+            gravityMod = 0;
         }
     }
 
     //base class for player and enemies
      public abstract class Character : PhysicsObjects
     {
+        #region fields and properties
         protected FacingDirection previousFacing;
         protected CharacterState characterState, previousState;
 
@@ -67,6 +78,8 @@ namespace ThielynGame.GamePlay
 
         // characters can modify their speed values through effects
         protected float actualMaxSpeed;
+
+        #endregion
 
         public Character(Vector2 startPosition, int level) 
         {
@@ -221,19 +234,35 @@ namespace ThielynGame.GamePlay
 
 
 
-         // functions to handle being hit by attacks and similar
-         // damage reduction from armor happens in this function
-        public virtual void OnReceiveDamage(int damage, bool ignoresArmor, StatusEffect effect)
+        // functions to handle being hit by attacks and similar
+        
+        // primary function to handle receiving damage and effects
+        
+        // this function handles statuses like immunity. use this to send damage and hostile effects        
+        public virtual void OnReceiveAttackOrEffect(AttackDetailObject attack)
         {
-            // if character is still recovering from recent damage or has an active shield buff, ignore this damage
-            // and all effect with it
-            if (hasTakenDamage || statusModifiers.Shielded) 
-                return;
+            // resolve are positive effects first
+            HandleHealing(attack.healing);
+            foreach (StatusEffect S in attack.BuffEffects) { HandleNewEffect(S); }
 
-            // switch the invincibility on after receiving damage
+            // dont resolve negative effects if character is immune
+            if (statusModifiers.Shielded || hasTakenDamage) return;
+
             hasTakenDamage = true;
             hurtImmunityTimer = 500;
 
+            HandleReceivedDamage(attack.damage, attack.ignoresArmor);
+
+            Debug.WriteLine(characterType + " got hit!");
+            foreach (StatusEffect S in attack.BuffEffects)
+            {
+                HandleNewEffect(S);
+            }
+        }
+       
+        // damage reduction from armor happens in this function
+        protected virtual void HandleReceivedDamage(int damage, bool ignoresArmor)
+        {
             float reduction = 1;
 
             if (!ignoresArmor)
@@ -242,17 +271,15 @@ namespace ThielynGame.GamePlay
             float actualDamage = damage * statusModifiers.receiveDamageMod * reduction;
             if (actualDamage < 1) actualDamage = 1;
 
-            Debug.WriteLine(characterType + "takes " + actualDamage + "damage!");
+            //Debug.WriteLine(characterType + "takes " + actualDamage + "damage!");
 
             CurrentHealth -= (int)actualDamage;
             if (CurrentHealth <= 0)
                 IsDead = true;
-
-            if (effect != null)
-            OnReceiveEffect(effect);
         }
 
-        public virtual void OnReceiveEffect(StatusEffect effect) 
+        // applies new status effects and prevents duplicates
+        protected virtual void HandleNewEffect(StatusEffect effect) 
         {
             if (effect == null)
                 return;
@@ -270,10 +297,10 @@ namespace ThielynGame.GamePlay
 
             if (!isExistingStatus)
                 currentEffectsList.Add(effect);
-
         }
 
-        public virtual void OnReceiveHeal(int amount) 
+        // calculates healing and prevents exceeding max hp
+        protected virtual void HandleHealing(int amount) 
         {
             // if the heal amount would exceed maxhealth, change to heal to difference on max and current
             if (CurrentHealth + amount > MaxHealth)
@@ -282,14 +309,21 @@ namespace ThielynGame.GamePlay
             CurrentHealth += amount;
         }
 
+        // clears all status effects
         public virtual void ClearStatuses()
         {
             currentEffectsList.Clear();
         }
 
-        public void startNewAction (BaseAction action) 
+        // returns false if new action was not started
+        public bool startNewAction (BaseAction action) 
          {
-             currentAction = action;
+            if (action.CanBeUsedInAir || TouchesGround)
+            {
+                currentAction = action;
+                return true;
+            }
+            return false;
          }
 
          // accelerates character towards left
@@ -339,6 +373,17 @@ namespace ThielynGame.GamePlay
          {
             float damage = baseSpellPower * statusModifiers.spellPowerMod;
             return (int)damage;
+        }
+
+        // overrides
+        // override gravity logic since some effects can change character falling speed
+        public override void ApplyGravity(TimeSpan time)
+        {
+                velocity.Y += 1;
+
+            if (velocity.Y > MAX_FALL_SPEED - statusModifiers.gravityMod)
+                velocity.Y = MAX_FALL_SPEED - statusModifiers.gravityMod;
+
         }
 
     }

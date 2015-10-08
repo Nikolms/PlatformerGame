@@ -17,7 +17,7 @@ namespace ThielynGame.GamePlay.EnemyTypes
 
             MaxHealth = 30 + level;
             acceleration = 0.66f;
-            maxSpeedX = 3f;
+            maxSpeedX = 2.5f;
 
             baseMeleeDamage = 10 + (level / 2);
 

@@ -9,7 +9,7 @@ namespace ThielynGame.GamePlay
 {
     // this class contains base functionalities for non terrain objects
     // these objects have more complex physics than terrain objects
-
+    
     public abstract class PhysicsObjects : GameObject
     {
         protected float MAX_FALL_SPEED = 16f,
@@ -27,6 +27,9 @@ namespace ThielynGame.GamePlay
         //float lastUpdate;
         protected float acceleration;
         protected Vector2 externalSpeed;
+
+        public Vector2 TotalVelocity
+        { get { return velocity + externalSpeed; } }
 
 
         public Rectangle HorizontalCollisionBox
@@ -67,14 +70,14 @@ namespace ThielynGame.GamePlay
             if (velocity.Y > MAX_FALL_SPEED) velocity.Y = MAX_FALL_SPEED;
         }
 
-        public virtual void HandleGroundCollision(collisionCorrection CC, Platform collidedWith)
+        public virtual void HandleObsticleCollision(CollisionDetailObject CC, Platform collidedWith)
         {
             // if the object hits its "head" zero its vertical velocity
             if (CC.directionY > 0) velocity.Y = 0;
             if (CC.directionY > 0) velocity.X = 0;
 
             // cap the correction distance at current velocity in that direction
-            if (CC.correctionDistanceY > Math.Abs(velocity.Y)) CC.correctionDistanceY = (int)Math.Abs(velocity.Y) + 1;
+            //if (CC.correctionDistanceY > Math.Abs(velocity.Y)) CC.correctionDistanceY = (int)Math.Abs(velocity.Y) + 1;
             
 
             // if object was moved towards negative Y, it must have touched ground
@@ -86,10 +89,9 @@ namespace ThielynGame.GamePlay
                 collidedWith.RegisterObjectOnTop(this);
                 velocity.Y = 0;
             }
-
+            
             AdjustHorizontalPosition(CC.directionX, CC.correctionDistanceX);
             AdjustVerticalPosition(CC.directionY, CC.correctionDistanceY);
-
         }
 
         public void AddExternalSpeed(float X, float Y) 

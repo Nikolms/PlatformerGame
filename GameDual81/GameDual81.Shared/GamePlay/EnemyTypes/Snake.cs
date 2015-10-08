@@ -29,9 +29,12 @@ namespace ThielynGame.GamePlay.EnemyTypes
 
             cooldownBetweenAttacks = 1750;
             cooldownPrimaryAttack = 1750;
-            cooldownSecondaryAttack = 500;
+            cooldownSecondaryAttack = 10000;
 
             actualSize = new Rectangle(0,0,80,90);
+
+            AI_combatMovement = AI_CombatMovement.MoveCloser;
+            AI_idleMovement = AI_IdleMovement.Patrol;
 
             setParameters();
         }

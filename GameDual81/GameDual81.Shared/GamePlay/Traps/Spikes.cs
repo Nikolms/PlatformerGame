@@ -7,7 +7,7 @@ namespace ThielynGame.GamePlay.Traps
 {
     public enum TravelingAxis { Horizontal, Vertical}
 
-    class Spikes : GameObject, IInteractiveObject
+    class Spikes : GameObject, IHarmfulObject
     {
         int level;
         bool MovingTrap = false;
@@ -50,13 +50,13 @@ namespace ThielynGame.GamePlay.Traps
         {
             S.Draw(T.GetTexture("TODO"), MyRectangle.AdjustExistingRectangle(BoundingBox), Color.White);
         }
-        
 
-        public void CheckPlayerCollision(Player P)
+        public void CheckCollisionWithCharacter(Character C)
         {
-            if (!P.BoundingBox.Intersects(this.BoundingBox)) return;
-
-            P.OnReceiveDamage(10 + level, false, null);
+            if (C.BoundingBox.Intersects(BoundingBox))
+                C.OnReceiveAttackOrEffect(
+                    new AttackDetailObject() { damage = 20 }
+                    );
         }
     }
 }
