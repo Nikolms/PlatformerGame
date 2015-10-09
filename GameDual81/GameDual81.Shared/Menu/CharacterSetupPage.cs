@@ -134,7 +134,7 @@ namespace ThielynGame.Menu
           ActionID.ArcaneLightning};
 
         List<ActionID> Tier3 = new List<ActionID>
-        { ActionID.ShadowForm, ActionID.ArcaneStorm};
+        { ActionID.ShadowForm, ActionID.ArcaneStorm, ActionID.LifeSteal};
 
         public SkillSelectionPopup(SkillSelectButton activator, SkillSelectAction buttonAction)
         {

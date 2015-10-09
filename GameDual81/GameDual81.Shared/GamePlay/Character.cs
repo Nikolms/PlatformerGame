@@ -37,6 +37,8 @@ namespace ThielynGame.GamePlay
 
         public void Reset() 
         {
+            CannotAttack = false;
+            StealsLife = false;
             Shielded = false;
             receiveDamageMod = 1;
             moveSpeedMod = 1;

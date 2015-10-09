@@ -94,6 +94,11 @@ namespace ThielynGame
                 CoolDown = 3000, PreExecuteDuration = 500, PostExecutionDuration = 0,
                 EffectDuration = 0, DamageModifier = 1.4f, EffectStrength = 0, SecondaryEffectStrenght = 0
             };
+            SkillData LifeSteal = new SkillData()
+            {
+                imageSourcePosition = new Rectangle(0, 0, 100, 100),
+                actionID = ActionID.LifeSteal
+            };
 
             SkillLibrary.Add(ActionID.BattleRage, BattleRage);
             SkillLibrary.Add(ActionID.ChainSpear, ChainSpear);
@@ -105,6 +110,7 @@ namespace ThielynGame
             SkillLibrary.Add(ActionID.Heal, Heal);
             SkillLibrary.Add(ActionID.ArcaneStorm, ArcaneStorm);
             SkillLibrary.Add(ActionID.ArcaneLightning, ArcaneLightning);
+            SkillLibrary.Add(ActionID.LifeSteal, LifeSteal);
         }
         
         public static SkillData GetSkillData(ActionID id)

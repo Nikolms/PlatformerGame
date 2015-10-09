@@ -129,6 +129,29 @@ namespace ThielynGame.GamePlay
 
     }
 
+    // this subclass has logic for possible lifesteal effects
+    class MeleeArea : AreaEffect
+    {
+        public MeleeArea(float duration, Character actor, Rectangle Size, AttackDetailObject attack) : 
+            base(duration, actor, Size, attack)
+        {
+        }
+
+        protected override void OnComplete()
+        {
+            if (actor.statusModifiers.StealsLife)
+            {
+                foreach (Character C in CharactersHitByThis)
+                {
+                    AttackDetailObject heal = new AttackDetailObject()
+                    { healing = 10 };
+                    actor.OnReceiveAttackOrEffect(heal);
+                }
+            }
+
+            base.OnComplete();
+        }
+    }
 
     class ArcaneCloakArea : AreaEffect, IObsticle
     {

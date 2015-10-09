@@ -22,6 +22,7 @@ namespace ThielynGame.GamePlay.Actions
         MeleeAttack,
         RangedAttack,
         Regenerate,
+        LifeSteal
     }
 
     public enum MonsterSkills {
@@ -80,6 +81,9 @@ namespace ThielynGame.GamePlay.Actions
             
             if (type == ActionID.Heal) A = new Heal()
                 { CoolDown = 3000, PreExecuteDuration = 2000, PostExecutionDuration = 0, actionAnimationName = "_spellcast"};
+
+            if (type == ActionID.LifeSteal) A = new LifeSteal()
+                { CoolDown = 3000, PreExecuteDuration = 0, PostExecutionDuration = 0, actionAnimationName = "_spellcast"};
 
             if (type == ActionID.MeleeAttack) A = new MeleeAttack()
                 { CoolDown = 0, PreExecuteDuration = (int)actor.AttackSpeed, PostExecutionDuration = 100, actionAnimationName = "_melee" };
@@ -249,7 +253,7 @@ namespace ThielynGame.GamePlay.Actions
             AttackDetailObject attack = new AttackDetailObject()
             { damage = actor.GetMeleeDamage()};
 
-            AreaEffect Area = new AreaEffect(PostExecutionDuration, actor, hitbox, attack);
+            MeleeArea Area = new MeleeArea(PostExecutionDuration, actor, hitbox, attack);
             LevelManager L = new LevelManager();
             L.AddGameObject(Area);
         }
@@ -333,6 +337,18 @@ namespace ThielynGame.GamePlay.Actions
                 StatusEffect.createEffect(actor.level, StatusEffects.EffectType.GhostWalk, 2000));
 
             actor.OnReceiveAttackOrEffect(buff);
+        }
+    }
+
+    class LifeSteal : BaseAction
+    {
+        protected override void Execute()
+        {
+            AttackDetailObject effect = new AttackDetailObject();
+            effect.BuffEffects.Add(
+                StatusEffect.createEffect(actor.level, EffectType.LifeSteal, 7000)
+                );
+            actor.OnReceiveAttackOrEffect(effect);
         }
     }
 

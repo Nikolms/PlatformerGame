@@ -15,7 +15,8 @@ namespace ThielynGame.GamePlay.StatusEffects
         Weakness,
         BattleRage,
         GhostWalk,
-        Stunned
+        Stunned,
+        LifeSteal
     }
 
 
@@ -40,6 +41,7 @@ namespace ThielynGame.GamePlay.StatusEffects
             if (effectType == EffectType.Weakness) return new Weakness() { duration = effectDuration };
             if (effectType == EffectType.BattleRage) return new BattleRage() { duration = effectDuration };
             if (effectType == EffectType.GhostWalk) return new Ghostly() { duration = effectDuration };
+            if (effectType == EffectType.LifeSteal) return new LifeSteal() { duration = effectDuration };
            
             return null;
         }
@@ -166,6 +168,14 @@ namespace ThielynGame.GamePlay.StatusEffects
             CS.Shielded = true;
             CS.moveSpeedMod += 0.6f;
             CS.gravityMod = 11;
+        }
+    }
+
+    class LifeSteal : StatusEffect
+    {
+        public override void DoConstantEffect(CharacterStatuses CS)
+        {
+            CS.StealsLife = true;
         }
     }
 
