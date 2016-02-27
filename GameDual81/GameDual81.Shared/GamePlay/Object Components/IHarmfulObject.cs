@@ -5,8 +5,13 @@ using System.Text;
 
 namespace ThielynGame.GamePlay
 {
-    interface IHarmfulObject
+    public interface IHarmfulObject
     {
-        void CheckCollisionWithCharacter(Character C);
+        float Damage { get; set; }
+
+        void HitAnObject(IDestroyableObject D);
+
+        Rectangle GetBoundingBox();
+        ObjectAlignment GetAlignment();
     }
 }

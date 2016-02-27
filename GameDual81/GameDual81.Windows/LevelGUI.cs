@@ -8,8 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ThielynGame.GamePlay.Actions;
-
 namespace ThielynGame.GamePlay
 {
     public delegate void ActionButtonAction (ActionButton sender);
@@ -21,8 +19,6 @@ namespace ThielynGame.GamePlay
 
         public float maxCoolDown { get; set; }
         public float coolDownLeft { get; set; }
-
-        public ActionID skill_ID { get; set; }
 
         Rectangle coolDownDrawPosition;
         Rectangle textureSource;
@@ -75,7 +71,7 @@ namespace ThielynGame.GamePlay
             }
         }
     }
-
+    enum UIstate { Normal, Shooting }
 
     class LevelGUI
     {
@@ -83,8 +79,11 @@ namespace ThielynGame.GamePlay
 
         List<ActionButton> UIbuttons;
         Rectangle healthBar, healthBarBase;
-
-
+        Rectangle energyBar;
+        Vector2 AmmoInfoLocation;
+        UIstate uistate;
+        Vector2 mouseLocation;
+        
 
         public LevelGUI(Player player) 
         {
@@ -93,32 +92,11 @@ namespace ThielynGame.GamePlay
             healthBarBase = new Rectangle(0,0,340,100);
             healthBar = new Rectangle(19,19, 0, 60);
 
+            energyBar = new Rectangle(0,102, 0, 40);
+
+            AmmoInfoLocation = new Vector2(740, 10);
+
             UIbuttons = new List<ActionButton>();
-            
-            ActionButton SkillOne = new ActionButton();
-            ActionButton SkillTwo = new ActionButton();
-            ActionButton SkillThree = new ActionButton();
-            
-            SkillOne.PositionAndSize = new Rectangle(10, 70,100, 100);
-            SkillTwo.PositionAndSize = new Rectangle(10, 240, 100, 100);
-            SkillThree.PositionAndSize = new Rectangle(10, 410, 100, 100);
-
-            SkillOne.TextureSource = SkillData.GetSkillData(GameSettings.Skill1).imageSourcePosition;
-            SkillTwo.TextureSource = SkillData.GetSkillData(GameSettings.Skill2).imageSourcePosition;
-            SkillThree.TextureSource = SkillData.GetSkillData(GameSettings.Skill3).imageSourcePosition;
-
-            SkillOne.onClick += player.ActionInput;
-            SkillTwo.onClick += player.ActionInput;
-            SkillThree.onClick += player.ActionInput;
-
-            SkillOne.skill_ID = GameSettings.Skill1;
-            SkillTwo.skill_ID = GameSettings.Skill2;
-            SkillThree.skill_ID = GameSettings.Skill3;
-
-            UIbuttons.Add(SkillOne);
-            UIbuttons.Add(SkillTwo);
-            UIbuttons.Add(SkillThree);
-                
         }
 
         public void UpdateGUI(TimeSpan time)
@@ -144,19 +122,35 @@ namespace ThielynGame.GamePlay
 
         public void PlayerNonVisualInput(InputHandler input)
         {
+            // if player is in ranged mode only certain input is being read
+            // also send request to player object to perform ranged attacks if able
+            if (input.RangedAttackInput) 
+            {
+                if (player.DoRangedAttack(input.MousePosition))
+                {
+                    uistate = UIstate.Shooting;
+                    return;
+                }
+            }
+
+            if (input.MeleeAttackInput)
+            {
+                if (player.DoMeleeAttack(input.MousePosition))
+                    return;
+            }
+
+            uistate = UIstate.Normal;
+
             if (input.moveLeftInput) 
                 player.DoMovementLeft();
             if (input.moveRightInput) 
                 player.DoMovementRight();
             if (input.jumpInput) 
                 player.DoJump();
-            if (input.MeleeAttackInput)
-                player.DoMeleeAttack();
             if (input.ExitGame_Input)
                 ;
             if (input.Developer_Skip)
                 player.ReachedEndOfLevel = true;
-
         }
 
 
@@ -164,15 +158,33 @@ namespace ThielynGame.GamePlay
         public void Draw(SpriteBatch S, TextureLoader T) 
         {
             healthBar.Width = player.CurrentHealth * 3;
+            energyBar.Width = player.EnergyLeft * 2;
 
             S.Draw(T.GetTexture("healthbar_base"), MyRectangle.AdjustExistingRectangle(healthBarBase),
                 Color.White);
 
+            // draw healthbar
             S.Draw(T.GetTexture("TODO"), MyRectangle.AdjustExistingRectangle(healthBar), Color.White);
+
+            // draw energybar
+            S.Draw(T.GetTexture("TODO"), MyRectangle.AdjustExistingRectangle(energyBar), Color.White);
+
+            // write remaining ammo
+            S.DrawString(CommonAssets.menuFont, "Ammo: " + player.AmmoLeft, AmmoInfoLocation, Color.White);
                 
             foreach (ActionButton B in UIbuttons) 
             {
                 B.Draw(S,T);
+            }
+
+            if (uistate == UIstate.Shooting)
+            {
+                Rectangle crosshair = new Rectangle(0,0,100,100);
+                crosshair.X = (int)mouseLocation.X - crosshair.Width / 2;
+                crosshair.Y = (int)mouseLocation.Y - crosshair.Height / 2;
+
+                S.Draw(T.GetTexture("targetcrosshair"), MyRectangle.AdjustExistingRectangle(crosshair), Color.White);
+
             }
         }
     }

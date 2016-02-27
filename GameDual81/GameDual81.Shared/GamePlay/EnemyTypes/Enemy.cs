@@ -4,280 +4,173 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ThielynGame.GamePlay.Actions;
+using ThielynGame.LevelGenerator;
 
 namespace ThielynGame.GamePlay
 {
-    public enum AI_IdleMovement { Patrol, Guard}
-    public enum AI_CombatMovement { MoveCloser, Guard, Patrol}
 
-    abstract class Enemy : Character
+    class Enemy : Character
     {
-        // these variable are static and contain external information that all enemies
-        // need to make decisions on what to do next
-        public static List<Platform> AIrelevantTerrain;
-        public static Point playerLocation;
-
         protected bool hasDetectedPlayer;
+        protected int detectionDistance = 200, DetectionHeight;   // how far away this enemy can detect player and how big elevevation difference can be for detection
+        protected int releaseAggroDistance = 300;
 
-        protected AI_IdleMovement AI_idleMovement;
-        protected AI_CombatMovement AI_combatMovement;
+        protected int primaryAttackRange, secondartAttackRange;
 
-        bool collidedAlongXAxis;
+        protected int elevationStep = 3;        // the elevation difference this character can walk up or down
+        protected bool nextStepFall;        // flag is true if standing on an edge
+        protected bool nextStepWall;        // flag is true if there is a wall in front
 
-        protected float detectionRange = 100;
-        protected float releaseDetectRange = 150;
-        protected float rangePrimaryAttack;
-        protected float rangeSecondaryAttack;
-        protected float rangeThirdAttack;
+        public static List<Platform> AIrelevantTerrain;
+        public static Vector2 playerPosition;       // the player position AI uses
+        protected Vector2 distanceToPlayer = new Vector2();
 
-        bool canDoAttackPrimary;
-        bool canDoAttackSecondary;
-        bool canDoThirdAttack;
-
-        float timerPrimaryAttack;
-        float timerSecondaryAttack;
-        float timerThirdAttack;
-
-        protected float cooldownPrimaryAttack;
-        protected float cooldownSecondaryAttack;
-        protected float cooldownThirdAttack;
-        
-        // this cooldown is used to prevent AI from performing both attacks too fast after each other
-        float timerAttackAction;
-        protected float cooldownBetweenAttacks;
-
-        public Enemy(Vector2 startPosition, int level) : base(startPosition, level) 
+        public Enemy(Vector2 startPosition, int level) : base(startPosition, level)
         {
-            // default facing for all monsters
-            facing = FacingDirection.Left;
+            // default values
+            characterType = "dummy_medium";
+            TextureFileName = "TODO";
+
+            position = startPosition;
+            this.level = level;
             alignment = ObjectAlignment.Enemy;
+
+            // DEFAULT VALUES
+            acceleration = 1f;           
         }
 
-        
         public override void Update(TimeSpan time)
         {
-            // advance all cooldown counters
-            timerPrimaryAttack -= time.Milliseconds;
-            timerSecondaryAttack -= time.Milliseconds;
-            timerAttackAction -= time.Milliseconds;
+            if (CheckPlayerDetection())
+                hasDetectedPlayer = true;
 
-            // if enemy is not performing any action it should evaluate
-            // what it should do during this frame
-            if (currentAction == null) 
-            {
-                checkAIRanges();
-                //UpdateAI();
-            }
+            if (DistanceToPlayer() >= releaseAggroDistance)
+                hasDetectedPlayer = false;
+
+            if (hasDetectedPlayer) DoCombatAI(time);
+            else DoDefaultAI(time);
 
             base.Update(time);
+            
 
-            collidedAlongXAxis = false;
+            // reset obsticle flags before next check
+            nextStepFall = true;
+            nextStepWall = false;
         }
 
-        public override void HandleObsticleCollision(CollisionDetailObject CC, Platform collidedWith)
-        {
-            if (CC.correctionDistanceX > 0) 
-                collidedAlongXAxis = true;
 
-            base.HandleObsticleCollision(CC, collidedWith);
+        // function to update when enemy has detected player
+        protected virtual void DoCombatAI(TimeSpan time) { }
+
+        // function to update when enemy has not detected player
+        protected virtual void DoDefaultAI(TimeSpan time) { }
+
+        protected virtual bool isFacingPlayer()
+        {
+
+            if (facing == FacingDirection.Left && playerPosition.X < position.X)
+                return true;
+
+            if (facing == FacingDirection.Right && playerPosition.X >= position.X)
+                return true;
+
+            return false;
+        }
+
+        // function to analyze if movement to the distance is valid
+        protected void CheckNextStep(int distance, FacingDirection facing)
+        {
+            Vector2 CheckPointUp = new Vector2(0, 0);
+            Vector2 CheckPointDown = new Vector2(0, 0);
+
+            // calculate the reference points depending on facing
+            if (facing == FacingDirection.Left)
+                CheckPointDown = new Vector2(BoundingBox.Left - distance, BoundingBox.Bottom + elevationStep);
+                CheckPointUp = new Vector2(BoundingBox.Left - distance, BoundingBox.Bottom - elevationStep - 1);
+
+            if (facing == FacingDirection.Right)
+                CheckPointDown = new Vector2(BoundingBox.Right + distance, BoundingBox.Bottom + elevationStep);
+                CheckPointUp = new Vector2(BoundingBox.Right + distance, BoundingBox.Bottom - elevationStep -1);
+
+            
+            // compare check points to a list of terrain
+            foreach (Platform P in AIrelevantTerrain)
+            {
+                if (P.BoundingBox.Contains(CheckPointUp))
+                    nextStepWall = true;
+
+                if (P.BoundingBox.Contains(CheckPointDown))
+                    nextStepFall = false;
+            }
             
         }
 
-        //////////////////////////////////////
-        // This is the AI section basically
-        //-----------------------------------------------
-        void checkAIRanges() 
+        protected float DistanceToPlayer()
         {
-            // if enemy has not detected player at start of the frame, we check for possible detection
-            if (!hasDetectedPlayer)
-            {
-                // check detection to left
-                if (BoundingBox.Center.X - playerLocation.X <= detectionRange && facing == FacingDirection.Left)
-                    hasDetectedPlayer = true;
+            Vector2 V = new Vector2();
+            V.X = playerPosition.X - position.X;
+            V.Y = playerPosition.Y - position.Y;
 
-                //check detection to right
-                if (playerLocation.X - BoundingBox.Center.X <= detectionRange && facing == FacingDirection.Right)
-                    hasDetectedPlayer = true;
+            return V.Length();
 
-                if (Math.Abs(playerLocation.Y - BoundingBox.Center.Y) > 60)
-                    hasDetectedPlayer = false;
-            }
-
-            // check if enemy has lost detection every frame
-            // detection release is only checked if the enemy had already detected player
-            if (hasDetectedPlayer)
-            {
-                if (Math.Abs(playerLocation.X - position.X) > releaseDetectRange)
-                    hasDetectedPlayer = false;
-
-                // check primary attack range
-                if (Math.Abs(playerLocation.X - BoundingBox.Center.X) <= rangePrimaryAttack)
-                    canDoAttackPrimary = true;
-
-                // check secondary attack range
-                if (Math.Abs(playerLocation.X - BoundingBox.Center.X) <= rangeSecondaryAttack)
-                    canDoAttackSecondary = true;
-            }
-
-            if (hasDetectedPlayer)
-            {
-                facing = playerDirection();
-                DoCombatAI();
-            }
-            if (!hasDetectedPlayer) DoNeutralAI();
-
-            // clear attack range checks before next frame
-            canDoAttackPrimary = false;
-            canDoAttackSecondary = false;
         }
 
-        void DoCombatAI() 
+        protected virtual bool CheckPlayerDetection()
         {
-            if (timerAttackAction < 0)
-            {
-                // first resolve any attacks that can be made
-                if (canDoAttackPrimary && timerPrimaryAttack < 0)
-                {
-                    DoPrimaryAttack();
-                    return;
-                }
-                if (canDoAttackSecondary && timerSecondaryAttack < 0)
-                {
-                    DoSecondaryAttack();
-                    return;
-                }
-            }
+            if (DistanceToPlayer() <= detectionDistance && isFacingPlayer())
+                return true;
 
-            // if no attacks can be made perform combat movement
-            switch (AI_combatMovement) 
-            {
-                case AI_CombatMovement.Guard: break;
-
-                case AI_CombatMovement.MoveCloser:
-                    MoveTowardsPlayer();
-                    break;
-
-                case AI_CombatMovement.Patrol:
-                    DoPatrol();
-                    break;
-            }
+            return false;
         }
 
-        void DoNeutralAI()
+        protected void ChangeFacing()
         {
-            switch (AI_idleMovement) 
-            {
-                case AI_IdleMovement.Guard: break;
-                case AI_IdleMovement.Patrol:
-                    DoPatrol();
-                    break;
-            }
-        }
-
-        void DoPatrol() 
-        {
-            // Do movement in the direction watching
             if (facing == FacingDirection.Left)
-            {
-                if (IsNextStepSafe() && !collidedAlongXAxis)
-                    DoMovementLeft();
-
-                else
-                    DoMovementRight();
-
-            }
-            else
-                if (facing == FacingDirection.Right)
-                {
-                    if (IsNextStepSafe() && !collidedAlongXAxis)
-                        DoMovementRight();
-
-                    else
-                        DoMovementLeft();
-                }
-        }
-
-        void MoveTowardsPlayer() 
-        {
-            // determine which direction to reach player
-            if (playerDirection() == FacingDirection.Left) 
-            {
-                facing = FacingDirection.Left;
-                if (IsNextStepSafe()) DoMovementLeft();
-            }
-
-            if (playerDirection() == FacingDirection.Right) 
-            {
                 facing = FacingDirection.Right;
-                if (IsNextStepSafe()) DoMovementRight();
-            }
+
+            else if (facing == FacingDirection.Right)
+                facing = FacingDirection.Left;
         }
+        // MOVEMENT PATTERNS
 
-        protected virtual void DoPrimaryAttack() 
+        protected virtual void ConstantPatrol()
         {
-            timerPrimaryAttack = cooldownPrimaryAttack;
-            timerAttackAction = cooldownBetweenAttacks;
-        }
+            CheckNextStep(3, facing);
 
-        protected virtual void DoSecondaryAttack() 
-        {
-            timerSecondaryAttack = cooldownSecondaryAttack;
-            timerAttackAction = cooldownBetweenAttacks;
-        }
-
-        protected virtual void DoThirdAttack()
-        {
-            timerAttackAction = cooldownBetweenAttacks;
-            timerThirdAttack = cooldownThirdAttack;
-        }
-
-        // this method checks if edges in current movement direction are too high to climb back up again
-        bool IsNextStepSafe()
-        {
-            // not safe by default unless a terrain piece changes this later in the loop
-            bool isSafeFlag = false;
-            Vector2 referencePoint = new Vector2(0, 0);
-
-            //if (velocity.X == 0) isSafeFlag = true;
-
-            // set the point we want to check for terrain based on facing
             if (facing == FacingDirection.Left)
             {
-                referencePoint.X = VerticalCollisionBox.Left - 5;
-                referencePoint.Y = VerticalCollisionBox.Bottom + 5;
+                if (nextStepWall || nextStepFall)
+                    DoMovementRight();
+                else DoMovementLeft();
             }
-
             if (facing == FacingDirection.Right)
             {
-                referencePoint.X = VerticalCollisionBox.Right + 5;
-                referencePoint.Y = VerticalCollisionBox.Bottom + 5;
+                if (nextStepWall || nextStepFall)
+                    DoMovementLeft();
+                else DoMovementRight();
             }
-
-            // iterate all terrainpieces and see if any of them contain our reference point
-            // if yes then there is safe ground to move on in the next frame
-            foreach (Platform P in AIrelevantTerrain)
-            {
-                if (P.BoundingBox.Contains(referencePoint))
-                    isSafeFlag = true;
-            }
-
-            return isSafeFlag;
         }
 
-        // this method calculates in which direction player is from current position
-        FacingDirection playerDirection() 
+
+        // ENEMY FACTORY
+        static public Enemy CreateEnemy(int TypeID, Vector2 Location, int Level)
         {
-            FacingDirection direction = FacingDirection.Left;
+            Enemy E = null;
 
-            if (playerLocation.X < BoundingBox.Center.X) direction = FacingDirection.Left;
+            switch (TypeID)
+            {
+                case 1: E = new PlasmaWalker(Location, Level);  break;
+                case 2: E = new PlasmaFlyer(Location, Level); break;
+                case 3: E = new Swarm(Location, Level); break;
+                case 4: E = new SporeCannon(Location, Level); break;
+                case 5: E = new FloatingMine(Location, Level); break;
+                case 6: E = new LeaperNest(Location, Level); break;
+                case 7: E = new Leaper(Location, Level); break;
+                case 8: E = new Worm(Location, Level); break;
+            }
 
-            if (playerLocation.X > BoundingBox.Center.X) direction = FacingDirection.Right;
-
-            return direction;
-        }
-
-
-
+            return E;
+        }   
     }
+
 }

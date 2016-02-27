@@ -20,6 +20,7 @@ namespace ThielynGame.GamePlay
 
         protected Rectangle actualSize;
         protected Vector2 position;
+        public Vector2 Position { get { return position; } }
 
         
         protected Vector2 velocity;
@@ -39,11 +40,16 @@ namespace ThielynGame.GamePlay
         }
 
         // return a rectangle based on current location and actual size
+        // center the boundbox on position
         public Rectangle BoundingBox 
         {
             get 
             {
-                return new Rectangle((int)position.X, (int)position.Y, actualSize.Width, actualSize.Height);
+                return new Rectangle(
+                    (int)position.X - actualSize.Width / 2,
+                    (int)position.Y - actualSize.Height / 2,
+                    actualSize.Width,
+                    actualSize.Height);
             }
         }
 

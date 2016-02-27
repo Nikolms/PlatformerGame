@@ -21,181 +21,191 @@ namespace ThielynGame.AnimationFiles
 
             #region player animations
             List<FrameObject> player_idle = new List<FrameObject>() 
-            {
-            new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(0,0,45,70)}
-            };
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(1,1,98,98)}
+                };
 
             List<FrameObject> player_run = new List<FrameObject>()
-            {
-                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(45,0,45,70)},
-                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(90,0,45,70)}
-            };
+                {
+                    new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(103,1,98,98)},
+                    new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(205,1,98,98)},
+                    new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(103,1,98,98)},
+                    new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(205,1,98,98)}
+                }; 
+
+            List<FrameObject> player_jump = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(115,133,100,100)}
+                };
+
+            List<FrameObject> player_fall = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(6,132,100,100)}
+                };
+
+            List<FrameObject> player_combat = new List<FrameObject>()
+                {
+                    new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(1,103,98,98)},
+                    new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(103,103,98,98)},
+                    new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(205,103,98,98)},
+                    new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(307,103,98,98)}
+                };
 
             List<FrameObject> player_melee = new List<FrameObject>()
-            {
-                new FrameObject() {durationMillisec = 200, frameSource = new Rectangle(0,70,65,90)},
-                new FrameObject() {durationMillisec = 200, frameSource = new Rectangle(64,70,80,70)},
-            };
+                {
+                    new FrameObject () {durationMillisec = 100, frameSource = new Rectangle(6,132,100,100)},
+                };
 
-            List<FrameObject> player_charge = new List<FrameObject>() 
-            {
-                new FrameObject() {durationMillisec = 200, frameSource = new Rectangle(135,0,90,70)}
-            };
+            List<FrameObject> player_weapon_melee = new List<FrameObject>()
+                {
+                    new FrameObject () {durationMillisec = 90, frameSource = new Rectangle(1,1,67,23) },
+                    new FrameObject () {durationMillisec = 90, frameSource = new Rectangle(1,27,67,23) },
+                    new FrameObject () {durationMillisec = 90, frameSource = new Rectangle(1,53,67,23) }
+                };
 
-            List<FrameObject> player_spellcast = new List<FrameObject>()
+            List<FrameObject> player_weapon_ranged = new List<FrameObject>()
+                {
+                    new FrameObject () {durationMillisec = 100, frameSource = new Rectangle(1,1,67,23)}
+                };
+            #endregion
+
+            #region cannonMonster
+
+            List<FrameObject> cannonmonster_idle = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(1,1,123,78)}
+                };
+
+            List<FrameObject> cannonmonster_run = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(1,1,123,78)},
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(1,83,123,78)},
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(128,83,123,78)},
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(1,83,123,78)}
+                };
+
+            List<FrameObject> cannonmonster_fall = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(1,1,123,78)}
+                };
+
+            List<FrameObject> cannonmonster_jump = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(1,1,123,78)}
+                };
+
+            List<FrameObject> cannonmonster_shoot = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(1,165,123,78)}
+                };
+
+            #endregion
+
+            #region swarm
+            List<FrameObject> swarm_idle = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(1,1,13,13)}
+                };
+
+            List<FrameObject> swarm_run = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(1,1,11,11)}
+                };
+
+            List<FrameObject> swarm_jump = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(1,1,11,11)}
+                };
+
+            List<FrameObject> swarm_fall = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(1,1,11,11)}
+                };
+            #endregion
+
+            #region FloatingMine
+
+            List<FrameObject> floatingmine_explode = new List<FrameObject>()
             {
-                new FrameObject() { durationMillisec = 100, frameSource = new Rectangle(45,70,45,70)}
+                new FrameObject() { durationMillisec = 100, frameSource = new Rectangle(0,0,60,60) },
+                new FrameObject() { durationMillisec = 100, frameSource = new Rectangle(0,0,55,55) },
+                new FrameObject() { durationMillisec = 100, frameSource = new Rectangle(0,0,50,50) },
+                new FrameObject() { durationMillisec = 100, frameSource = new Rectangle(0,0,45,45) },
+                new FrameObject() { durationMillisec = 100, frameSource = new Rectangle(0,0,40,40) }
             };
 
             #endregion
 
-            #region troll animation
+            #region dummy small
 
-            List<FrameObject> Troll_run = new List<FrameObject>()
-            {
-                new FrameObject() { durationMillisec = 120, frameSource = new Rectangle(0,0,80,120) },
-                new FrameObject() { durationMillisec = 120, frameSource = new Rectangle(80,0,80,120) },
-                new FrameObject() { durationMillisec = 120, frameSource = new Rectangle(160,0,80,120) },
-                new FrameObject() { durationMillisec = 120, frameSource = new Rectangle(240,0,80,120) }
-            };
+            List<FrameObject> dummy_small_run = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(0,0,15,15)}
+                };
 
+            List<FrameObject> dummy_small_idle = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(0,0,15 ,15)}
+                };
 
-            List<FrameObject> Troll_idle = new List<FrameObject>()
-            {
-                new FrameObject() {durationMillisec = 500, frameSource = new Rectangle(0,0,80,120) }
-            };
+            List<FrameObject> dummy_small_fall = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(0,0,15,15)}
+                };
 
-            List<FrameObject> troll_melee = new List<FrameObject>() 
-            {
-                new FrameObject() {durationMillisec = 1000, frameSource = new Rectangle(0,0,80,120)},
-                new FrameObject() {durationMillisec = 100, frameSource = new Rectangle(0,0,80,120)}
-            };
-            #endregion
+            List<FrameObject> dummy_small_jump = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(0,0,15,15)}
+                };
 
-            #region slime animation
-
-            List<FrameObject> slime_idle = new List<FrameObject> 
-            {
-                new FrameObject() {durationMillisec = 100, frameSource = new Rectangle(0,0,70,50)}
-            };
-
-            List<FrameObject> slime_run = new List<FrameObject> 
-            {
-                new FrameObject() {durationMillisec = 200, frameSource = new Rectangle(0,0,70,50)},
-                new FrameObject() {durationMillisec = 200, frameSource = new Rectangle(70,0,70,50)}
-            };
 
             #endregion
 
-            #region snake animation
-            List<FrameObject> snake_idle = new List<FrameObject>() 
-            {
-                new FrameObject() {durationMillisec = 100, frameSource = new Rectangle(0,0,80,90)} 
-            };
-            List<FrameObject> snake_run = new List<FrameObject>() 
-            {
-                new FrameObject() {durationMillisec = 250, frameSource = new Rectangle(0,90,80,90)},
-                new FrameObject() {durationMillisec = 250, frameSource = new Rectangle(80,90,80,90)}
-            };
-            
-            List<FrameObject> snake_melee = new List<FrameObject>()
-            {
-                new FrameObject() {durationMillisec = 500, frameSource = new Rectangle(160,90,80,90)},
-                new FrameObject() {durationMillisec = 100, frameSource = new Rectangle(240,90,160,90)}
-            };
-            #endregion
+            #region dummy_medium
 
-            #region archer animation
+            List<FrameObject> dummy_medium_run = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(0,0,60,60)}
+                };
 
-            List<FrameObject> archer_idle = new List<FrameObject>() 
-            {
-                new FrameObject() {durationMillisec = 100, frameSource = new Rectangle(0,0,45,70)} 
-            };
-            List<FrameObject> archer_run = new List<FrameObject>() 
-            {
-                new FrameObject() {durationMillisec = 150, frameSource = new Rectangle(0,0,45,70) },
-                new FrameObject() {durationMillisec = 150, frameSource = new Rectangle(45,0,45,70) },
-                new FrameObject() {durationMillisec = 150, frameSource = new Rectangle(90,0,45,70) },
-                new FrameObject() {durationMillisec = 150, frameSource = new Rectangle(45,0,45,70) }
-            };
-            
-            List<FrameObject> archer_ranged = new List<FrameObject>() 
-            {
-                new FrameObject() {durationMillisec = 250, frameSource = new Rectangle(45,70,45,70)},
-                new FrameObject() {durationMillisec = 100, frameSource = new Rectangle(0,70,45,70)}
-            };
+            List<FrameObject> dummy_medium_idle = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(0,0,60 ,60)}
+                };
+
+            List<FrameObject> dummy_medium_fall = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(0,0,60,60)}
+                };
+
+            List<FrameObject> dummy_medium_jump = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(0,0,60,60)}
+                };
 
             #endregion
 
-            #region Beast animation
-            List<FrameObject> beast_idle = new List<FrameObject>()
-            {
-                new FrameObject() {durationMillisec = 200, frameSource = new Rectangle(0,0,80,90) }
-            };
-            List<FrameObject> beast_run = new List<FrameObject>()
-            {
-                new FrameObject() {durationMillisec = 250, frameSource = new Rectangle(0,90,80,90)},
-                new FrameObject() {durationMillisec = 250, frameSource = new Rectangle(80,90,80,90)}
-            };
-            List<FrameObject> beast_charge = new List<FrameObject>()
-            {
-                 new FrameObject() {durationMillisec = 500, frameSource = new Rectangle(160,90,80,90)}
-            };
+            #region dummy large
 
-            #endregion
+            List<FrameObject> dummy_large_run = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(0,0,100,100)}
+                };
 
-            #region ArcaneKnight animation
-            List<FrameObject> ArcaneKnight_idle = new List<FrameObject>()
-            {
-                new FrameObject() {durationMillisec = 500, frameSource = new Rectangle(0,0,45,70) }
-            };
+            List<FrameObject> dummy_large_idle = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(0,0,100 ,100)}
+                };
 
-            List<FrameObject> ArcaneKnight_run = new List<FrameObject>()
-            {
-                new FrameObject() { durationMillisec = 500, frameSource = new Rectangle(0,0,45,70) },
-                new FrameObject() { durationMillisec = 500, frameSource = new Rectangle(45,0,45,70) },
-                new FrameObject() { durationMillisec = 500, frameSource = new Rectangle(90,0,45,70) },
-                new FrameObject() { durationMillisec = 500, frameSource = new Rectangle(45,0,45,70) }
-            };
+            List<FrameObject> dummy_large_fall = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(0,0,100,100)}
+                };
 
-            List<FrameObject> ArcaneKnight_melee = new List<FrameObject>()
-            {
-                new FrameObject() { durationMillisec = 300, frameSource = new Rectangle(135,0,90,70) },
-                new FrameObject() { durationMillisec = 100, frameSource = new Rectangle(0,0,45,70) }
-            };
-
-            List<FrameObject> ArcaneKnight_spellcast = new List<FrameObject>()
-            {
-                new FrameObject() { durationMillisec = 100, frameSource = new Rectangle(45,70,45,70) }
-            };
-            #endregion
-
-            #region StatusEffect animations
-
-            List<FrameObject> poison_effect = new List<FrameObject>()
-            {
-                new FrameObject() {durationMillisec = 120, frameSource = new Rectangle(0,0,45,70) },
-                new FrameObject() {durationMillisec = 120, frameSource = new Rectangle(45,0,45,70) },
-                new FrameObject() {durationMillisec = 120, frameSource = new Rectangle(90,0,45,70) },
-                new FrameObject() {durationMillisec = 120, frameSource = new Rectangle(135,0,45,70) },
-                new FrameObject() {durationMillisec = 120, frameSource = new Rectangle(180,0,45,70) },
-            };
-
-            List<FrameObject> fireCloak = new List<FrameObject>()
-            {
-                new FrameObject() { durationMillisec = 150, frameSource = new Rectangle(0,0,90,90) },
-                new FrameObject() { durationMillisec = 150, frameSource = new Rectangle(90,0,90,90) },
-                new FrameObject() { durationMillisec = 150, frameSource = new Rectangle(180,0,90,90) },
-                new FrameObject() { durationMillisec = 150, frameSource = new Rectangle(270,0,90,90) } 
-            };
-
-            List<FrameObject> furyEffect = new List<FrameObject>()
-            {
-                new FrameObject() { durationMillisec = 150, frameSource = new Rectangle(0,0,50,60) },
-                new FrameObject() { durationMillisec = 150, frameSource = new Rectangle(50,0,50,60) },
-                new FrameObject() { durationMillisec = 150, frameSource = new Rectangle(100,0,50,60) },
-                new FrameObject() { durationMillisec = 150, frameSource = new Rectangle(150,0,50,60) }
-            };
+            List<FrameObject> dummy_large_jump = new List<FrameObject>()
+                {
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(0,0,100,100)}
+                };
 
             #endregion
 
@@ -214,37 +224,41 @@ namespace ThielynGame.AnimationFiles
             // add all animations to dictionary
             animationCollection.Add("player_idle", player_idle);
             animationCollection.Add("player_run", player_run);
+            animationCollection.Add("player_jump", player_jump);
+            animationCollection.Add("player_fall", player_fall);
+            animationCollection.Add("player_combat", player_combat);
             animationCollection.Add("player_melee", player_melee);
-            animationCollection.Add("player_charge", player_charge);
-            animationCollection.Add("player_spellcast", player_spellcast);
+            animationCollection.Add("player_weapon_melee", player_weapon_melee);
+            animationCollection.Add("player_weapon_ranged", player_weapon_ranged);
 
-            animationCollection.Add("slime_idle", slime_idle);
-            animationCollection.Add("slime_run", slime_run);
+            animationCollection.Add("cannonmonster_idle", cannonmonster_idle);
+            animationCollection.Add("cannonmonster_run", cannonmonster_run);
+            animationCollection.Add("cannonmonster_jump", cannonmonster_jump);
+            animationCollection.Add("cannonmonster_fall", cannonmonster_fall);
+            animationCollection.Add("cannonmonster_shoot", cannonmonster_shoot);
 
-            animationCollection.Add("archer_idle", archer_idle);
-            animationCollection.Add("archer_run", archer_run);
-            animationCollection.Add("archer_ranged", archer_ranged);
+            animationCollection.Add("swarm_fall", swarm_fall);
+            animationCollection.Add("swarm_jump", swarm_jump);
+            animationCollection.Add("swarm_idle", swarm_idle);
+            animationCollection.Add("swarm_run", swarm_run);
 
-            animationCollection.Add("snake_idle", snake_idle);
-            animationCollection.Add("snake_run", snake_run);
-            animationCollection.Add("snake_melee", snake_melee);
+            animationCollection.Add("floatingmine_explode", floatingmine_explode);
 
-            animationCollection.Add("troll_idle", Troll_idle);
-            animationCollection.Add("troll_run", Troll_run);
-            animationCollection.Add("troll_melee", troll_melee);
+            animationCollection.Add("dummy_small_idle", dummy_small_idle);
+            animationCollection.Add("dummy_small_run", dummy_small_run);
+            animationCollection.Add("dummy_small_jump", dummy_small_jump);
+            animationCollection.Add("dummy_small_fall", dummy_small_fall);
 
-            animationCollection.Add("beast_idle", beast_idle);
-            animationCollection.Add("beast_run", beast_run);
-            animationCollection.Add("beast_charge", beast_charge);
+            animationCollection.Add("dummy_medium_idle", dummy_medium_idle);
+            animationCollection.Add("dummy_medium_run", dummy_medium_run);
+            animationCollection.Add("dummy_medium_jump", dummy_medium_jump);
+            animationCollection.Add("dummy_medium_fall", dummy_medium_fall);
 
-            animationCollection.Add("arcaneknight_idle", ArcaneKnight_idle);
-            animationCollection.Add("arcaneknight_run", ArcaneKnight_run);
-            animationCollection.Add("arcaneknight_melee", ArcaneKnight_melee);
-            animationCollection.Add("arcaneknight_spellcast", ArcaneKnight_spellcast);
+            animationCollection.Add("dummy_large_idle", dummy_large_idle);
+            animationCollection.Add("dummy_large_run", dummy_large_run);
+            animationCollection.Add("dummy_large_jump", dummy_large_jump);
+            animationCollection.Add("dummy_large_fall", dummy_large_fall);
 
-            animationCollection.Add("furyEffect", furyEffect);
-            animationCollection.Add("fire_cloak_effect", fireCloak);
-            animationCollection.Add("poison_effect", poison_effect);
 
             animationCollection.Add("yellow_flash", yellow_flash);
 

@@ -16,8 +16,11 @@ namespace ThielynGame.GamePlay
                         AIR_FRICTION = 1f,
                         GROUND_FRICTION = 0.5f;
 
-        // some special objects might ignore gravity
+        // rulebreaking flags
         protected bool affectedByGravity = true;
+        protected bool ignoresTerrain = false;
+
+        // flag that is used for the objects to know when they are touching ground
         public bool TouchesGround { get; protected set; }
 
         protected FacingDirection facing = FacingDirection.Right;
@@ -36,7 +39,10 @@ namespace ThielynGame.GamePlay
         {
             get
             {
-                return new Rectangle((int)position.X, (int)position.Y + 10, actualSize.Width, actualSize.Height - 20);
+                Rectangle R = BoundingBox;
+                R.Y += 10;
+                R.Height -= 20;
+                return R;
             }
         }
 
@@ -44,7 +50,10 @@ namespace ThielynGame.GamePlay
         {
             get
             {
-                return new Rectangle((int)position.X + 10, (int)position.Y, actualSize.Width - 20, actualSize.Height);
+                Rectangle R = BoundingBox;
+                R.X += 10;
+                R.Width -= 20;
+                return R;                
             }
         }
         

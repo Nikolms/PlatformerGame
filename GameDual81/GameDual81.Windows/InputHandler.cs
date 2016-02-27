@@ -12,10 +12,11 @@ namespace ThielynGame
 {
     public class InputHandler
     {
-        MouseState previousMouseState;
+        public MouseState previousMouseState;
         KeyboardState previousKeyboardState;
         List<Vector2> inputLocations = new List<Vector2>();
         public List<Vector2> InputLocations { get { return inputLocations; } }
+        public Vector2 MousePosition { get; protected set; }
 
         public bool moveLeftInput { get; protected set; }
         public bool moveRightInput { get; protected set; }
@@ -50,6 +51,7 @@ namespace ThielynGame
             // check keyboard and mouse
             KeyboardState keyBoardState = Keyboard.GetState();
             MouseState mouseState = Mouse.GetState();
+            MousePosition = new Vector2(mouseState.Position.X, mouseState.Position.Y);
 
             // reset click positions everyframe
             inputLocations.Clear();
@@ -59,9 +61,9 @@ namespace ThielynGame
                 inputLocations.Add(new Vector2(mouseState.X, mouseState.Y));
             }
 
-            // request melee attack if rightMouse was pressed
-            if (mouseState.RightButton == ButtonState.Pressed && previousMouseState.RightButton == ButtonState.Released)
-                MeleeAttackInput = true;
+            // go into shooting mode when right mouse is pressed (continuous state)
+            if (mouseState.RightButton == ButtonState.Pressed)
+                RangedAttackInput = true;
 
             previousMouseState = mouseState;
 
@@ -75,13 +77,13 @@ namespace ThielynGame
             {
                 moveLeftInput = true;
             }
-            // movement right if D is pressed but not D
+            // movement right if D is pressed but not A
             if (keyBoardState.IsKeyDown(Keys.D) && keyBoardState.IsKeyUp(Keys.A))
             {
                 moveRightInput = true;
             }
             // Jump if W is pressed
-            if (keyBoardState.IsKeyDown(Keys.W) && previousKeyboardState.IsKeyUp(Keys.W))
+            if (keyBoardState.IsKeyDown(Keys.W))
             {
                 jumpInput = true;
             }
@@ -91,14 +93,14 @@ namespace ThielynGame
                 Developer_Skip = true;
             }
             // skill 2
-            if (keyBoardState.IsKeyDown(Keys.D2) && previousKeyboardState.IsKeyUp(Keys.D2)) 
+            if (keyBoardState.IsKeyDown(Keys.D2)) 
             {
-                Skill_2_Input = true;
+                MeleeAttackInput = true;
             }
             // skill 3
-            if (keyBoardState.IsKeyDown(Keys.D3) && previousKeyboardState.IsKeyUp(Keys.D3))
+            if (keyBoardState.IsKeyDown(Keys.D3))
             {
-                Skill_3_Input = true;
+                RangedAttackInput = true;
             }
             // Exit GameScreen if ESC is pressed
             if (keyBoardState.IsKeyDown(Keys.Escape) && previousKeyboardState.IsKeyUp(Keys.Escape)) 

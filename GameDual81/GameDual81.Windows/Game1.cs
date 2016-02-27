@@ -19,7 +19,7 @@ namespace ThielynGame
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
+        
         
 
         // multiplier used to scale things to screenresolution
@@ -55,19 +55,15 @@ namespace ThielynGame
             // TODO: Add your initialization logic here
 
             // calculate screenmultiplier
-            screenMultiplierHeight = (float)GraphicsDevice.Viewport.Height /768;
-            screenMultiplierWidth = (float)GraphicsDevice.Viewport.Width / 1280;
+            screenMultiplierHeight = (float)GraphicsDevice.Viewport.Height /1080;
+            screenMultiplierWidth = (float)GraphicsDevice.Viewport.Width / 1920;
 
             Debug.WriteLine(
                 "width:  " + GraphicsDevice.Viewport.Width + 
                 "\nHeight:  " + GraphicsDevice.Viewport.Height +
-                "\nWidthMulti:  " + screenMultiplierWidth
+                "\nWidthMulti:  " + screenMultiplierWidth +
+                "\nHeightMulti: " + screenMultiplierHeight
                 );
-
-            SkillData.Init();
-            GameSettings.Skill1 = GamePlay.Actions.ActionID.BattleRage;
-            GameSettings.Skill2 = GamePlay.Actions.ActionID.ArcaneCloak;
-            GameSettings.Skill3 = GamePlay.Actions.ActionID.ArcaneBolt;
 
             base.Initialize();
         }
@@ -110,7 +106,10 @@ namespace ThielynGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            
+            // TEST REMOVE
+            screenMultiplierHeight = (float)GraphicsDevice.Viewport.Height / 1080;
+            screenMultiplierWidth = (float)GraphicsDevice.Viewport.Width / 1920;
+
             // check for any input values
             inputHandler.Update();
 

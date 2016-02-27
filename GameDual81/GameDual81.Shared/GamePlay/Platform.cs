@@ -16,6 +16,15 @@ namespace ThielynGame.GamePlay
 
         public string TextureSet { set { TextureFileName = value; } }
 
+        // platforms dont center boundingbox
+        public new Rectangle BoundingBox 
+            {
+                get {
+                return new Rectangle((int)position.X, (int)position.Y,
+                    actualSize.Width, actualSize.Height);
+                    }
+            }
+
         public Platform(Rectangle positionAndSize)
         {
             actualSize = new Rectangle(0, 0, positionAndSize.Width, positionAndSize.Height);
@@ -23,7 +32,7 @@ namespace ThielynGame.GamePlay
             position.Y = positionAndSize.Y;
 
             // TODO, only for testing purposes
-            TextureFileName = "terrain_stone";
+            TextureFileName = "terrain_black";
         }
         
         public override void Update(TimeSpan time)
@@ -55,11 +64,11 @@ namespace ThielynGame.GamePlay
                 // if collision is detected, request detailed calculations
                 // and send it to collider
                 CollisionDetailObject C =
-                    GroundCollisionControl.CheckObsticleY(P, BoundingBox);
+                    CollisionControl.CheckObsticleY(P, BoundingBox);
                 if (C.directionY < 0) RegisterObjectOnTop(P);
                 P.HandleObsticleCollision(C, this);
                 // repeat for X axis
-                C = GroundCollisionControl.CheckObsticleX(P, BoundingBox);
+                C = CollisionControl.CheckObsticleX(P, BoundingBox);
                 P.HandleObsticleCollision(C, this);
             }
         }

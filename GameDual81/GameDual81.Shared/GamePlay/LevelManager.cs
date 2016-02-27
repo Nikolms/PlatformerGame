@@ -9,8 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using GameDual81.LevelGenerator;
 using ThielynGame.Screens;
-using ThielynGame.GamePlay.EnemyTypes;
 using ThielynGame.GamePlay.Object_Components;
+using ThielynGame.GamePlay.EnemyTypes;
 
 namespace ThielynGame.GamePlay
 {
@@ -46,6 +46,7 @@ namespace ThielynGame.GamePlay
             StartNewLevel();
         }
 
+        // method that initializes a new level creation, and resets certain settings
         public void StartNewLevel() 
         {
             // overwrite masterlist everytime a new level is to be created
@@ -53,45 +54,19 @@ namespace ThielynGame.GamePlay
             NewObjectsWaitList = new List<GameObject>();
             player.ResetPlayerStatus();
 
-            Task t = new Task(CreateNewLevel);
+            Task t = new Task(BuildNewLevel);
             t.Start();
         }
 
-        async void CreateNewLevel() 
+        // method that builds the new level and its object on a separate thread
+        async void BuildNewLevel() 
         {
             IsCreatingLevel = true;
             levelCounter ++;
             player.LevelUP();
             LevelGeneratorObject G = new LevelGeneratorObject(20);
-            G.getLevelInfo(masterlist);
-
-            // TESTING, REMOVE
-            Enemy e1 = new Slime(new Vector2(3000,200), levelCounter);
-            Enemy e2 = new Archer(new Vector2(2000, 200), levelCounter);
-            Enemy e3 = new ArcaneKnight(new Vector2(1500, 200), levelCounter);
-            Enemy e4 = new Archer(new Vector2(13000, 200), levelCounter);
-            Enemy e5 = new Slime(new Vector2(14000, 200), levelCounter);
-            Enemy e6 = new Slime(new Vector2(3500, 200), levelCounter);
-
-            Enemy e11 = new Slime(new Vector2(16000, 200), levelCounter);
-            Enemy e22 = new Troll(new Vector2(12000, 200), levelCounter);
-            Enemy e33 = new Archer(new Vector2(15700, 200), levelCounter);
-            Enemy e44 = new Archer(new Vector2(13000, 200), levelCounter);
-            Enemy e55 = new ArcaneKnight(new Vector2(14000, 200), levelCounter);
-            Enemy e66 = new Troll(new Vector2(19500, 200), levelCounter);
-
-            AddGameObject(e1);
-            AddGameObject(e2);
-            AddGameObject(e3);
-            AddGameObject(e4);
-            AddGameObject(e5);
-            AddGameObject(e6);
-            AddGameObject(e11);
-            AddGameObject(e22);
-            AddGameObject(e33);
-            AddGameObject(e44);
-            AddGameObject(e55);
-            AddGameObject(e66);
+            G.getLevelInfo(masterlist, levelCounter);
+            
 
             await Task.Delay(TimeSpan.FromSeconds(1));
 
@@ -116,6 +91,7 @@ namespace ThielynGame.GamePlay
             List<IInteractiveObject> playerInteractionObjects = new List<IInteractiveObject>();
             // all enemies that need to update and check collisions this frame
             List<Character> activeCharacters = new List<Character>();
+            List<IDestroyableObject> destroyableObjects = new List<IDestroyableObject>();
 
             updateAndrenderList = new List<GameObject>();
 
@@ -138,26 +114,30 @@ namespace ThielynGame.GamePlay
 
                         // differentiate between different object categories
                         if (G is Platform) 
-                            terrainToUpdate.Add((Platform)G);
+                            terrainToUpdate.Add( (Platform)G );
 
                         if (G is IInteractiveObject)
-                            playerInteractionObjects.Add((IInteractiveObject)G);
+                            playerInteractionObjects.Add( (IInteractiveObject)G );
 
                         if (G is IHarmfulObject)
-                            interactiveObjects.Add((IHarmfulObject)G);
+                            interactiveObjects.Add( (IHarmfulObject)G );
 
                         if (G is Character)
-                            activeCharacters.Add((Character)G);
+                            activeCharacters.Add( (Character)G );
 
                         if (G is PhysicsObjects)
-                            movableObjectsToUpdate.Add((PhysicsObjects)G);
+                            movableObjectsToUpdate.Add( (PhysicsObjects)G );
+
+                        if (G is IDestroyableObject)
+                            destroyableObjects.Add( (IDestroyableObject)G );
+
                     }
                 }
             }
-            // Inform the AI about terrainPieces that are relevant this frame
+            // Inform AI what terrain needs to be checked this frame
             Enemy.AIrelevantTerrain = terrainToUpdate;
-            // Inform AI with old player position information to give player a slight edge ;)
-            Enemy.playerLocation = player.BoundingBox.Center;
+            // Inform AI about players current position
+            Enemy.playerPosition = player.Position;
 
             foreach (GameObject O in updateAndrenderList) 
             {
@@ -168,13 +148,20 @@ namespace ThielynGame.GamePlay
 
 
             // collision checks
-            foreach (IObsticle O in terrainToUpdate) { O.CheckObsticleCollision(player); }
-            //GroundCollisionControl.CheckGroundCollision(player, terrainToUpdate);
+            foreach (IObsticle O in terrainToUpdate)
+            {
+                O.CheckObsticleCollision(player);
+
+                foreach (PhysicsObjects P in movableObjectsToUpdate)
+                {
+                    O.CheckObsticleCollision(P);
+                }
+            }
             
             // Update all other objects
             foreach (PhysicsObjects O in movableObjectsToUpdate) 
             {
-                GroundCollisionControl.CheckGroundCollision(O, terrainToUpdate);
+                //CollisionControl.CheckGroundCollision(O, terrainToUpdate);
             }
 
             foreach(IInteractiveObject P in playerInteractionObjects) 
@@ -184,14 +171,11 @@ namespace ThielynGame.GamePlay
 
             // check for object interaction collision, such as item pick up, projectiles
             // and areaeffects
-            foreach (IHarmfulObject O in interactiveObjects) 
+            foreach (IHarmfulObject HO in interactiveObjects) 
             {
-                O.CheckCollisionWithCharacter(player);
-
-                foreach (Character C in activeCharacters)
-                {
-                    O.CheckCollisionWithCharacter(C);
-                }
+                CollisionControl.CheckObjectCollision(HO, player);
+                foreach (IDestroyableObject DO in destroyableObjects)
+                    CollisionControl.CheckObjectCollision(HO, DO);
             }
 
             // replace masterlist with list that contains only objects that are not dead
@@ -201,6 +185,7 @@ namespace ThielynGame.GamePlay
             // is in the middle of screen
             Camera.FocusCameraOnPlayer(masterlist, player);
 
+            // check if player has completed level end trigger
             if (player.ReachedEndOfLevel)
                 this.StartNewLevel();
 

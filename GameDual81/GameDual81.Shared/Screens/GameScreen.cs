@@ -10,7 +10,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Sensors;
-using ThielynGame.GamePlay.EnemyTypes;
 
 namespace ThielynGame.Screens
 {
@@ -28,6 +27,9 @@ namespace ThielynGame.Screens
         {
             isLoading = true;
 
+            // create the animationlists
+            AnimationLists.Initialize();
+
             // create the player instance that is used by GUI
             // and levelmanager
             Player player = new Player(Vector2.Zero, 1);
@@ -39,8 +41,7 @@ namespace ThielynGame.Screens
             // create the helper class to load textures from
             GamePlayTextures = new TextureLoader(content);
 
-            // create the animationlists
-            AnimationLists.Initialize();
+           
 
             // create the GUI
             levelGUI = new LevelGUI(player);
@@ -75,7 +76,7 @@ namespace ThielynGame.Screens
             if (input.ExitGame_Input)
                 ExitScreen();
 
-            // update all game objects
+            // update all game objects. IMPORTANT THAT INPUT IS RESOLVED FIRST
             objectManager.Update(time);
 
             if (objectManager.gameOver) ExitScreen(); 
@@ -99,6 +100,8 @@ namespace ThielynGame.Screens
             }
         }
 
+
+        // method to transition game back to menu screen
         public override void ExitScreen()
         {
             content.Unload();

@@ -12,7 +12,6 @@
     <ApplicationDefinition Include="$(MSBuildThisFileDirectory)App.xaml">
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="$(MSBuildThisFileDirectory)AbilityInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AnimationFiles\Animation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AnimationFiles\AnimationLists.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AnimationFiles\FrameObject.cs" />
@@ -25,30 +24,31 @@
     <Compile Include="$(MSBuildThisFileDirectory)GamePage.xaml.cs">
       <DependentUpon>GamePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Actions\BaseAction.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\AreaEffect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\CharacterAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Camera.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Character.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\CollisionControl.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\ArcaneKnight.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Archer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Beast.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Enemy.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Slime.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Snake.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Troll.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\FloatingMine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Leaper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\LeaperNest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\PlasmaMonster.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\SporeCannon.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Swarm.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\TestDummy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\EnemyTypes\Worm.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\ExitPoint.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\GameObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Object Components\IDestroyableObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Object Components\IHarmfulObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Object Components\IObsticle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Object Components\IInteractiveObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\PhysicsObjects.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\LevelManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Platform.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Player.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Projectile.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\StatusEffects\StatusEffect.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Traps\Spikes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Player\Player.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Randomizer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\ResourceNode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GameSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LevelGenerator\LevelGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LevelGenerator\LevelSection.cs" />

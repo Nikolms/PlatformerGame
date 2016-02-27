@@ -27,10 +27,10 @@ namespace ThielynGame
 
         public static Rectangle AdjustExistingRectangle(Rectangle R) 
         {
-            float modX = (float)R.X * Game1.screenMultiplierWidth;
-            float modY = (float)R.Y * Game1.screenMultiplierHeight;
-            float modW = (float)R.Width * Game1.screenMultiplierWidth;
-            float modH = (float)R.Height * Game1.screenMultiplierHeight;
+            float modX = (float)R.X * Game1.screenMultiplierWidth +1;
+            float modY = (float)R.Y * Game1.screenMultiplierHeight +1;
+            float modW = (float)R.Width * Game1.screenMultiplierWidth +1;
+            float modH = (float)R.Height * Game1.screenMultiplierHeight +1;
 
             return new Rectangle(
                     (int) modX,

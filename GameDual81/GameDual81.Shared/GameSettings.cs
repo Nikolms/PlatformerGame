@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ThielynGame.GamePlay.Actions;
 
 namespace ThielynGame
 {
@@ -37,13 +36,9 @@ namespace ThielynGame
 
 
         // Player ingame stats and abilities
-        public static ActionID Skill1 { get; set; }
-        public static ActionID Skill2 { get; set; }
-        public static ActionID Skill3 { get; set; }
-        public static ActionID Skill4 { get; set; }
 
-        public static int ArmorUpgrade { get; set; }
-        public static int MeleeUpgrade { get; set; }
-        public static int RangedUpgrade { get; set; }
+        public static int ArmorUpgrade { get; set; } = 0;
+        public static int MeleeUpgrade { get; set; } = 0;
+        public static int RangedUpgrade { get; set; } = 0;
     }
 }

@@ -15,9 +15,10 @@ namespace ThielynGame.GamePlay
             correctionDistanceX;
     }
 
-    class GroundCollisionControl
+    class CollisionControl
     {
         // TODO remove this function. Replaced by new ones
+        /*
         public static void CheckGroundCollision(PhysicsObjects collider, List<Platform> terrain) 
         {
             foreach (Platform P in terrain) 
@@ -80,7 +81,7 @@ namespace ThielynGame.GamePlay
                 
             }
         }
-
+         */
         public static CollisionDetailObject CheckObsticleY(PhysicsObjects collider, Rectangle Obsticle)
         {
             CollisionDetailObject CC = new CollisionDetailObject();
@@ -138,6 +139,16 @@ namespace ThielynGame.GamePlay
 
             return CC;
         }
-        
+
+        public static void CheckObjectCollision(IHarmfulObject H, IDestroyableObject D)
+        {
+            if (H.GetAlignment() == D.GetAlignment()) return;
+
+            if (H.GetBoundingBox().Intersects(D.GetBoundingBox()))
+            {
+                D.HitByHarmfulObject(H);
+                H.HitAnObject(D);
+            }
+        }
     }
 }
