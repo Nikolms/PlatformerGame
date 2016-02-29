@@ -37,6 +37,11 @@ namespace ThielynGame.GamePlay
         // keep track of current level
         int levelCounter = 0;
 
+        public Rectangle renderBox_BGdeep = new Rectangle(0,0,1920,1080),
+            renderBox_BGmid = new Rectangle(0,0,2560, 1080),
+            renderBox_BGclose = new Rectangle(0,0,2560, 1080);
+
+
         public void Initialize(Player player) 
         {
             levelCounter = 0;
@@ -53,6 +58,7 @@ namespace ThielynGame.GamePlay
             masterlist = new List<GameObject>();
             NewObjectsWaitList = new List<GameObject>();
             player.ResetPlayerStatus();
+            Camera.Reset();
 
             Task t = new Task(BuildNewLevel);
             t.Start();
@@ -184,6 +190,10 @@ namespace ThielynGame.GamePlay
             // at the end of updating we want to readjust the world to that player
             // is in the middle of screen
             Camera.FocusCameraOnPlayer(masterlist, player);
+
+            // adjust background position
+            renderBox_BGclose.X += Camera.GetOffsetClose(5);
+            renderBox_BGmid.X += Camera.GetOffsetMid(10);
 
             // check if player has completed level end trigger
             if (player.ReachedEndOfLevel)

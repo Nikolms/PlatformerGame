@@ -8,6 +8,8 @@ namespace ThielynGame.GamePlay
 {
     class Camera
     {
+        public static int offsetBankClose, offsetBankMid;
+
         public static void FocusCameraOnPlayer(List<GameObject> objectsToMove, Player P) 
         {
             bool needAdjustment = false;
@@ -22,8 +24,9 @@ namespace ThielynGame.GamePlay
             {
                 offSetX = 610 - P.BoundingBox.X;
 
-                // divide with the abs value to regain -1 or 1 for direction values
-                //directionX = offSetX / Math.Abs(offSetX);
+                // save offset for later use
+                offsetBankClose += offSetX;
+                offsetBankMid += offSetX;
 
                 // set flag if a change is needed
                 needAdjustment = true;
@@ -33,8 +36,6 @@ namespace ThielynGame.GamePlay
             if ( P.BoundingBox.Y != 339)
             {
                 offSetY = 339 - P.BoundingBox.Y;
-                
-                //directionY = offSetY / Math.Abs(offSetY);
 
                 needAdjustment = true;
             }
@@ -55,6 +56,29 @@ namespace ThielynGame.GamePlay
                 P.AdjustVerticalPosition(directionY, offSetY);
             }
             
+        }
+
+        public static void Reset()
+        {
+            offsetBankMid = 0;
+            offsetBankClose = 0;
+        }
+
+        public static int GetOffsetClose(int Divider)
+        {
+            // if (offsetBankX < StepDivider) return 0;
+
+            int x = offsetBankClose;
+            x /= Divider;
+            offsetBankClose -= x * Divider;
+            return x;
+        }
+        public static int GetOffsetMid(int Divider)
+        {
+            int x = offsetBankMid;
+            x /= Divider;
+            offsetBankMid -= x * Divider;
+            return x;
         }
     }
 }

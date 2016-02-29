@@ -89,9 +89,9 @@ namespace ThielynGame.Screens
             else
             {
 
-                s.Draw(levelBackGround_deep, MyRectangle.AdjustSizeCustomRectangle(0, 0, 1280, 768), Color.White);
-                s.Draw(levelBackGround_mid, MyRectangle.AdjustSizeCustomRectangle(0, 0, 1280, 768), Color.White);
-                s.Draw(levelBackGround_close, MyRectangle.AdjustSizeCustomRectangle(0, 0, 1280, 768), Color.White);
+                s.Draw(levelBackGround_deep, MyRectangle.AdjustExistingRectangle(objectManager.renderBox_BGdeep), Color.White);
+                s.Draw(levelBackGround_mid, MyRectangle.AdjustExistingRectangle(objectManager.renderBox_BGmid), Color.White);
+                s.Draw(levelBackGround_close, MyRectangle.AdjustExistingRectangle(objectManager.renderBox_BGclose), Color.White);
 
                 objectManager.Draw(s, GamePlayTextures);
 

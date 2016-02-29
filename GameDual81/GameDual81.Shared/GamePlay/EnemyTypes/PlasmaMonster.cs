@@ -55,7 +55,7 @@ namespace ThielynGame.GamePlay
             {
                 PlasmaShootAction P = new PlasmaShootAction(this);
                 P.projectileVelo = new Vector2((int)facing * 7, 0);
-                P.Damage = 50;
+                P.Damage = 40;
 
                 currentAction = P;
             }
@@ -155,7 +155,7 @@ namespace ThielynGame.GamePlay
 
                 PlasmaShootAction P = new PlasmaShootAction(this);
                 P.projectileVelo = ProjectileDirection;
-                P.Damage = 50;
+                P.Damage = 40;
                 currentAction = P;
                 return;
             }
@@ -222,7 +222,7 @@ namespace ThielynGame.GamePlay
         }
     }
 
-
+    
     class PlasmaBall : PhysicsObjects, IHarmfulObject
     {
         public float Damage
