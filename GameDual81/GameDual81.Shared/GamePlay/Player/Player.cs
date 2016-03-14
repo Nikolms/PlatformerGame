@@ -194,16 +194,14 @@ namespace ThielynGame.GamePlay
             if (facing == FacingDirection.Left) temp.X = 400;
             if (facing == FacingDirection.Right) temp.X = 880;
 
-            Vector2 direction = temp - bulletOrigin;
+            //Vector2 direction = temp - bulletOrigin;
 
-            weaponRotation = (float)Math.Atan2(direction.Y, direction.X);
+            //weaponRotation = (float)Math.Atan2(direction.Y, direction.X);
 
             // if rangedweapon is not on cooldown, create a new Bullet. Also must have ammo left
             if (RangedCoolDown >= rangedAttackSpeed && AmmoLeft > 0)
             {
-                Bullet bullet = new Bullet(bulletOrigin,
-                    direction, alignment);
-                bullet.rotation = weaponRotation;
+                PlayerBullet bullet = new PlayerBullet(bulletOrigin, facing);
                 bullet.Damage = GetRangedDamage();
                 LevelManager L = new LevelManager();
                 L.AddGameObject(bullet);
@@ -338,23 +336,19 @@ namespace ThielynGame.GamePlay
     }
 
 
-    class Bullet : PhysicsObjects, IHarmfulObject
+    class PlayerBullet : PhysicsObjects, IHarmfulObject
     {
-        public float rotation { get; set; }
-
         public float Damage { get; set; }
 
-        public Bullet(Vector2 start, Vector2 Direction, ObjectAlignment alignment)
+        public PlayerBullet(Vector2 start, FacingDirection Direction)
         {
             affectedByGravity = false;
             actualSize = new Rectangle(0,0,12,4);
             position = start;
-            this.alignment = alignment;
+            this.alignment = ObjectAlignment.Player;
 
             // calculate the normalvector for direction and multiply with a speed component
-            velocity = Direction;
-            velocity.Normalize();
-            velocity = velocity * 30;
+            velocity = new Vector2((int)Direction * 30, 0);
         }        
 
         public override void HandleObsticleCollision(CollisionDetailObject CC, Platform collidedWith)
@@ -365,7 +359,7 @@ namespace ThielynGame.GamePlay
         public override void Draw(SpriteBatch S, TextureLoader T)
         {
             S.Draw(T.GetTexture("TODO"), MyRectangle.AdjustExistingRectangle(BoundingBox), new Rectangle(0,0,1,1),
-                Color.White, rotation, new Vector2(1,1), SpriteEffects.None, 0);
+                Color.White);
         }
 
         public Rectangle GetBoundingBox()
