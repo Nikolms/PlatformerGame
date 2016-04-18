@@ -13,7 +13,7 @@ namespace ThielynGame.GamePlay
 
   
     //base class for player and enemies
-     public abstract class Character : PhysicsObjects, IDestroyableObject
+     public abstract class Character : MovableObject, IDestroyableObject
     {
         #region fields and properties
         protected FacingDirection previousFacing;
@@ -26,9 +26,8 @@ namespace ThielynGame.GamePlay
         protected bool hasTakenDamage;
         protected float hurtImmunityTimer;
 
-        protected int baseMeleeDamage, baseRangeDamage;
+        protected int baseMeleeDamage, baseRangeDamage, baseSpellDamage;
         protected int armor;
-        public int level { get; protected set; }
 
         public int MaxHealth { get; protected set; }
         public int CurrentHealth { get; protected set; }
@@ -40,14 +39,9 @@ namespace ThielynGame.GamePlay
         static protected Random random = new Random();
         #endregion
 
-        public Character(Vector2 startPosition, int level) 
+        public Character() 
         {
             TextureFileName = "test_character";
-
-            this.level = level;
-            position = startPosition;
-
-           
         }
 
          //this method is to be used by child classes to set parameters that are unknown at the time of
@@ -101,15 +95,16 @@ namespace ThielynGame.GamePlay
             
             Rectangle SourceBox = new Rectangle(0,0,0,0);   // rectangle to determine area from spritesheet
 
+            // if there is an action draw all its animations
             if (currentAction != null)
-                SourceBox = currentAction.animation.AnimationFrameToDraw;
+                SourceBox = currentAction.char_animation.AnimationFrameToDraw;
             else
                 SourceBox = animation.AnimationFrameToDraw;
 
             Rectangle RenderBox = SourceBox;                // rectangle to determine area on screen to draw in
 
             RenderBox.X = BoundingBox.X - ((SourceBox.Width - BoundingBox.Width) / 2);  // center image relative to boundbox
-            RenderBox.Y = BoundingBox.Y - (SourceBox.Height - BoundingBox.Height);
+            RenderBox.Y = BoundingBox.Y - (SourceBox.Height - BoundingBox.Height);      // the bottom of image is same a bottom of boundBox
             
             
 
@@ -167,7 +162,7 @@ namespace ThielynGame.GamePlay
              switch (characterState) 
              {
                  case CharacterState.Run:
-                        framelist = AnimationLists.GetAnimation(characterType + "_run");
+                        framelist = AnimationLists.GetAnimationFrames(characterType + "_run");
                      break;
 
                  case CharacterState.Idle:
@@ -272,15 +267,18 @@ namespace ThielynGame.GamePlay
             float damage = baseRangeDamage;
             return (int)damage;
         }
+
+        public virtual int GetSpellDamage()
+        {
+            float damage = baseSpellDamage;
+            return (int)damage;
+        }
         
         // overrides
 
         public virtual void HitByHarmfulObject(IHarmfulObject O)
         {
-            CurrentHealth -= (int)O.Damage;
-
-            if (CurrentHealth <= 0)
-                IsDead = true;
+            
         }
 
         public Rectangle GetBoundingBox()
@@ -288,9 +286,9 @@ namespace ThielynGame.GamePlay
             return BoundingBox;
         }
 
-        public ObjectAlignment GetAlignment()
+        public TeamID GetTeamID()
         {
-            return alignment;
+            return teamID;
         }
     }
 }

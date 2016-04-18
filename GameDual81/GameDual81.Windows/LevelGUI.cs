@@ -25,7 +25,7 @@ namespace ThielynGame.GamePlay
         public Rectangle TextureSource { set { textureSource = value; } }
 
         Animation coolDownAnimation = 
-            new Animation(AnimationLists.GetAnimation("yellow_flash"), true);
+            new Animation(AnimationLists.GetAnimationFrames("yellow_flash"), true);
 
         public event ActionButtonAction onClick;
 
@@ -122,20 +122,9 @@ namespace ThielynGame.GamePlay
 
         public void PlayerNonVisualInput(InputHandler input)
         {
-            // if player is in ranged mode only certain input is being read
-            // also send request to player object to perform ranged attacks if able
-            if (input.RangedAttackInput) 
-            {
-                if (player.DoRangedAttack(input.MousePosition))
-                {
-                    uistate = UIstate.Shooting;
-                    return;
-                }
-            }
-
             if (input.MeleeAttackInput)
             {
-                if (player.DoMeleeAttack(input.MousePosition))
+                if (player.DoMeleeAttack())
                     return;
             }
 

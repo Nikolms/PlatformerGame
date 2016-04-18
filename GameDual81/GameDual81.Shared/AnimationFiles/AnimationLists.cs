@@ -43,7 +43,7 @@ namespace ThielynGame.AnimationFiles
                 new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(6,132,100,100)}
                 };
 
-            List<FrameObject> player_combat = new List<FrameObject>()
+            List<FrameObject> player_spell = new List<FrameObject>()
                 {
                     new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(1,103,98,98)},
                     new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(103,103,98,98)},
@@ -55,18 +55,7 @@ namespace ThielynGame.AnimationFiles
                 {
                     new FrameObject () {durationMillisec = 100, frameSource = new Rectangle(6,132,100,100)},
                 };
-
-            List<FrameObject> player_weapon_melee = new List<FrameObject>()
-                {
-                    new FrameObject () {durationMillisec = 90, frameSource = new Rectangle(1,1,67,23) },
-                    new FrameObject () {durationMillisec = 90, frameSource = new Rectangle(1,27,67,23) },
-                    new FrameObject () {durationMillisec = 90, frameSource = new Rectangle(1,53,67,23) }
-                };
-
-            List<FrameObject> player_weapon_ranged = new List<FrameObject>()
-                {
-                    new FrameObject () {durationMillisec = 100, frameSource = new Rectangle(1,1,67,23)}
-                };
+           
             #endregion
 
             #region cannonMonster
@@ -226,10 +215,8 @@ namespace ThielynGame.AnimationFiles
             animationCollection.Add("player_run", player_run);
             animationCollection.Add("player_jump", player_jump);
             animationCollection.Add("player_fall", player_fall);
-            animationCollection.Add("player_combat", player_combat);
+            animationCollection.Add("player_spell", player_spell);
             animationCollection.Add("player_melee", player_melee);
-            animationCollection.Add("player_weapon_melee", player_weapon_melee);
-            animationCollection.Add("player_weapon_ranged", player_weapon_ranged);
 
             animationCollection.Add("cannonmonster_idle", cannonmonster_idle);
             animationCollection.Add("cannonmonster_run", cannonmonster_run);
@@ -269,7 +256,7 @@ namespace ThielynGame.AnimationFiles
         {
             return animationCollection[animationName];
         }
-        public static List<FrameObject> GetAnimation(string animationName) 
+        public static List<FrameObject> GetAnimationFrames(string animationName) 
         {
             return animationCollection[animationName];
         }

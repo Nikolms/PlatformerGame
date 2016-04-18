@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using GameDual81.LevelGenerator;
 using ThielynGame.Screens;
 using ThielynGame.GamePlay.Object_Components;
-using ThielynGame.GamePlay.EnemyTypes;
 
 namespace ThielynGame.GamePlay
 {
@@ -69,10 +68,24 @@ namespace ThielynGame.GamePlay
         {
             IsCreatingLevel = true;
             levelCounter ++;
-            player.LevelUP();
             LevelGeneratorObject G = new LevelGeneratorObject(20);
             G.getLevelInfo(masterlist, levelCounter);
-            
+
+
+            // TODO remove test items
+            Coin C1 = new Coin() { X = 400, Y = 800};
+            Coin C2 = new Coin() { X = 100, Y = 400 };
+
+            Chest CC1 = new Chest() { X = 2000, Y = 199 };
+
+            ManaGlobe M = new ManaGlobe() { X = 500, Y = 300};
+            HealthGlobe H = new HealthGlobe() { X = 700, Y = 400 };
+
+            AddGameObject(C1);
+            AddGameObject(C2);
+            AddGameObject(CC1);
+            AddGameObject(M);
+            AddGameObject(H);
 
             await Task.Delay(TimeSpan.FromSeconds(1));
 
@@ -92,8 +105,8 @@ namespace ThielynGame.GamePlay
             // a list for all the terrain that is near screen this frame
             List<Platform> terrainToUpdate = new List<Platform>();
             // all movable objects that are near screen
-            List<PhysicsObjects> movableObjectsToUpdate = new List<PhysicsObjects>();
-            List<IHarmfulObject> interactiveObjects = new List<IHarmfulObject>();
+            List<MovableObject> movableObjectsToUpdate = new List<MovableObject>();
+            List<IHarmfulObject> harmfulObjects = new List<IHarmfulObject>();
             List<IInteractiveObject> playerInteractionObjects = new List<IInteractiveObject>();
             // all enemies that need to update and check collisions this frame
             List<Character> activeCharacters = new List<Character>();
@@ -126,13 +139,13 @@ namespace ThielynGame.GamePlay
                             playerInteractionObjects.Add( (IInteractiveObject)G );
 
                         if (G is IHarmfulObject)
-                            interactiveObjects.Add( (IHarmfulObject)G );
+                            harmfulObjects.Add( (IHarmfulObject)G );
 
                         if (G is Character)
                             activeCharacters.Add( (Character)G );
 
-                        if (G is PhysicsObjects)
-                            movableObjectsToUpdate.Add( (PhysicsObjects)G );
+                        if (G is MovableObject)
+                            movableObjectsToUpdate.Add( (MovableObject)G );
 
                         if (G is IDestroyableObject)
                             destroyableObjects.Add( (IDestroyableObject)G );
@@ -153,33 +166,30 @@ namespace ThielynGame.GamePlay
             player.Update(time);
 
 
-            // collision checks
+            // terrain collision checks
             foreach (IObsticle O in terrainToUpdate)
             {
                 O.CheckObsticleCollision(player);
 
-                foreach (PhysicsObjects P in movableObjectsToUpdate)
+                foreach (MovableObject P in movableObjectsToUpdate)
                 {
                     O.CheckObsticleCollision(P);
                 }
             }
             
-            // Update all other objects
-            foreach (PhysicsObjects O in movableObjectsToUpdate) 
-            {
-                //CollisionControl.CheckGroundCollision(O, terrainToUpdate);
-            }
 
+            // check player only object collisions
             foreach(IInteractiveObject P in playerInteractionObjects) 
             {
                 P.CheckPlayerCollision(player);
             }
 
-            // check for object interaction collision, such as item pick up, projectiles
-            // and areaeffects
-            foreach (IHarmfulObject HO in interactiveObjects) 
+            // check collisions between all harmful and destroyables
+            foreach (IHarmfulObject HO in harmfulObjects) 
             {
+                // player is separate from all standard lists
                 CollisionControl.CheckObjectCollision(HO, player);
+
                 foreach (IDestroyableObject DO in destroyableObjects)
                     CollisionControl.CheckObjectCollision(HO, DO);
             }

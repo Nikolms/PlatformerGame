@@ -5,19 +5,20 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using ThielynGame.AnimationFiles;
 
-namespace ThielynGame.GamePlay.EnemyTypes
+namespace ThielynGame.GamePlay
 {
+    // a dummy enemy to test level up scaling and skill interactions, NOT TO BE USED IN FINAL GAME
     class TestDummy : Enemy
     {
 
-        public TestDummy(Vector2 startPosition, int level) : base(startPosition, level)
+        public TestDummy(int level) : base(level)
         {
             actualSize = new Rectangle(0, 0, 80, 80);
 
-            MaxHealth = 10;
+            MaxHealth = 10 + level;
             TextureFileName = "TODO";
             characterType = "dummy";
-            maxSpeedX = 2;
+            maxSpeedX = 0;
 
             setParameters();
         }

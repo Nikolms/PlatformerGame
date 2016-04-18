@@ -14,7 +14,7 @@ namespace ThielynGame.GamePlay
 
         public ResourceNode(Vector2 Position)
         {
-            alignment = ObjectAlignment.Enemy;
+            teamID = TeamID.Enemy;
             position = Position;
             this.actualSize = new Rectangle(0,0,60,60);
             TextureFileName = "resourcenode";
@@ -39,9 +39,9 @@ namespace ThielynGame.GamePlay
             return BoundingBox;
         }
 
-        public ObjectAlignment GetAlignment()
+        public TeamID GetTeamID()
         {
-            return alignment;
+            return teamID;
         }
     }
 }

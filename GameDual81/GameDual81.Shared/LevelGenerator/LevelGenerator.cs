@@ -132,11 +132,6 @@ namespace GameDual81.LevelGenerator
             foreach (LevelSection L in levelsections) 
             {
                 list.AddRange(L.sectionTerrain);
-
-                foreach (EnemyDTO DTO in L.sectionEnemies)
-                {
-                    list.Add(Enemy.CreateEnemy(DTO.EnemyTypeID, DTO.spawnPosition, Level));
-                }
             }
         }
 
@@ -150,8 +145,6 @@ namespace GameDual81.LevelGenerator
                     section.sectionTerrain.Add(new Platform(new Rectangle(0, 568, 410, 200)));
                     section.sectionTerrain.Add(new Platform(new Rectangle(410, 698, 300, 70)));
                     section.sectionTerrain.Add(new Platform(new Rectangle(1030, 0, 250, 768)));
-
-                    section.sectionEnemies.Add(new EnemyDTO { spawnPosition = new Vector2(550, 500), EnemyTypeID = 3 , SpawnPropability = 6 });
                     break;
             }
         }
@@ -168,8 +161,6 @@ namespace GameDual81.LevelGenerator
                     section.sectionTerrain.Add(new Platform(new Rectangle(1030, 700, 120, 95)));
                     section.sectionTerrain.Add(new Platform(new Rectangle(1150, 620, 130, 175)));
 
-                    section.sectionEnemies.Add(new EnemyDTO { spawnPosition = new Vector2(200, 500), EnemyTypeID = 4, SpawnPropability = 6 });
-                    section.sectionEnemies.Add(new EnemyDTO { spawnPosition = new Vector2(1000, 500), EnemyTypeID = 5, SpawnPropability = 6 });
                     break;
             }
         }
@@ -186,7 +177,6 @@ namespace GameDual81.LevelGenerator
                     section.sectionTerrain.Add(new Platform(new Rectangle(710, 73, 320, 698)));
                     section.sectionTerrain.Add(new Platform(new Rectangle(1030, 0, 250, 768)));
 
-                    section.sectionEnemies.Add(new EnemyDTO { spawnPosition = new Vector2(200, 400), EnemyTypeID = 3, SpawnPropability = 6 });
                     break;
             }
         }
@@ -221,15 +211,12 @@ namespace GameDual81.LevelGenerator
                     section.sectionTerrain.Add(new Platform(new Rectangle(356, 450, 160, 40)));
                     section.sectionTerrain.Add(new Platform(new Rectangle(1024, 512, 256, 256)));
 
-                    section.sectionEnemies.Add(new EnemyDTO { spawnPosition = new Vector2(100, 400), EnemyTypeID = 2, SpawnPropability = 6 });
                     break;
 
                 case 2: 
                     section.sectionTerrain.Add(new Platform(new Rectangle(0, 512, 640, 236)));
                     section.sectionTerrain.Add(new Platform(new Rectangle(640, 512, 640, 256)));
 
-                    section.sectionEnemies.Add(new EnemyDTO { spawnPosition = new Vector2(400, 450), EnemyTypeID = 1, SpawnPropability = 6 });
-                    section.sectionEnemies.Add(new EnemyDTO { spawnPosition = new Vector2(700, 250), EnemyTypeID = 2, SpawnPropability = 6 });
                     break;
 
                 case 1: 
@@ -237,7 +224,6 @@ namespace GameDual81.LevelGenerator
                     section.sectionTerrain.Add(new Platform(new Rectangle(356, 400, 568, 150)));
                     section.sectionTerrain.Add(new Platform(new Rectangle(1024, 512, 256, 256)));
 
-                    section.sectionEnemies.Add(new EnemyDTO { spawnPosition = new Vector2(500, 200), EnemyTypeID = 5, SpawnPropability = 6 });
                     break;
             }
 

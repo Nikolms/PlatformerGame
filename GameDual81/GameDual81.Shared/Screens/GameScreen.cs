@@ -32,7 +32,7 @@ namespace ThielynGame.Screens
 
             // create the player instance that is used by GUI
             // and levelmanager
-            Player player = new Player(Vector2.Zero, 1);
+            Player player = new Player();
 
             // create objectManager to hold and perform updates on gameobjects
             objectManager = new LevelManager();

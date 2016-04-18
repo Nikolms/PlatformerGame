@@ -9,18 +9,20 @@ using System.Threading.Tasks;
 
 namespace ThielynGame.GamePlay
 {
-    public enum ObjectAlignment { Player, Enemy, Neutral }
+    public enum TeamID { Player, Enemy, Neutral }
     public enum FacingDirection {Left = -1, Right = 1}
     public enum AllDirections { Left, Up, Right, Down}
 
     public abstract class GameObject
     {
-        protected ObjectAlignment alignment;
-        public ObjectAlignment Alignment { get { return alignment; } }
+        public TeamID teamID { get; set; }
 
         protected Rectangle actualSize;
         protected Vector2 position;
-        public Vector2 Position { get { return position; } }
+        public Vector2 Position { get { return position; } set { position = value; } }
+
+        public int X { set { position.X = value; } }
+        public int Y { set { position.Y = value; } }
 
         
         protected Vector2 velocity;
@@ -33,6 +35,7 @@ namespace ThielynGame.GamePlay
 
         public bool IsDead { get; protected set; }
 
+        
         // TODO add logic to determine if near screen or not
         public bool IsNearScreen () 
         {

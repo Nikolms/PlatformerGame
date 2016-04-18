@@ -10,6 +10,6 @@ namespace ThielynGame.GamePlay
         void HitByHarmfulObject(IHarmfulObject O);
 
         Rectangle GetBoundingBox();
-        ObjectAlignment GetAlignment();
+        TeamID GetTeamID();
     }
 }

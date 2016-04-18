@@ -10,6 +10,12 @@ using ThielynGame.Screens;
 
 namespace ThielynGame
 {
+
+    /// <summary>
+    /// this class reads IO stream and sets different command flags
+    /// it does not start executions of those actions but allows other components to read the flags and know if something
+    /// needs to execute
+    /// </summary>
     public class InputHandler
     {
         public MouseState previousMouseState;
@@ -22,7 +28,7 @@ namespace ThielynGame
         public bool moveRightInput { get; protected set; }
         public bool jumpInput { get; protected set; }
         public bool MeleeAttackInput { get; protected set; }
-        public bool RangedAttackInput { get; protected set; }
+        public bool RangedAttackInput { get; protected set; }  //TODO may not be needed
         public bool SKill_1_Input { get; protected set; }
         public bool Skill_2_Input { get; protected set; }
         public bool Skill_3_Input { get; protected set; }
@@ -56,14 +62,18 @@ namespace ThielynGame
             // reset click positions everyframe
             inputLocations.Clear();
 
+            // if a new left click is registered this frame, store the location to list
             if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
             {
                 inputLocations.Add(new Vector2(mouseState.X, mouseState.Y));
             }
 
-            // go into shooting mode when right mouse is pressed (continuous state)
-            if (mouseState.RightButton == ButtonState.Pressed)
-                RangedAttackInput = true;
+            // if right mouse is clicked set melee input to true
+            if (mouseState.RightButton == ButtonState.Pressed && previousMouseState.RightButton == ButtonState.Released)
+            {
+                MeleeAttackInput = true;
+            }
+
 
             previousMouseState = mouseState;
 
@@ -90,22 +100,27 @@ namespace ThielynGame
             // request skill slot 1 if 1 was pressed
             if (keyBoardState.IsKeyDown(Keys.D1) && previousKeyboardState.IsKeyUp(Keys.D1)) 
             {
-                Developer_Skip = true;
+                SKill_1_Input = true;
             }
             // skill 2
             if (keyBoardState.IsKeyDown(Keys.D2)) 
             {
-                MeleeAttackInput = true;
+                Skill_2_Input = true;
             }
             // skill 3
             if (keyBoardState.IsKeyDown(Keys.D3))
             {
-                RangedAttackInput = true;
+                Skill_3_Input = true;
             }
             // Exit GameScreen if ESC is pressed
             if (keyBoardState.IsKeyDown(Keys.Escape) && previousKeyboardState.IsKeyUp(Keys.Escape)) 
             {
                 ExitGame_Input = true;
+            }
+            //
+            if (keyBoardState.IsKeyDown(Keys.D4) && previousKeyboardState.IsKeyUp(Keys.D4))
+            {
+                Developer_Skip = true;
             }
                 
             previousKeyboardState = keyBoardState;

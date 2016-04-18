@@ -82,7 +82,7 @@ namespace ThielynGame.GamePlay
             }
         }
          */
-        public static CollisionDetailObject CheckObsticleY(PhysicsObjects collider, Rectangle Obsticle)
+        public static CollisionDetailObject CheckObsticleY(MovableObject collider, Rectangle Obsticle)
         {
             CollisionDetailObject CC = new CollisionDetailObject();
             CC.correctionDistanceX = 0; CC.correctionDistanceY = 0;
@@ -112,7 +112,7 @@ namespace ThielynGame.GamePlay
             
         }
 
-        public static CollisionDetailObject CheckObsticleX (PhysicsObjects collider, Rectangle Obsticle)
+        public static CollisionDetailObject CheckObsticleX (MovableObject collider, Rectangle Obsticle)
         {
             CollisionDetailObject CC = new CollisionDetailObject();
             CC.correctionDistanceX = 0; CC.correctionDistanceY = 0;
@@ -142,11 +142,10 @@ namespace ThielynGame.GamePlay
 
         public static void CheckObjectCollision(IHarmfulObject H, IDestroyableObject D)
         {
-            if (H.GetAlignment() == D.GetAlignment()) return;
+            if (H.GetTeamID() == D.GetTeamID()) return;
 
             if (H.GetBoundingBox().Intersects(D.GetBoundingBox()))
             {
-                D.HitByHarmfulObject(H);
                 H.HitAnObject(D);
             }
         }

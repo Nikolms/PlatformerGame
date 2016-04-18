@@ -12,7 +12,7 @@ namespace ThielynGame.GamePlay
     public class Platform : GameObject, IObsticle
     {
         // list of objects that standing on this platform
-        protected List<PhysicsObjects> objectsOnTopOfThis = new List<PhysicsObjects>();
+        protected List<MovableObject> objectsOnTopOfThis = new List<MovableObject>();
 
         public string TextureSet { set { TextureFileName = value; } }
 
@@ -51,12 +51,12 @@ namespace ThielynGame.GamePlay
         }
 
 
-        public void RegisterObjectOnTop(PhysicsObjects O)
+        public void RegisterObjectOnTop(MovableObject O)
         {
             objectsOnTopOfThis.Add(O);
         }
 
-        public void CheckObsticleCollision(PhysicsObjects P)
+        public void CheckObsticleCollision(MovableObject P)
         {
             // checks simple collision
             if (P.BoundingBox.Intersects(BoundingBox))
@@ -112,7 +112,7 @@ namespace ThielynGame.GamePlay
                 // update to current travel distance by velocity lenght
                 currentDistance += velocity.Length() * currentDirection;
 
-                foreach (PhysicsObjects O in objectsOnTopOfThis)
+                foreach (MovableObject O in objectsOnTopOfThis)
                 {
                     O.AddExternalSpeed(velocity.X, velocity.Y);
                 }

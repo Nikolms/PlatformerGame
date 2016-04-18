@@ -25,15 +25,16 @@ namespace ThielynGame.GamePlay
         public static Vector2 playerPosition;       // the player position AI uses
         protected Vector2 distanceToPlayer = new Vector2();
 
-        public Enemy(Vector2 startPosition, int level) : base(startPosition, level)
+        protected int level;
+
+        public Enemy(int level)
         {
             // default values
             characterType = "dummy_medium";
             TextureFileName = "TODO";
-
-            position = startPosition;
+            
             this.level = level;
-            alignment = ObjectAlignment.Enemy;
+            teamID = TeamID.Enemy;
 
             // DEFAULT VALUES
             acceleration = 1f;           
@@ -153,21 +154,9 @@ namespace ThielynGame.GamePlay
 
 
         // ENEMY FACTORY
-        static public Enemy CreateEnemy(int TypeID, Vector2 Location, int Level)
+        static public Enemy CreateEnemy(int Level)
         {
-            Enemy E = null;
-
-            switch (TypeID)
-            {
-                case 1: E = new PlasmaWalker(Location, Level);  break;
-                case 2: E = new PlasmaFlyer(Location, Level); break;
-                case 3: E = new Swarm(Location, Level); break;
-                case 4: E = new SporeCannon(Location, Level); break;
-                case 5: E = new FloatingMine(Location, Level); break;
-                case 6: E = new LeaperNest(Location, Level); break;
-                case 7: E = new Leaper(Location, Level); break;
-                case 8: E = new Worm(Location, Level); break;
-            }
+            Enemy E = new TestDummy(Level);            
 
             return E;
         }   

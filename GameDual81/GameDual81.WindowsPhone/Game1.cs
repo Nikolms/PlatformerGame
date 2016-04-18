@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using ThielynGame.Menu;
 using Microsoft.Xna.Framework.Input;
+using System;
+using Windows.UI.Xaml;
 
 namespace ThielynGame
 {
@@ -18,22 +20,28 @@ namespace ThielynGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+
+
         // multiplier used to scale things to screenresolution
         public static float screenMultiplierWidth, screenMultiplierHeight;
 
-        // th current screen that needs to update, either Menu, Loading or gameplay
+        // the current screen that needs to update, either Menu, Loading or gameplay
         Screen currentScreen;
 
         InputHandler inputHandler;
-        // list of touchinput
-        List <GestureSample> touchInput;
-    			
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            
+            inputHandler = new InputHandler();
+            IsMouseVisible = true;
+            TargetElapsedTime = TimeSpan.FromMilliseconds(16);
+
+            GameSettings.ArmorUpgrade = 0;
+            GameSettings.MeleeUpgrade = 0;
+            GameSettings.RangedUpgrade = 0;
         }
 
         /// <summary>
@@ -46,28 +54,16 @@ namespace ThielynGame
         {
             // TODO: Add your initialization logic here
 
-            // initialize separate contentmanagers for menu and gamescreen
-            MenuScreen.Initialize(new ContentManager(this.Services, "Content"));
-            GameScreen.Initialize(new ContentManager(this.Services, "Content"));
-
-            // register this instance of game1 class
-            Screen.setHost = this;
-
             // calculate screenmultiplier
-            screenMultiplierHeight = (float)GraphicsDevice.Viewport.Height /768;
-            screenMultiplierWidth = ((float)GraphicsDevice.Viewport.Width + 1)/ 1280;
+            screenMultiplierHeight = (float)GraphicsDevice.Viewport.Height / 1080;
+            screenMultiplierWidth = (float)GraphicsDevice.Viewport.Width / 1920;
 
             Debug.WriteLine(
-                "width:  " + GraphicsDevice.Viewport.Width + 
-                "\nHeight:  " + GraphicsDevice.Viewport.Height
+                "width:  " + GraphicsDevice.Viewport.Width +
+                "\nHeight:  " + GraphicsDevice.Viewport.Height +
+                "\nWidthMulti:  " + screenMultiplierWidth +
+                "\nHeightMulti: " + screenMultiplierHeight
                 );
-
-            
-
-            // enable tap gestures
-            TouchPanel.EnabledGestures = GestureType.Tap;
-            // instantiate touchlist
-            touchInput = new List<GestureSample>();
 
             base.Initialize();
         }
@@ -80,13 +76,18 @@ namespace ThielynGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
             // TODO: use this.Content to load your game content here
             CommonAssets.menuButtonBackground = Content.Load<Texture2D>("menubuttonbackground");
             CommonAssets.menuFont = Content.Load<SpriteFont>("menufont");
+            CommonAssets.LoadingBackGround = Content.Load<Texture2D>("loadingbackground");
+            CommonAssets.TODO = Content.Load<Texture2D>("TODO");
+            CommonAssets.skillMenuIcons = Content.Load<Texture2D>("skill_buttons");
+            CommonAssets.PopupBackground = Content.Load<Texture2D>("popup_background");
 
             // Create a menuscreen as the entryscreen when game launches
-            currentScreen = new MenuScreen();
-            currentScreen.Load();
+            //currentScreen = new MenuScreen(this);
+            GoToMenuScreen();
         }
 
         /// <summary>
@@ -105,24 +106,15 @@ namespace ThielynGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // TODO: Add your update logic here
+            // TEST REMOVE
+            screenMultiplierHeight = (float)GraphicsDevice.Viewport.Height / 1080;
+            screenMultiplierWidth = (float)GraphicsDevice.Viewport.Width / 1920;
 
-            // add all touchinput to our list everyframe
-            while (TouchPanel.IsGestureAvailable) 
-            {
-                touchInput.Add(
-                TouchPanel.ReadGesture()
-                );
-            }
-            // forward input for current frame
-            currentScreen.HandleInput(touchInput);
+            // check for any input values
+            inputHandler.Update();
 
-            // clear input before next frame so that we dont later resolve old
-            // input data
-            touchInput.Clear();
-
-            // once input is resolved, update all time based elements
-            currentScreen.Update(gameTime.ElapsedGameTime);
+            // update current screen
+            currentScreen.Update(gameTime.ElapsedGameTime, inputHandler);
 
             base.Update(gameTime);
         }
@@ -144,18 +136,22 @@ namespace ThielynGame
         }
 
 
-        public void StartGameScreen(MenuButton B)
+        public void GoToGameScreen(MenuButton B)
         {
-            Screen nextScreen = new GameScreen();
-            LoadingScreen loading = new LoadingScreen(Content.Load<Texture2D>("loadingbackground"), nextScreen, currentScreen);
-            currentScreen = loading;
-            currentScreen.Load();
+            GameScreen game = new GameScreen(this);
+            currentScreen = game;
         }
-        public void GoToMenu() { }
 
-        public void FinishScreenTransition(Screen nextScreen) 
+        public void GoToMenuScreen()
         {
-            currentScreen = nextScreen;
+            MenuScreen menu = new MenuScreen(this);
+            currentScreen = menu;
         }
+
+        public void ExitApplication(MenuButton G)
+        {
+            Application.Current.Exit();
+        }
+
     }
 }
