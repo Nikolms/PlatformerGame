@@ -22,40 +22,41 @@ namespace ThielynGame.AnimationFiles
             #region player animations
             List<FrameObject> player_idle = new List<FrameObject>() 
                 {
-                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(1,1,98,98)}
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(0,0,45,70)}
                 };
 
             List<FrameObject> player_run = new List<FrameObject>()
                 {
-                    new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(103,1,98,98)},
-                    new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(205,1,98,98)},
-                    new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(103,1,98,98)},
-                    new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(205,1,98,98)}
+                    new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(45,0,45,70)},
+                    new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(90,0,45,70)}
                 }; 
 
             List<FrameObject> player_jump = new List<FrameObject>()
                 {
-                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(115,133,100,100)}
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(0,0,45,70)}
                 };
 
             List<FrameObject> player_fall = new List<FrameObject>()
                 {
-                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(6,132,100,100)}
+                new FrameObject () {durationMillisec = 200, frameSource = new Rectangle(0,0,45,70)}
                 };
 
             List<FrameObject> player_spell = new List<FrameObject>()
                 {
-                    new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(1,103,98,98)},
-                    new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(103,103,98,98)},
-                    new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(205,103,98,98)},
-                    new FrameObject () {durationMillisec = 250, frameSource = new Rectangle(307,103,98,98)}
+                    new FrameObject () {durationMillisec = 600, frameSource = new Rectangle(64,139,55,80)}
                 };
 
             List<FrameObject> player_melee = new List<FrameObject>()
                 {
-                    new FrameObject () {durationMillisec = 100, frameSource = new Rectangle(6,132,100,100)},
+                    new FrameObject () {durationMillisec = 300, frameSource = new Rectangle(0,71,63,88)},
+                    new FrameObject () {durationMillisec = 100, frameSource = new Rectangle(63,70,80,70)}
                 };
-           
+
+            List<FrameObject> player_charge = new List<FrameObject>()
+                {
+                    new FrameObject () {durationMillisec = 100, frameSource = new Rectangle(64,139,55,80)},
+                };
+
             #endregion
 
             #region cannonMonster
@@ -217,6 +218,7 @@ namespace ThielynGame.AnimationFiles
             animationCollection.Add("player_fall", player_fall);
             animationCollection.Add("player_spell", player_spell);
             animationCollection.Add("player_melee", player_melee);
+            animationCollection.Add("player_charge", player_charge);
 
             animationCollection.Add("cannonmonster_idle", cannonmonster_idle);
             animationCollection.Add("cannonmonster_run", cannonmonster_run);

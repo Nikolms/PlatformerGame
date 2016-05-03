@@ -11,11 +11,27 @@ namespace ThielynGame.GamePlay
     {
         public PlayerArcaneMissileAction(Character Actor) : base(Actor)
         {
+            preDuration = 100;
+            postDuration = 100;
+            totalDuration = 200;
+
+            char_animation = new Animation(AnimationLists.GetAnimationFrames("player_melee"),true);
+            char_animation.Start();
+
+            effect_animation = null;
         }
 
         protected override void OnExecute()
         {
-            throw new NotImplementedException();
+            ArcaneMissile missile = new ArcaneMissile();
+            missile.Damage = actor.GetSpellDamage();
+            missile.teamID = actor.teamID;
+            missile.Position = actor.Position;
+            missile.StartVelocity = new Vector2((int)actor.Facing * 7, 0);
+            missile.affectedByGravity = false;
+
+            LevelManager L = new LevelManager();
+            L.AddGameObject(missile);
         }
     }
 
@@ -48,6 +64,12 @@ namespace ThielynGame.GamePlay
         }
 
         public void HitAnObject(IDestroyableObject D)
+        {
+            D.HitByHarmfulObject(this);
+            IsDead = true;
+        }
+
+        public override void HandleObsticleCollision(CollisionDetailObject CC, Platform collidedWith)
         {
             IsDead = true;
         }

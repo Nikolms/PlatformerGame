@@ -14,6 +14,7 @@
     </ApplicationDefinition>
     <Compile Include="$(MSBuildThisFileDirectory)AnimationFiles\Animation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AnimationFiles\AnimationLists.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AnimationFiles\AnimationObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AnimationFiles\FrameObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AnimationFiles\TextureLoader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
@@ -45,7 +46,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Platform.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Player\Player.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Player\PlayerArcaneMissileAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Player\PlayerChargeAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Player\PlayerCloakAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Player\PlayerEmpoweredAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Player\PlayerMeleeAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Player\PlayerShieldAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Player\PlayerStormAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\Randomizer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GamePlay\ResourceNode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GameSettings.cs" />

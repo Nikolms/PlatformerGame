@@ -71,7 +71,6 @@ namespace ThielynGame.GamePlay
             }
         }
     }
-    enum UIstate { Normal, Shooting }
 
     class LevelGUI
     {
@@ -124,18 +123,9 @@ namespace ThielynGame.GamePlay
         {
             // if player is in ranged mode only certain input is being read
             // also send request to player object to perform ranged attacks if able
-            if (input.RangedAttackInput)
-            {
-                if (player.DoRangedAttack(input.MousePosition))
-                {
-                    uistate = UIstate.Shooting;
-                    return;
-                }
-            }
-
             if (input.MeleeAttackInput)
             {
-                if (player.DoMeleeAttack(input.MousePosition))
+                if (player.DoMeleeAttack())
                     return;
             }
 
@@ -158,7 +148,7 @@ namespace ThielynGame.GamePlay
         public void Draw(SpriteBatch S, TextureLoader T)
         {
             healthBar.Width = player.CurrentHealth * 3;
-            energyBar.Width = player.EnergyLeft * 2;
+            energyBar.Width = player.currentMana * 2;
 
             S.Draw(T.GetTexture("healthbar_base"), MyRectangle.AdjustExistingRectangle(healthBarBase),
                 Color.White);
@@ -169,22 +159,9 @@ namespace ThielynGame.GamePlay
             // draw energybar
             S.Draw(T.GetTexture("TODO"), MyRectangle.AdjustExistingRectangle(energyBar), Color.White);
 
-            // write remaining ammo
-            S.DrawString(CommonAssets.menuFont, "Ammo: " + player.AmmoLeft, AmmoInfoLocation, Color.White);
-
             foreach (ActionButton B in UIbuttons)
             {
                 B.Draw(S, T);
-            }
-
-            if (uistate == UIstate.Shooting)
-            {
-                Rectangle crosshair = new Rectangle(0, 0, 100, 100);
-                crosshair.X = (int)mouseLocation.X - crosshair.Width / 2;
-                crosshair.Y = (int)mouseLocation.Y - crosshair.Height / 2;
-
-                S.Draw(T.GetTexture("targetcrosshair"), MyRectangle.AdjustExistingRectangle(crosshair), Color.White);
-
             }
         }
     }

@@ -29,6 +29,9 @@ namespace ThielynGame.AnimationFiles
             AnimationFrames = framesToAnimate;
         }
 
+        /// <summary>
+        /// this function sets the frame and time to 0
+        /// </summary>
         public void Start() 
         {
             timeCurrentFrame = 0;

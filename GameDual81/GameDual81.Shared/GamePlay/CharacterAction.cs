@@ -17,7 +17,7 @@ namespace ThielynGame.GamePlay
         public bool actionComplete { get; protected set; }        // use this flag to check if the action has fully completed
 
         protected float preDuration, postDuration, totalDuration;
-        float currentDuration;
+        protected float currentDuration = 0;
 
         public Animation char_animation { get; protected set; }
         public Animation effect_animation { get; protected set; }
@@ -31,6 +31,7 @@ namespace ThielynGame.GamePlay
         public CharacterAction(Character Actor)
         {
             actor = Actor;
+            currentDuration = 0;
         }
 
 
@@ -53,8 +54,28 @@ namespace ThielynGame.GamePlay
             // flag tha action complete if it has run its full duration
             if (currentDuration >= totalDuration)
                 actionComplete = true;
+
+            // perform potential continuous effects during the action
+            if (preDurationComplete)
+                postExecuteUpdate();
+            else preExecuteUpdate();
         }
         
         protected abstract void OnExecute();
+
+        // these functions can be used for any constant updates this actions needs to do
+        protected virtual void preExecuteUpdate() { }
+        protected virtual void postExecuteUpdate() { }
+
+        /// <summary>
+        /// this function draws any special effects related to this action
+        /// </summary>
+        public void DrawEffect()
+        {
+            // do nothing if there is no special effects
+            if (effect_animation == null) return;
+
+            // TODO add drawing logic
+        }
     }
 }

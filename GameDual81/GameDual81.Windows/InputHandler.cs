@@ -48,7 +48,10 @@ namespace ThielynGame
             moveRightInput = false;
             jumpInput = false;
             MeleeAttackInput = false;
-            RangedAttackInput = false;
+            SKill_1_Input = false;
+            Skill_2_Input = false;
+            Skill_3_Input = false;
+            Skill_4_Input = false;
 
             Developer_Skip = false;
             ExitGame_Input = false;

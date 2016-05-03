@@ -15,7 +15,7 @@ namespace ThielynGame.GamePlay
             postDuration = 100;
             totalDuration = 400;
 
-            char_animation = new Animation(AnimationLists.GetAnimationFrames("player_melee"), false);
+            char_animation = new Animation(AnimationLists.GetAnimationFrames("player_melee"), true);
             char_animation.Start();
 
             effect_animation = null;

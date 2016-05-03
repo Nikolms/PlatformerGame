@@ -17,8 +17,8 @@ namespace ThielynGame.GamePlay
                         GROUND_FRICTION = 0.5f;
 
         // rulebreaking flags
-        protected bool affectedByGravity = true;
-        protected bool ignoresTerrain = false;
+        public bool affectedByGravity { get; set; } = true;
+        public bool ignoresTerrain { get; set; } = false;
 
         // flag that is used for the objects to know when they are touching ground
         public bool TouchesGround { get; protected set; }
@@ -33,6 +33,7 @@ namespace ThielynGame.GamePlay
 
         public Vector2 TotalVelocity
         { get { return velocity + externalSpeed; } }
+        public Vector2 StartVelocity { set { velocity = value; } }
 
 
         public Rectangle HorizontalCollisionBox

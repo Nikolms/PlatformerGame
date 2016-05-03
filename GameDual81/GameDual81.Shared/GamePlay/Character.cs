@@ -31,8 +31,6 @@ namespace ThielynGame.GamePlay
 
         public int MaxHealth { get; protected set; }
         public int CurrentHealth { get; protected set; }
-
-        public Rectangle MeleeReach { get; protected set; }
         
         protected CharacterAction currentAction;
 

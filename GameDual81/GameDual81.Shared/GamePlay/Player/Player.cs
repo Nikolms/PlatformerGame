@@ -20,40 +20,18 @@ namespace ThielynGame.GamePlay
         float RangedCoolDown = 0;
         float MeleeCoolDown = 0;
 
-        float jumpEnergyDrainTimer = 0;
-        float JumpEnergyDrainInterval = 30;
-
-        public int AmmoLeft { get; protected set; }
-        public int MaxAmmo { get; protected set; }
-        public int EnergyLeft { get; protected set; }
-        int MaxEnergy { get; set; }
-
-        float energyRegenTimer = 0, energyRegenInterval = 40;
-        int energyRegenValue = 1;
-
-        int jumpPower = 4;
-        float jumpAcceleration = 1.5f;
-
-        bool isShooting;
-        bool isMeleeing;
-
-        float weaponRotation;
-        Vector2 WeaponBoxOrigin = new Vector2(12, 13);
-        Rectangle combatWeaponRenderBox = new Rectangle(0, 0, 67, 23);
-        Animation weaponAnimationMelee,
-            weaponAnimationRanged, currentWeaponAnimation;
+        public int maxMana { get; set; }
+        public int currentMana { get; protected set; }
 
 
         public Player() { 
             teamID = TeamID.Player;
-            TextureFileName = "catapultmonster1";
+            TextureFileName = "player_sprite";
             characterType = "player";
-            this.actualSize = new Rectangle(0, 0, 35, 70);
+            this.actualSize = new Rectangle(0, 0, 40, 70);
 
             maxSpeedX = 5;
             acceleration = 0.75f;
-            MeleeReach = new Rectangle(0, 0, 70, 70);
-
 
             facing = FacingDirection.Right;
             MaxHealth = 100;
@@ -116,14 +94,19 @@ namespace ThielynGame.GamePlay
                 velocity.Y = -19;
         }
 
-        public bool DoRangedAttack()
-        {
-            return true;
-        }
-
         public bool DoMeleeAttack()
         {
             return PlayerActionStart(new PlayerMeleeAction(this));
+        }
+
+        public bool DoSkillOne() {
+            return PlayerActionStart(new PlayerArcaneMissileAction(this));
+        }
+        public bool DoSkillTwo() {
+            return PlayerActionStart(new PlayerChargeAction(this));
+        }
+        public bool DoSkillThree() {
+            return false;
         }
 
 
