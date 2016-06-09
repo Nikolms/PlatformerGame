@@ -18,10 +18,10 @@ namespace ThielynGame.Menu
             
 
             // set the location and size for buttons
-            Startgame.PositionAndSize = new Rectangle(320, 192, 640, 100);
-            Character.PositionAndSize = new Rectangle(320, 322, 640, 100);
-            Options.PositionAndSize = new Rectangle(320, 452, 640, 100);
-            Exit.PositionAndSize = new Rectangle(440, 628, 400, 100);
+            Startgame.PositionAndSize = MyRectangle.AdjustSizeCustomRectangle (320, 192, 640, 100);
+            Character.PositionAndSize = MyRectangle.AdjustSizeCustomRectangle(320, 322, 640, 100);
+            Options.PositionAndSize = MyRectangle.AdjustSizeCustomRectangle(320, 452, 640, 100);
+            Exit.PositionAndSize = MyRectangle.AdjustSizeCustomRectangle(440, 628, 400, 100);
 
 
             // adjust text padding

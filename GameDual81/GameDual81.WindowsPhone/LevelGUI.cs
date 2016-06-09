@@ -13,6 +13,24 @@ namespace ThielynGame.GamePlay
     public delegate void ActionButtonAction(ActionButton sender);
     public delegate void SimpleAction();
 
+    // simple button for continuous actions and no cooldowns (run jump)
+    public class SimpleGameButton : BaseButton
+    {
+        string textureName = "TODO";
+        public Rectangle textureSource { get; set; }
+
+        public event SimpleAction OnClick;
+
+        public override bool CheckIfClicked(Vector2 inputLocation)
+        {
+            if (base.CheckIfClicked(inputLocation))
+                OnClick();
+            return false;
+        }
+        
+    }
+
+    // button class that can handle cooldowns for player skills etc
     public class ActionButton : BaseButton
     {
         string textureName = "skill_buttons";
@@ -76,12 +94,12 @@ namespace ThielynGame.GamePlay
     {
         Player player;
 
-        List<ActionButton> UIbuttons;
+        List<BaseButton> UIbuttons;   // this list has all basic game buttons
+        List<ActionButton> SkillButtons;  // this list contains all buttons that need to handle cooldowns
         Rectangle healthBar, healthBarBase;
         Rectangle energyBar;
-        Vector2 AmmoInfoLocation;
-        UIstate uistate;
-        Vector2 mouseLocation;
+
+        bool MoveLeftInput, MoveRightInput, JumpInput;
 
 
         public LevelGUI(Player player)
@@ -90,27 +108,40 @@ namespace ThielynGame.GamePlay
 
             healthBarBase = new Rectangle(0, 0, 340, 100);
             healthBar = new Rectangle(19, 19, 0, 60);
-
             energyBar = new Rectangle(0, 102, 0, 40);
 
-            AmmoInfoLocation = new Vector2(740, 10);
+            UIbuttons = new List<BaseButton>();
 
-            UIbuttons = new List<ActionButton>();
+            SimpleGameButton Jump = new SimpleGameButton();
+            SimpleGameButton MoveLeft = new SimpleGameButton();
+            SimpleGameButton MoveRight = new SimpleGameButton();
+
+            Jump.OnClick += SetJumpInput;
+            MoveLeft.OnClick += SetMoveLeftInput;
+            MoveRight.OnClick += SetMoveRightInput;
+
+            Jump.PositionAndSize = MyRectangle.AdjustSizeCustomRectangle (0, 0, 500, 450);
+            MoveLeft.PositionAndSize = MyRectangle.AdjustSizeCustomRectangle(0,0,250, 768);
+            MoveRight.PositionAndSize = MyRectangle.AdjustSizeCustomRectangle(250,0,250,768);
+
+            UIbuttons.Add(Jump);
+            UIbuttons.Add(MoveLeft);
+            UIbuttons.Add(MoveRight);
+
         }
 
         public void UpdateGUI(TimeSpan time)
         {
-            foreach (ActionButton G in UIbuttons)
-            {
-                G.UpdateCooldowns(time);
-            }
+            MoveLeftInput = false;
+            MoveRightInput = false;
+            JumpInput = false;
         }
 
         public void checkButtonClicks(List<Vector2> inputLocations)
         {
             foreach (Vector2 input in inputLocations)
             {
-                foreach (ActionButton B in UIbuttons)
+                foreach (BaseButton B in UIbuttons)
                 {
                     B.CheckIfClicked(input);
                 }
@@ -121,26 +152,10 @@ namespace ThielynGame.GamePlay
 
         public void PlayerNonVisualInput(InputHandler input)
         {
-            // if player is in ranged mode only certain input is being read
-            // also send request to player object to perform ranged attacks if able
-            if (input.MeleeAttackInput)
-            {
-                if (player.DoMeleeAttack())
-                    return;
-            }
+            if (MoveLeftInput) player.DoMovementLeft();
+            if (MoveRightInput) player.DoMovementRight();
 
-            uistate = UIstate.Normal;
-
-            if (input.moveLeftInput)
-                player.DoMovementLeft();
-            if (input.moveRightInput)
-                player.DoMovementRight();
-            if (input.jumpInput)
-                player.DoJump();
-            if (input.ExitGame_Input)
-                ;
-            if (input.Developer_Skip)
-                player.ReachedEndOfLevel = true;
+            if (JumpInput) player.DoJump();
         }
 
 
@@ -159,10 +174,25 @@ namespace ThielynGame.GamePlay
             // draw energybar
             S.Draw(T.GetTexture("TODO"), MyRectangle.AdjustExistingRectangle(energyBar), Color.White);
 
-            foreach (ActionButton B in UIbuttons)
+            foreach (BaseButton B in UIbuttons)
             {
-                B.Draw(S, T);
+                B.Draw(S);
             }
+        }
+
+
+        // BUTTON METHODS
+        void SetJumpInput()
+        {
+            JumpInput = true;
+        }
+        void SetMoveLeftInput()
+        {
+            MoveLeftInput = true;
+        }
+        void SetMoveRightInput()
+        {
+            MoveRightInput = true;
         }
     }
 }

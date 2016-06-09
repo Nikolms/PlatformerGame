@@ -20,8 +20,8 @@ namespace ThielynGame
     {
         public MouseState previousMouseState;
         KeyboardState previousKeyboardState;
-        List<Vector2> inputLocations = new List<Vector2>();
-        public List<Vector2> InputLocations { get { return inputLocations; } }
+        public List<Vector2> TapLocation { get; protected set; } = new List<Vector2>();
+        public List<Vector2> InputLocations { get; protected set; } = new List<Vector2>();
         public Vector2 MousePosition { get; protected set; }
 
         public bool moveLeftInput { get; protected set; }
@@ -63,12 +63,13 @@ namespace ThielynGame
             MousePosition = new Vector2(mouseState.Position.X, mouseState.Position.Y);
 
             // reset click positions everyframe
-            inputLocations.Clear();
+            InputLocations.Clear();
+            TapLocation.Clear();
 
-            // if a new left click is registered this frame, store the location to list
+            // if a new left click is registered this frame, store the location to list as a tap
             if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
             {
-                inputLocations.Add(new Vector2(mouseState.X, mouseState.Y));
+                TapLocation.Add(new Vector2(mouseState.X, mouseState.Y));
             }
 
             // if right mouse is clicked set melee input to true

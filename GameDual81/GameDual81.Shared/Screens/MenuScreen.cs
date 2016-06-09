@@ -46,7 +46,7 @@ namespace ThielynGame.Screens
         {
             if (isLoading) return;
 
-            currentPage.checkButtonClick(input.InputLocations);
+            currentPage.checkButtonClick(input.TapLocation);
         }
 
         public override void Draw(SpriteBatch s)

@@ -36,7 +36,7 @@ namespace ThielynGame
             Content.RootDirectory = "Content";
 
             inputHandler = new InputHandler();
-            IsMouseVisible = true;
+            IsMouseVisible = false;
             TargetElapsedTime = TimeSpan.FromMilliseconds(16);
 
             GameSettings.ArmorUpgrade = 0;
@@ -55,8 +55,8 @@ namespace ThielynGame
             // TODO: Add your initialization logic here
 
             // calculate screenmultiplier
-            screenMultiplierHeight = (float)GraphicsDevice.Viewport.Height / 1080;
-            screenMultiplierWidth = (float)GraphicsDevice.Viewport.Width / 1920;
+            screenMultiplierHeight = (float)GraphicsDevice.Viewport.Height / 768;
+            screenMultiplierWidth = (float)GraphicsDevice.Viewport.Width / 1280;
 
             Debug.WriteLine(
                 "width:  " + GraphicsDevice.Viewport.Width +
@@ -105,11 +105,7 @@ namespace ThielynGame
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
-        {
-            // TEST REMOVE
-            screenMultiplierHeight = (float)GraphicsDevice.Viewport.Height / 1080;
-            screenMultiplierWidth = (float)GraphicsDevice.Viewport.Width / 1920;
-
+        {            
             // check for any input values
             inputHandler.Update();
 

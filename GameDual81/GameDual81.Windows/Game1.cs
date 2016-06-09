@@ -55,15 +55,16 @@ namespace ThielynGame
             // TODO: Add your initialization logic here
 
             // calculate screenmultiplier
-            screenMultiplierHeight = (float)GraphicsDevice.Viewport.Height /1080;
-            screenMultiplierWidth = (float)GraphicsDevice.Viewport.Width / 1920;
+            screenMultiplierHeight = (float)GraphicsDevice.Viewport.Height / 768;
+            screenMultiplierWidth = (float)GraphicsDevice.Viewport.Width / 1280;
 
+            /*
             Debug.WriteLine(
                 "width:  " + GraphicsDevice.Viewport.Width + 
                 "\nHeight:  " + GraphicsDevice.Viewport.Height +
                 "\nWidthMulti:  " + screenMultiplierWidth +
                 "\nHeightMulti: " + screenMultiplierHeight
-                );
+                );*/
 
             base.Initialize();
         }
@@ -106,10 +107,6 @@ namespace ThielynGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // TEST REMOVE
-            screenMultiplierHeight = (float)GraphicsDevice.Viewport.Height / 1080;
-            screenMultiplierWidth = (float)GraphicsDevice.Viewport.Width / 1920;
-
             // check for any input values
             inputHandler.Update();
 
